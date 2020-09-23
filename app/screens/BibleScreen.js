@@ -1,4 +1,4 @@
-import React, { PureComponent, useState, useContext } from "react";
+import React, { PureComponent, useState, setState, useContext } from "react";
 import {
   // Animated,
   FlatList,
@@ -302,7 +302,7 @@ export default function BibleScreen(
         /> */}
       </Animated.View>
 
-      <Animated.ScrollView
+      {/* <Animated.ScrollView
         bounces={false}
         scrollEventThrottle={16}
         onScroll={Animated.event([
@@ -314,8 +314,8 @@ export default function BibleScreen(
           flex: 1,
           paddingTop: HEADER_HEIGHT,
         }}
-      >
-        {/* <Text>
+      > */}
+      {/* <Text>
           {words.map((word, i) =>
             word.data.map((prop2, j) => (
               <ParagraphVerse
@@ -327,39 +327,39 @@ export default function BibleScreen(
             ))
           )}
         </Text> */}
-      </Animated.ScrollView>
+      {/* </Animated.ScrollView> */}
 
-      {/* <AnimatedSectionList
-          sections={this.state.words}
-          // extraData={this.state}
-          keyExtractor={(item, index) => item + index}
-          initialNumToRender={1}
-          renderSectionHeader={({ section: { title } }) => (
-            <AnimatedSectionHeader title={title} />
-          )}
-          renderItem={({ item, index }) => (
-            <>
-              <Post
-                item={item}
-                // landscape={landscape}
-                searchWords={this.state.searchWords}
-              />
-            </>
-          )}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {
-              nativeEvent: { contentOffset: { y: this.props.scrollY } },
-            },
-          ])}
-          style={{
-            flex: 1,
-            paddingTop: this.props.HEADER_HEIGHT,
-          }}
-          stickySectionHeadersEnabled={false}
-        /> */}
+      <AnimatedSectionList
+        sections={words}
+        // extraData={this.state}
+        keyExtractor={(item, index) => item + index}
+        initialNumToRender={1}
+        renderSectionHeader={({ section: { title } }) => (
+          <AnimatedSectionHeader title={title} />
+        )}
+        renderItem={({ item, index }) => (
+          <>
+            <Post
+              item={item}
+              // landscape={landscape}
+              searchWords={searchWords}
+            />
+          </>
+        )}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event([
+          {
+            nativeEvent: { contentOffset: { y: scrollY } },
+          },
+        ])}
+        style={{
+          flex: 1,
+          paddingTop: HEADER_HEIGHT,
+        }}
+        stickySectionHeadersEnabled={false}
+      />
     </View>
   );
 }
