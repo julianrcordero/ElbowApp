@@ -8,8 +8,8 @@ import SingleVerseScreen from "../screens/SingleVerseScreen";
 const Stack = createStackNavigator();
 
 const BibleNavigator = (props) => (
-  <Stack.Navigator initialRouteName="Bible">
-    {/* <Stack.Screen
+  <Stack.Navigator initialRouteName="Bible" headerMode="none">
+    <Stack.Screen
       name="Bible"
       children={() => (
         <BibleScreen
@@ -17,22 +17,20 @@ const BibleNavigator = (props) => (
           scrollY={props.scrollY}
           diffClampY={props.diffClampY}
           headerY={props.headerY}
-          navigation={this.navigation}
         />
       )}
-    /> */}
-    <Stack.Screen
+    />
+    {/* <Stack.Screen
       name="Bible"
-      component={(props) => (
+      component={() => (
         <BibleScreen
           HEADER_HEIGHT={props.HEADER_HEIGHT}
           scrollY={props.scrollY}
           diffClampY={props.diffClampY}
           headerY={props.headerY}
-          // navigation={this.navigation}
         />
       )}
-    />
+    /> */}
     <Stack.Screen name="SingleVerse" component={SingleVerseScreen} />
   </Stack.Navigator>
 );
