@@ -19,12 +19,15 @@ const Tab = createBottomTabNavigator();
 const HEADER_HEIGHT = 70;
 const scrollY = new Animated.Value(0);
 const diffClampScrollY = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
-
-// const animationNegative = Animated.multiply(diffClampScrollY, -1);
 const headerY = Animated.interpolate(diffClampScrollY, {
   inputRange: [0, HEADER_HEIGHT],
   outputRange: [0, -HEADER_HEIGHT],
 });
+let slideView = new Animated.Value(0);
+const toggleSlideView = () => {
+  slideView = slideView == 0 ? 100 : 0;
+  console.log(slideView);
+};
 
 const navigationY = Animated.multiply(headerY, -1);
 
@@ -52,6 +55,8 @@ const AppNavigator = ({ user }) => {
             scrollY={scrollY}
             diffClampScrollY={diffClampScrollY}
             headerY={headerY}
+            navigationY={navigationY}
+            toggleSlideView={toggleSlideView}
           />
         )}
         options={{
@@ -136,6 +141,7 @@ function MyTabBar({ state, descriptors, navigation }) {
         );
       })}
     </Animated.View>
+    // </View>
   );
 }
 

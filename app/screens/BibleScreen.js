@@ -1,11 +1,18 @@
-import React, { PureComponent, useState, setState, useContext } from "react";
+import React, {
+  PureComponent,
+  useState,
+  setState,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import {
   // Animated,
   FlatList,
   Image,
   StyleSheet,
   Switch,
-  // useState,
+  Modal,
   Platform,
   ScrollView,
   SectionList,
@@ -27,20 +34,27 @@ import {
   AccordionList,
 } from "accordion-collapse-react-native";
 import Highlighter from "react-native-highlight-words";
-
+import SlidingUpPanel from "rn-sliding-up-panel";
 import { useDeviceOrientation } from "@react-native-community/hooks";
 
 // import * as IJohn from "../json/bible/I John.json";
 import * as Bible from "../json/bible/Bible";
-import VerseBox from "../components/VerseBox";
+import PanelBox from "../components/PanelBox";
 import defaultStyles from "../config/styles";
 import colors from "../config/colors";
 
+import Paragraph from "./ParagraphView";
+import AccordionView from "../components/AccordionView";
+import VerseByVerse from "./VerseByVerseView";
 import BiblePicker from "../components/BiblePicker";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import AppText from "../components/Text";
 import VerseBody from "../components/VerseBody";
-import { TouchableOpacity, TextInput } from "react-native-gesture-handler";
+import {
+  TouchableOpacity,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import AppButton from "../components/Button";
 import SingleVerseScreen from "./SingleVerseScreen";
 
@@ -69,32 +83,41 @@ class SectionHeader extends PureComponent {
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 const AnimatedSectionHeader = Animated.createAnimatedComponent(SectionHeader);
 
-export default function BibleScreen(
-  // props
-  { navigation, HEADER_HEIGHT, scrollY, diffClampY, headerY }
-) {
+export default function BibleScreen({
+  HEADER_HEIGHT,
+  scrollY,
+  headerY,
+  navigationY,
+}) {
   var jsonString = JSON.stringify(Bible.Genesis);
   var jsonObject = JSON.parse(jsonString);
-  const chapter = jsonObject["crossway-bible"]["book"]["chapter"];
-  // const [category, setCategory] = useState(categories[1]);
+  const chapters = jsonObject["crossway-bible"]["book"]["chapter"];
+  const { landscape } = useDeviceOrientation();
 
-  // const { params } = //this.props.navigation.state;
+  const sections = [];
+  let verses = [];
 
-  // const { landscape } = useDeviceOrientation();
-  const searchWords = [];
-  const DATA = [];
+  chapters.map((chapter, i) => {
+    verses = [];
+    chapter["verse"].forEach((verse) => {
+      verses.push({
+        title: verse,
+        content: "Commentary",
+      });
+    });
 
-  chapter.forEach((section) =>
-    Array.isArray(section["heading"])
-      ? DATA.push({
-          title: section["heading"][0],
-          data: section["verse"],
+    Array.isArray(chapter["heading"])
+      ? sections.push({
+          title: chapter["heading"][0],
+          paragraphData: verses,
+          data: chapter["verse"],
         })
-      : DATA.push({
-          title: section["heading"],
-          data: section["verse"],
-        })
-  );
+      : sections.push({
+          title: chapter["heading"],
+          paragraphData: verses,
+          data: chapter["verse"],
+        });
+  });
 
   const categories = [
     ////
@@ -211,11 +234,149 @@ export default function BibleScreen(
     { label: "Revelation", value: 66, backgroundColor: "red", icon: "apps" },
   ];
 
-  const words = DATA;
+  const [searchWords, setSearchWords] = useState([]);
   const [category, setCategory] = useState(categories[0]);
+  const [paragraphView, setParagraphView] = useState(false);
+  const [theCollapsed, setTheCollapsed] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const listRef = React.useRef();
+
+  const sectionListScroll = (sectionIndex, itemIndex) =>
+    listRef.current.getNode().scrollToLocation({
+      sectionIndex: sectionIndex,
+      itemIndex: itemIndex,
+      viewPosition: 0,
+      viewOffset: 0,
+    });
+
+  const toggleSlideView = (visible) => {
+    this._panel.hid ? this._panel.hide() : this._panel.show();
+  };
+
+  //SINGLE VERSE VIEW #1 (THIS WORKS)
+  let verseByVerse1 = (
+    <AnimatedSectionList
+      sections={sections}
+      keyExtractor={(item, index) => item + index}
+      initialNumToRender={1}
+      renderSectionHeader={({ section: { title, index } }) => (
+        <AnimatedSectionHeader title={title} />
+      )}
+      renderItem={({ item, index, section }) => (
+        <VerseByVerse
+          verse={item}
+          key={index}
+          index={index}
+          section={section.index}
+          // landscape={landscape}
+          searchWords={searchWords}
+          theCollapsed={theCollapsed}
+          setTheCollapsed={setTheCollapsed}
+          sectionListScroll={sectionListScroll}
+          toggleSlideView={toggleSlideView}
+        />
+      )}
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+      scrollEventThrottle={16}
+      onScroll={Animated.event([
+        {
+          nativeEvent: { contentOffset: { y: scrollY } },
+        },
+      ])}
+      style={{
+        flex: 1,
+        paddingTop: HEADER_HEIGHT,
+      }}
+      stickySectionHeadersEnabled={false}
+      ref={listRef}
+    />
+  );
+
+  //SINGLE VERSE VIEW #3 (THIS WORKS)
+  let verseByVerse2 = (
+    <Animated.ScrollView
+      bounces={false}
+      scrollEventThrottle={16}
+      onScroll={Animated.event([
+        {
+          nativeEvent: { contentOffset: { y: scrollY } },
+        },
+      ])}
+      style={{
+        flex: 1,
+        backgroundColor: colors.white,
+        paddingTop: HEADER_HEIGHT,
+        paddingHorizontal: 25,
+      }}
+    >
+      {sections.map((section, i) => (
+        <AccordionView
+          key={i}
+          verses={section.paragraphData}
+          searchWords={searchWords}
+        />
+      ))}
+    </Animated.ScrollView>
+  );
+
+  let paragraph = (
+    <Animated.ScrollView
+      bounces={false}
+      scrollEventThrottle={16}
+      onScroll={Animated.event([
+        {
+          nativeEvent: { contentOffset: { y: scrollY } },
+        },
+      ])}
+      style={{
+        // flex: 1,
+        backgroundColor: colors.white,
+        paddingTop: HEADER_HEIGHT,
+        paddingHorizontal: 25,
+      }}
+    >
+      <Text>
+        {sections.map((section, i) => (
+          <Paragraph key={i} section={section} searchWords={searchWords} />
+        ))}
+      </Text>
+    </Animated.ScrollView>
+  );
 
   return (
     <View style={{ flex: 1 }}>
+      {/* <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          console.log("Modal has been closed.");
+        }}
+      >
+        <TouchableWithoutFeedback onPressOut={() => setModalVisible(false)}>
+          <View
+            style={{
+              height: "50%",
+              marginTop: "auto",
+              backgroundColor: "white",
+            }}
+          >
+            <Text style={styles.modalText}>Hello World!</Text>
+
+            <TouchableOpacity
+              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal> */}
+
       <Animated.View
         style={{
           position: "absolute",
@@ -258,7 +419,9 @@ export default function BibleScreen(
             paddingHorizontal: 8,
             paddingVertical: 4,
           }}
-          onPress={() => navigation.navigate("SingleVerse")}
+          onPress={() => {
+            setModalVisible(true);
+          }} //navigation.navigate("SingleVerse")}
         >
           <Text style={styles.text}>NASB</Text>
         </TouchableOpacity>
@@ -288,6 +451,7 @@ export default function BibleScreen(
             paddingHorizontal: 8,
             paddingVertical: 4,
           }}
+          onPress={sectionListScroll}
         >
           <MaterialCommunityIcons
             name="format-letter-case"
@@ -295,232 +459,61 @@ export default function BibleScreen(
             size={20}
           />
         </TouchableOpacity>
-        {/* <TextInput
-          style={{ height: 40 }}
-          placeholder="TYPE HERE"
-          onChangeText={(text) => this.setState({ searchWords: [text] })}
-        /> */}
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            borderColor: colors.medium,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 8,
+            paddingVertical: 4,
+          }}
+          onPress={
+            () => setParagraphView(!paragraphView)
+            // (paragraphView = !paragraphView)
+          }
+        >
+          <MaterialCommunityIcons
+            name="book-open"
+            color={colors.black}
+            size={20}
+          />
+        </TouchableOpacity>
       </Animated.View>
+      {/* <TextInput
+        style={{ height: 40 }}
+        placeholder="TYPE HERE"
+        onChangeText={(text) => setSearchWords([text])}
+      /> */}
+      {paragraphView ? verseByVerse2 : verseByVerse1}
 
-      {/* <Animated.ScrollView
-        bounces={false}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {
-            nativeEvent: { contentOffset: { y: scrollY } },
-          },
-        ])}
-        style={{
-          flex: 1,
-          paddingTop: HEADER_HEIGHT,
-        }}
-      > */}
-      {/* <Text>
-          {words.map((word, i) =>
-            word.data.map((prop2, j) => (
-              <ParagraphVerse
-                key={j}
-                item={prop2}
-                // searchWords={searchWords}
-                // navigation={this.navigation}
-              />
-            ))
-          )}
-        </Text> */}
-      {/* </Animated.ScrollView> */}
-
-      <AnimatedSectionList
-        sections={words}
-        // extraData={this.state}
-        keyExtractor={(item, index) => item + index}
-        initialNumToRender={1}
-        renderSectionHeader={({ section: { title } }) => (
-          <AnimatedSectionHeader title={title} />
-        )}
-        renderItem={({ item, index }) => (
-          <>
-            <Post
-              item={item}
-              // landscape={landscape}
-              searchWords={searchWords}
-            />
-          </>
-        )}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {
-            nativeEvent: { contentOffset: { y: scrollY } },
-          },
-        ])}
-        style={{
-          flex: 1,
-          paddingTop: HEADER_HEIGHT,
-        }}
-        stickySectionHeadersEnabled={false}
-      />
+      <SlidingUpPanel
+        draggableRange={{ top: 400, bottom: 0 }}
+        ref={(c) => (this._panel = c)}
+        snappingPoints={[0, 50, 150, 300]}
+        showBackdrop={false}
+      >
+        <Animated.View
+          style={{
+            flex: 1,
+            left: 0,
+            right: 0,
+            bottom: 70,
+            padding: 20,
+            backgroundColor: colors.white,
+            zIndex: 1000,
+            elevation: 1000,
+            transform: [{ translateY: navigationY }],
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <PanelBox landscape={landscape}></PanelBox>
+          <Button title="Hide" onPress={() => this._panel.hide()} />
+        </Animated.View>
+      </SlidingUpPanel>
     </View>
   );
-}
-
-class ParagraphVerse extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      backgroundColor: "white",
-    };
-  }
-
-  toggleHighlight = () => {
-    if (this.state.backgroundColor === "white") {
-      this.setState({ backgroundColor: "yellow" });
-    } else {
-      this.setState({ backgroundColor: "white" });
-    }
-  };
-
-  render() {
-    const { item, searchWords } = this.props;
-
-    return (
-      <Text
-        style={{
-          backgroundColor: this.state.backgroundColor,
-          fontSize: 16, //max 16 for some reason
-          lineHeight: 20, //max
-          textAlign: "justify",
-        }}
-        onPress={
-          // navigation.navigate(SingleVerseScreen)
-          // () => console.log("Verse: " + item["_num"])
-          this.toggleHighlight
-        }
-      >
-        {item["_num"]}{" "}
-        {item["crossref"]
-          ? item["__text"].replace(
-              /\n/g,
-              Array.isArray(item["crossref"])
-                ? item["crossref"][0]["_let"]
-                : item["crossref"]["_let"]
-            )
-          : item["__text"].replace(/\n/g, "")}
-      </Text>
-    );
-  }
-}
-
-class Post extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      backgroundColor: "white",
-      collapsed: false,
-    };
-  }
-
-  _toggleHighlight = () => {
-    if (this.state.backgroundColor === "white") {
-      this.setState({ backgroundColor: "yellow" });
-    } else {
-      this.setState({ backgroundColor: "white" });
-    }
-  };
-
-  render() {
-    const { item, landscape, searchWords } = this.props;
-    const name = "JULIAN";
-
-    return (
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: 25,
-          backgroundColor: colors.white,
-        }}
-      >
-        <Collapse
-          handleLongPress={this._toggleHighlight}
-          isCollapsed={this.state.collapsed}
-          onToggle={(isCollapsed) => this.setState({ collapsed: isCollapsed })}
-        >
-          <CollapseHeader>
-            <VerseBox
-              content={
-                <HighlightComponent
-                  style={[
-                    defaultStyles.text,
-                    styles.bibleText,
-                    { backgroundColor: this.state.backgroundColor },
-                  ]}
-                  highlightStyle={{ backgroundColor: "red" }}
-                  searchWords={searchWords}
-                  textToHighlight={`${item["_num"]}  ${
-                    item["crossref"]
-                      ? item["__text"]
-                          .toString()
-                          .replace(
-                            /\n/gi,
-                            Array.isArray(item["crossref"])
-                              ? item["crossref"][0]["_let"]
-                              : item["crossref"]["_let"]
-                          )
-                      : item["__text"].toString().replace(/\n/gi, "")
-                  }`}
-                />
-              }
-            />
-          </CollapseHeader>
-          <CollapseBody>
-            <VerseBody landscape={landscape} />
-          </CollapseBody>
-        </Collapse>
-      </View>
-    );
-  }
-}
-
-class HighlightComponent extends PureComponent {
-  render() {
-    const { style, highlightStyle, searchWords, textToHighlight } = this.props;
-
-    return (
-      <Highlighter
-        style={style}
-        highlightStyle={highlightStyle}
-        searchWords={searchWords}
-        textToHighlight={textToHighlight}
-      />
-    );
-  }
-}
-
-class FlatListItem extends PureComponent {
-  render() {
-    const { section, landscape, searchWords } = this.props;
-    const name = "JULIAN";
-
-    // console.log(section.data[0]);
-
-    return (
-      <>
-        <Text>{section.title}</Text>
-        <FlatList
-          data={section.data}
-          extraData={this.state}
-          keyExtractor={(x, i) => i.toString()}
-          renderItem={({ item, index }) => (
-            <>
-              {/* <Text>{item["_num"]}</Text> */}
-              <AppText style={styles.bibleText}>{`${item["_num"]}`}</AppText>
-              {/* <FlatListVerse item={item[index]} /> */}
-            </>
-          )}
-        />
-      </>
-    );
-  }
 }
 
 const styles = StyleSheet.create({
@@ -535,5 +528,43 @@ const styles = StyleSheet.create({
   pilgrimsWordSwitch: {
     flex: 1,
     justifyContent: "flex-end",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    backgroundColor: "white",
+    // marginTop: 22,
+  },
+  modalView: {
+    // margin: 20,
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });
