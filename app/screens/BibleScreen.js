@@ -1,39 +1,15 @@
-import React, {
-  PureComponent,
-  useState,
-  setState,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import React, { PureComponent, useState } from "react";
 import {
-  // Animated,
-  FlatList,
-  Image,
   StyleSheet,
-  Switch,
-  Modal,
-  Platform,
-  ScrollView,
   SectionList,
-  StatusBar,
   Text,
+  TouchableOpacity,
   View,
-  VirtualizedList,
   Button,
 } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Constants from "expo-constants";
-// import React, { useState, Component, setState, PureComponent } from "react";
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody,
-  AccordionList,
-} from "accordion-collapse-react-native";
-import Highlighter from "react-native-highlight-words";
 import SlidingUpPanel from "rn-sliding-up-panel";
 import { useDeviceOrientation } from "@react-native-community/hooks";
 
@@ -48,15 +24,7 @@ import AccordionView from "../components/AccordionView";
 import VerseByVerse from "./VerseByVerseView";
 import BiblePicker from "../components/BiblePicker";
 import CategoryPickerItem from "../components/CategoryPickerItem";
-import AppText from "../components/Text";
-import VerseBody from "../components/VerseBody";
-import {
-  TouchableOpacity,
-  TextInput,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
-import AppButton from "../components/Button";
-import SingleVerseScreen from "./SingleVerseScreen";
+import { ScrollView } from "react-native-gesture-handler";
 
 class SectionHeader extends PureComponent {
   constructor(props) {
@@ -91,13 +59,14 @@ export default function BibleScreen({
 }) {
   var jsonString = JSON.stringify(Bible.Genesis);
   var jsonObject = JSON.parse(jsonString);
-  const chapters = jsonObject["crossway-bible"]["book"]["chapter"];
   const { landscape } = useDeviceOrientation();
 
   const sections = [];
   let verses = [];
+  const book = jsonObject["crossway-bible"]["book"]["_title"];
+  const chapters = jsonObject["crossway-bible"]["book"]["chapter"];
 
-  chapters.map((chapter, i) => {
+  chapters.map((chapter) => {
     verses = [];
     chapter["verse"].forEach((verse) => {
       verses.push({
@@ -109,13 +78,15 @@ export default function BibleScreen({
     Array.isArray(chapter["heading"])
       ? sections.push({
           title: chapter["heading"][0],
-          paragraphData: verses,
           data: chapter["verse"],
+          chapterNum: chapter["_num"],
+          paragraphData: verses,
         })
       : sections.push({
           title: chapter["heading"],
-          paragraphData: verses,
           data: chapter["verse"],
+          chapterNum: chapter["_num"],
+          paragraphData: verses,
         });
   });
 
@@ -234,23 +205,25 @@ export default function BibleScreen({
     { label: "Revelation", value: 66, backgroundColor: "red", icon: "apps" },
   ];
 
-  const [searchWords, setSearchWords] = useState([]);
+  const [searchWords] = useState([]);
   const [category, setCategory] = useState(categories[0]);
-  const [paragraphView, setParagraphView] = useState(false);
+  const [paragraphView, setParagraphView] = useState(true);
   const [theCollapsed, setTheCollapsed] = useState();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [verseReference, setVerseReference] = useState("");
+  const [verseContent, setVerseContent] = useState("");
+  const [allowDragging, setAllowDragging] = useState(true);
 
   const listRef = React.useRef();
 
-  const sectionListScroll = (sectionIndex, itemIndex) =>
-    listRef.current.getNode().scrollToLocation({
-      sectionIndex: sectionIndex,
-      itemIndex: itemIndex,
-      viewPosition: 0,
-      viewOffset: 0,
-    });
+  // const sectionListScroll = (sectionIndex, itemIndex) =>
+  //   listRef.current.getNode().scrollToLocation({
+  //     sectionIndex: sectionIndex,
+  //     itemIndex: itemIndex,
+  //     viewPosition: 0,
+  //     viewOffset: 0,
+  //   });
 
-  const toggleSlideView = (visible) => {
+  const toggleSlideView = () => {
     this._panel.hid ? this._panel.hide() : this._panel.show();
   };
 
@@ -260,20 +233,20 @@ export default function BibleScreen({
       sections={sections}
       keyExtractor={(item, index) => item + index}
       initialNumToRender={1}
-      renderSectionHeader={({ section: { title, index } }) => (
+      renderSectionHeader={({ section: { title } }) => (
         <AnimatedSectionHeader title={title} />
       )}
       renderItem={({ item, index, section }) => (
         <VerseByVerse
-          verse={item}
           key={index}
-          index={index}
-          section={section.index}
+          chapterNum={section.chapterNum}
+          verse={item}
           // landscape={landscape}
           searchWords={searchWords}
           theCollapsed={theCollapsed}
           setTheCollapsed={setTheCollapsed}
-          sectionListScroll={sectionListScroll}
+          setVerseContent={setVerseContent}
+          setVerseReference={setVerseReference}
           toggleSlideView={toggleSlideView}
         />
       )}
@@ -337,56 +310,32 @@ export default function BibleScreen({
         paddingHorizontal: 25,
       }}
     >
-      <Text>
-        {sections.map((section, i) => (
-          <Paragraph key={i} section={section} searchWords={searchWords} />
-        ))}
-      </Text>
+      {sections.map((section, i) => (
+        <Paragraph
+          key={i}
+          chapterNum={section.chapterNum}
+          section={section}
+          searchWords={searchWords}
+          setVerseContent={setVerseContent}
+          setVerseReference={setVerseReference}
+          toggleSlideView={toggleSlideView}
+        />
+      ))}
     </Animated.ScrollView>
   );
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          console.log("Modal has been closed.");
-        }}
-      >
-        <TouchableWithoutFeedback onPressOut={() => setModalVisible(false)}>
-          <View
-            style={{
-              height: "50%",
-              marginTop: "auto",
-              backgroundColor: "white",
-            }}
-          >
-            <Text style={styles.modalText}>Hello World!</Text>
-
-            <TouchableOpacity
-              style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal> */}
-
       <Animated.View
         style={{
           position: "absolute",
           left: 0,
           right: 0,
           top: 0,
-          height: HEADER_HEIGHT, //HEADER_HEIGHT, // + Constants.statusBarHeight,
+          height: HEADER_HEIGHT,
           backgroundColor: colors.light,
-          zIndex: 1000,
-          elevation: 1000,
+          zIndex: 1,
+          // elevation: 1000,
           transform: [{ translateY: headerY }],
           alignItems: "center",
           justifyContent: "flex-start",
@@ -419,9 +368,6 @@ export default function BibleScreen({
             paddingHorizontal: 8,
             paddingVertical: 4,
           }}
-          onPress={() => {
-            setModalVisible(true);
-          }} //navigation.navigate("SingleVerse")}
         >
           <Text style={styles.text}>NASB</Text>
         </TouchableOpacity>
@@ -451,7 +397,6 @@ export default function BibleScreen({
             paddingHorizontal: 8,
             paddingVertical: 4,
           }}
-          onPress={sectionListScroll}
         >
           <MaterialCommunityIcons
             name="format-letter-case"
@@ -468,10 +413,7 @@ export default function BibleScreen({
             paddingHorizontal: 8,
             paddingVertical: 4,
           }}
-          onPress={
-            () => setParagraphView(!paragraphView)
-            // (paragraphView = !paragraphView)
-          }
+          onPress={() => setParagraphView(!paragraphView)}
         >
           <MaterialCommunityIcons
             name="book-open"
@@ -485,31 +427,136 @@ export default function BibleScreen({
         placeholder="TYPE HERE"
         onChangeText={(text) => setSearchWords([text])}
       /> */}
-      {paragraphView ? verseByVerse2 : verseByVerse1}
+      {paragraphView ? paragraph : verseByVerse1}
 
       <SlidingUpPanel
+        allowDragging={allowDragging}
         draggableRange={{ top: 400, bottom: 0 }}
+        height={400}
         ref={(c) => (this._panel = c)}
-        snappingPoints={[0, 50, 150, 300]}
+        // snappingPoints={[0, 50, 150, 300]}
         showBackdrop={false}
+        zIndex={1000}
       >
         <Animated.View
           style={{
-            flex: 1,
-            left: 0,
-            right: 0,
-            bottom: 70,
-            padding: 20,
-            backgroundColor: colors.white,
-            zIndex: 1000,
-            elevation: 1000,
-            transform: [{ translateY: navigationY }],
             alignItems: "center",
+            backgroundColor: colors.white,
+            borderColor: colors.medium,
+            borderWidth: 1,
+            bottom: 70,
+            // elevation: 1000,
+            flex: 1,
             justifyContent: "flex-start",
+            marginHorizontal: 10,
+            padding: 20,
+            position: "relative",
+            // top: 70,
+            transform: [{ translateY: navigationY }],
+            // zIndex: 2,
           }}
         >
-          <PanelBox landscape={landscape}></PanelBox>
-          <Button title="Hide" onPress={() => this._panel.hide()} />
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "flex-start" }}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  borderColor: colors.medium,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="marker"
+                  color={colors.black}
+                  size={20}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  borderColor: colors.medium,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="bookmark-outline"
+                  color={colors.black}
+                  size={20}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  borderColor: colors.medium,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+                onPress={() => setParagraphView(!paragraphView)}
+              >
+                <MaterialCommunityIcons
+                  name="heart-outline"
+                  color={colors.black}
+                  size={20}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  borderColor: colors.medium,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="file-multiple"
+                  color={colors.black}
+                  size={20}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  borderColor: colors.medium,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                }}
+                onPress={() => setParagraphView(!paragraphView)}
+              >
+                <MaterialCommunityIcons
+                  name="file-upload-outline"
+                  color={colors.black}
+                  size={20}
+                />
+              </TouchableOpacity>
+            </View>
+            <Button title="Done" onPress={() => this._panel.hide()} />
+          </View>
+          <ScrollView
+            onTouchStart={() => setAllowDragging(false)}
+            onTouchEnd={() => setAllowDragging(true)}
+            onTouchCancel={() => setAllowDragging(true)}
+          >
+            <PanelBox
+              book={book}
+              verseReference={verseReference}
+              verseContent={verseContent}
+              landscape={landscape}
+            ></PanelBox>
+          </ScrollView>
         </Animated.View>
       </SlidingUpPanel>
     </View>
@@ -536,22 +583,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     // marginTop: 22,
   },
-  modalView: {
-    // margin: 20,
-    flexDirection: "row",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
   openButton: {
     backgroundColor: "#F194FF",
     borderRadius: 20,
@@ -561,10 +592,6 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
     textAlign: "center",
   },
 });

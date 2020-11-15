@@ -56,7 +56,30 @@ class VerseByVerse extends PureComponent {
   };
 
   render() {
-    const { verse, landscape, searchWords, toggleSlideView } = this.props;
+    const {
+      verse,
+      chapterNum,
+      landscape,
+      searchWords,
+      toggleSlideView,
+      setVerseContent,
+      setVerseReference,
+    } = this.props;
+
+    const parsedReference = `${chapterNum} : ${verse["_num"]}`;
+
+    const parsedVerse = `${verse["_num"]}  ${
+      verse["crossref"]
+        ? verse["__text"]
+            .toString()
+            .replace(
+              /\n/gi,
+              Array.isArray(verse["crossref"])
+                ? verse["crossref"][0]["_let"]
+                : verse["crossref"]["_let"]
+            )
+        : verse["__text"].toString().replace(/\n/gi, "")
+    }`;
 
     return (
       // <Collapse
@@ -71,7 +94,11 @@ class VerseByVerse extends PureComponent {
       // >
       //   <CollapseHeader>
       <TouchableOpacity
-        onPress={() => toggleSlideView()}
+        onPress={() => {
+          toggleSlideView();
+          setVerseReference(parsedReference);
+          setVerseContent(parsedVerse);
+        }}
         onLongPress={this._toggleHighlight}
       >
         <VerseBox
@@ -79,23 +106,11 @@ class VerseByVerse extends PureComponent {
             <HighlightComponent
               style={[
                 defaultStyles.text,
-                // styles.bibleText,
                 { backgroundColor: this.state.backgroundColor },
               ]}
               highlightStyle={{ backgroundColor: "red" }}
               searchWords={searchWords}
-              textToHighlight={`${verse["_num"]}  ${
-                verse["crossref"]
-                  ? verse["__text"]
-                      .toString()
-                      .replace(
-                        /\n/gi,
-                        Array.isArray(verse["crossref"])
-                          ? verse["crossref"][0]["_let"]
-                          : verse["crossref"]["_let"]
-                      )
-                  : verse["__text"].toString().replace(/\n/gi, "")
-              }`}
+              textToHighlight={parsedVerse}
             />
           }
         />

@@ -53,20 +53,16 @@ function ResourcesScreen(props) {
         data={messages}
         keyExtractor={(message) => message.id.toString()}
         renderItem={({ item }) => (
-          <Collapse>
-            <CollapseHeader>
-              <ListItem
-                title={item.title}
-                type={item.type}
-                description={item.description}
-                image={item.image}
-                onPress={() => console.log("Message selected", item)}
-                renderRightActions={() => (
-                  <ListItemDeleteAction onPress={() => handleDelete(item)} />
-                )}
-              />
-            </CollapseHeader>
-          </Collapse>
+          <ListItem
+            title={item.title}
+            type={item.type}
+            description={item.description}
+            image={item.image}
+            onPress={() => console.log("Message selected", item)}
+            renderRightActions={() => (
+              <ListItemDeleteAction onPress={() => handleDelete(item)} />
+            )}
+          />
         )}
         ItemSeparatorComponent={ListItemSeparator}
         refreshing={refreshing}
@@ -87,7 +83,9 @@ function ResourcesScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // backgroundColor: "red",
+    // height: 200,
+    // flex: 1,
   },
 });
 

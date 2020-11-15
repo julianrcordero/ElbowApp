@@ -21,35 +21,6 @@ const BibleNavigator = (props) => (
         />
       )}
     />
-    {/* <Stack.Screen
-      name="Bible"
-      initialParams={{
-        HEADER_HEIGHT: props.HEADER_HEIGHT,
-        scrollY: props.scrollY,
-        diffClampY: props.diffClampY,
-        headerY: props.headerY,
-      }}
-    >
-      {() => (
-        <BibleScreen
-          HEADER_HEIGHT={props.HEADER_HEIGHT}
-          scrollY={props.scrollY}
-          diffClampY={props.diffClampY}
-          headerY={props.headerY}
-          // navigation={props.navigation}
-        />
-      )}
-    </Stack.Screen> */}
-    {/* <Stack.Screen
-      name="Bible"
-      component={BibleScreen}
-      // initialParams={{
-      //   HEADER_HEIGHT: props.HEADER_HEIGHT,
-      //   scrollY: props.scrollY,
-      //   diffClampY: props.diffClampY,
-      //   headerY: props.headerY,
-      // }}
-    /> */}
     <Stack.Screen name="SingleVerse" component={SingleVerseScreen} />
   </Stack.Navigator>
 );
