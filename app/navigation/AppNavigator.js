@@ -23,11 +23,6 @@ const headerY = Animated.interpolate(diffClampScrollY, {
   inputRange: [0, HEADER_HEIGHT],
   outputRange: [0, -HEADER_HEIGHT],
 });
-let slideView = new Animated.Value(0);
-const toggleSlideView = () => {
-  slideView = slideView == 0 ? 100 : 0;
-  console.log(slideView);
-};
 
 const navigationY = Animated.multiply(headerY, -1);
 
@@ -56,7 +51,6 @@ const AppNavigator = ({ user }) => {
             diffClampScrollY={diffClampScrollY}
             headerY={headerY}
             navigationY={navigationY}
-            toggleSlideView={toggleSlideView}
           />
         )}
         options={{

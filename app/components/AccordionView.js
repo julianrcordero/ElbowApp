@@ -72,7 +72,7 @@ export default class AccordionView extends PureComponent {
       >
         <HighlightComponent
           style={[
-            defaultStyles.text,
+            defaultStyles.bibleText,
             { backgroundColor: this.state.backgroundColor },
           ]}
           highlightStyle={{ backgroundColor: "red" }}
@@ -92,7 +92,7 @@ export default class AccordionView extends PureComponent {
         />
         {/* <Text
           style={
-            defaultStyles.text
+            defaultStyles.bibleText
             // styles.headerText
           }
         >

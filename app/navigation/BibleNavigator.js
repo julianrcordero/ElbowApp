@@ -17,7 +17,6 @@ const BibleNavigator = (props) => (
           scrollY={props.scrollY}
           headerY={props.headerY}
           navigationY={props.navigationY}
-          toggleSlideView={props.toggleSlideView}
         />
       )}
     />

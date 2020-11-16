@@ -11,36 +11,16 @@ export default class Paragraph extends PureComponent {
   }
 
   render() {
-    const {
-      chapterNum,
-      section,
-      searchWords,
-      setVerseContent,
-      setVerseReference,
-      toggleSlideView,
-    } = this.props;
+    const { chapterNum, section, searchWords, onPress } = this.props;
 
     return (
-      <Text
-        style={{
-          fontSize: 20,
-          lineHeight: 24,
-          textAlign: "justify",
-        }}
-      >
+      <Text>
         {section.data.map((data, j) => (
           <Verse
             key={j}
             chapterNum={chapterNum}
             verse={data}
-            // setVerseReference={setVerseReference}
-            // setVerseContent={setVerseContent}
-            // toggleSlideView={toggleSlideView}
-            onPress={() => {
-              toggleSlideView();
-              setVerseReference(`${chapterNum} : ${data["_num"]}`);
-              setVerseContent("parsedVerse");
-            }}
+            onPress={onPress}
             searchWords={searchWords}
           />
         ))}
@@ -67,7 +47,7 @@ class Verse extends PureComponent {
   };
 
   render() {
-    const { chapterNum, verse, onPress, searchWords } = this.props;
+    const { chapterNum, verse, searchWords, onPress } = this.props;
 
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
 
@@ -80,26 +60,47 @@ class Verse extends PureComponent {
         )
       : verse["__text"].replace(/\n/g, "");
 
+    const reactStringReplace = require("react-string-replace");
+    // const parsedVerse = verse["crossref"]
+    //   ? reactStringReplace(verse["__text"], /\n/g, (match, i) => (
+    //       <Text
+    //         key={i}
+    //         style={{ flexDirection: "row", alignItems: "flex-start" }}
+    //       >
+    //         <Text style={{ fontSize: 13, lineHeight: 10 }}>
+    //           {Array.isArray(verse["crossref"])
+    //             ? verse["crossref"][0]["_let"]
+    //             : verse["crossref"]["_let"]}
+    //         </Text>
+    //         {match}
+    //       </Text>
+    //     ))
+    //   : reactStringReplace(verse["__text"], /\n/g, (match, i) => (
+    //       <Text key={i}>{match}</Text>
+    //     ));
+
     return (
       <Text
         style={[
-          defaultStyles.text,
-          { backgroundColor: this.state.backgroundColor },
+          defaultStyles.bibleText,
+          {
+            backgroundColor: this.state.backgroundColor,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            margin: 10,
+          },
         ]}
         onPress={onPress}
         onLongPress={this._toggleHighlight}
-        selectionColor={"orange"}
       >
         <Text style={{ fontWeight: "bold" }}> {verse["_num"]} </Text>
-        <HighlightComponent
-          // style={[
-          //   defaultStyles.text,
-          //   { backgroundColor: this.state.backgroundColor },
-          // ]}
+        {parsedVerse}
+        {/* <HighlightComponent
           highlightStyle={{ backgroundColor: "red" }}
           searchWords={searchWords}
           textToHighlight={parsedVerse}
-        />
+        /> */}
       </Text>
     );
   }

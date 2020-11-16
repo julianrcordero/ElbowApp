@@ -1,21 +1,10 @@
 import React, { PureComponent } from "react";
 
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody,
-} from "accordion-collapse-react-native";
+import { Text, TouchableOpacity } from "react-native";
 import Highlighter from "react-native-highlight-words";
 
 import VerseBox from "../components/VerseBox";
 import defaultStyles from "../config/styles";
-import colors from "../config/colors";
-
-import VerseBody from "../components/VerseBody";
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
 
 class VerseByVerse extends PureComponent {
   constructor(props) {
@@ -59,43 +48,40 @@ class VerseByVerse extends PureComponent {
     const {
       verse,
       chapterNum,
-      landscape,
       searchWords,
-      toggleSlideView,
+      onPress,
       setVerseContent,
       setVerseReference,
     } = this.props;
 
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
 
-    const parsedVerse = `${verse["_num"]}  ${
-      verse["crossref"]
-        ? verse["__text"]
-            .toString()
-            .replace(
-              /\n/gi,
-              Array.isArray(verse["crossref"])
-                ? verse["crossref"][0]["_let"]
-                : verse["crossref"]["_let"]
-            )
-        : verse["__text"].toString().replace(/\n/gi, "")
-    }`;
+    const parsedVerse = verse["crossref"]
+      ? verse["__text"].replace(
+          /\n/g,
+          Array.isArray(verse["crossref"])
+            ? verse["crossref"][0]["_let"]
+            : verse["crossref"]["_let"]
+        )
+      : verse["__text"].replace(/\n/g, "");
+
+    // const parsedVerse = `${verse["_num"]}  ${
+    //   verse["crossref"]
+    //     ? verse["__text"]
+    //         .toString()
+    //         .replace(
+    //           /\n/gi,
+    //           Array.isArray(verse["crossref"])
+    //             ? verse["crossref"][0]["_let"]
+    //             : verse["crossref"]["_let"]
+    //         )
+    //     : verse["__text"].toString().replace(/\n/gi, "")
+    // }`;
 
     return (
-      // <Collapse
-      //   handleLongPress={this._toggleHighlight}
-      //   isCollapsed={this.state.collapsed}
-      //   onToggle={this._toggleCollapse}
-      //   // style={{
-      //   //   flex: 1,
-      //   //   paddingHorizontal: 25,
-      //   //   backgroundColor: colors.white,
-      //   // }}
-      // >
-      //   <CollapseHeader>
       <TouchableOpacity
         onPress={() => {
-          toggleSlideView();
+          onPress();
           setVerseReference(parsedReference);
           setVerseContent(parsedVerse);
         }}
@@ -103,23 +89,22 @@ class VerseByVerse extends PureComponent {
       >
         <VerseBox
           content={
-            <HighlightComponent
+            <Text
               style={[
-                defaultStyles.text,
+                defaultStyles.bibleText,
                 { backgroundColor: this.state.backgroundColor },
               ]}
-              highlightStyle={{ backgroundColor: "red" }}
-              searchWords={searchWords}
-              textToHighlight={parsedVerse}
-            />
+            >
+              <Text style={{ fontWeight: "bold" }}> {verse["_num"]} </Text>
+              <HighlightComponent
+                highlightStyle={{ backgroundColor: "red" }}
+                searchWords={searchWords}
+                textToHighlight={parsedVerse}
+              />
+            </Text>
           }
         />
       </TouchableOpacity>
-      //   </CollapseHeader>
-      //   <CollapseBody>
-      //     <VerseBody landscape={landscape} />
-      //   </CollapseBody>
-      // </Collapse>
     );
   }
 }

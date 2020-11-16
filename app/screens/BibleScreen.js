@@ -35,7 +35,7 @@ class SectionHeader extends PureComponent {
     return (
       <Text
         style={[
-          defaultStyles.text,
+          defaultStyles.bibleText,
           {
             fontSize: 22,
             backgroundColor: colors.white,
@@ -211,20 +211,14 @@ export default function BibleScreen({
   const [theCollapsed, setTheCollapsed] = useState();
   const [verseReference, setVerseReference] = useState("");
   const [verseContent, setVerseContent] = useState("");
-  const [allowDragging, setAllowDragging] = useState(true);
+  // const [allowDragging, setAllowDragging] = useState(true);
 
   const listRef = React.useRef();
 
-  // const sectionListScroll = (sectionIndex, itemIndex) =>
-  //   listRef.current.getNode().scrollToLocation({
-  //     sectionIndex: sectionIndex,
-  //     itemIndex: itemIndex,
-  //     viewPosition: 0,
-  //     viewOffset: 0,
-  //   });
-
   const toggleSlideView = () => {
     this._panel.hid ? this._panel.hide() : this._panel.show();
+    // setVerseReference(verseReference);
+    // setVerseContent(verseContent);
   };
 
   //SINGLE VERSE VIEW #1 (THIS WORKS)
@@ -247,7 +241,7 @@ export default function BibleScreen({
           setTheCollapsed={setTheCollapsed}
           setVerseContent={setVerseContent}
           setVerseReference={setVerseReference}
-          toggleSlideView={toggleSlideView}
+          onPress={toggleSlideView}
         />
       )}
       showsVerticalScrollIndicator={false}
@@ -259,6 +253,7 @@ export default function BibleScreen({
         },
       ])}
       style={{
+        backgroundColor: colors.white,
         flex: 1,
         paddingTop: HEADER_HEIGHT,
       }}
@@ -311,15 +306,15 @@ export default function BibleScreen({
       }}
     >
       {sections.map((section, i) => (
-        <Paragraph
-          key={i}
-          chapterNum={section.chapterNum}
-          section={section}
-          searchWords={searchWords}
-          setVerseContent={setVerseContent}
-          setVerseReference={setVerseReference}
-          toggleSlideView={toggleSlideView}
-        />
+        <React.Fragment key={i}>
+          <AnimatedSectionHeader title={section.title} />
+          <Paragraph
+            chapterNum={section.chapterNum}
+            section={section}
+            searchWords={searchWords}
+            onPress={toggleSlideView}
+          />
+        </React.Fragment>
       ))}
     </Animated.ScrollView>
   );
@@ -430,7 +425,7 @@ export default function BibleScreen({
       {paragraphView ? paragraph : verseByVerse1}
 
       <SlidingUpPanel
-        allowDragging={allowDragging}
+        // allowDragging={allowDragging}
         draggableRange={{ top: 400, bottom: 0 }}
         height={400}
         ref={(c) => (this._panel = c)}
@@ -546,9 +541,9 @@ export default function BibleScreen({
             <Button title="Done" onPress={() => this._panel.hide()} />
           </View>
           <ScrollView
-            onTouchStart={() => setAllowDragging(false)}
-            onTouchEnd={() => setAllowDragging(true)}
-            onTouchCancel={() => setAllowDragging(true)}
+          // onTouchStart={() => setAllowDragging(false)}
+          // onTouchEnd={() => setAllowDragging(true)}
+          // onTouchCancel={() => setAllowDragging(true)}
           >
             <PanelBox
               book={book}

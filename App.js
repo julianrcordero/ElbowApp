@@ -125,68 +125,6 @@ export default function App() {
         <AuthContext.Provider value={{ user, setUser }}>
           {/* <AppNavigator user={{ user }} /> */}
           {user ? <AppNavigator /> : <AuthNavigator />}
-
-          {/* <Tab.Navigator
-          initialRouteName="Feed"
-          tabBarOptions={{
-            activeBackgroundColor: colors.light,
-            activeTintColor: "#345171",
-            // inactiveBackgroundColor: colors.light,
-          }}
-        >
-          <Tab.Screen
-            name="HomeStack"
-            component={HomeStack}
-            options={{
-              tabBarLabel: "Home",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="home" color={color} size={size} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="BibleStack"
-            component={BibleStack}
-            options={{
-              tabBarLabel: "Bible",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons
-                  name="book-open-page-variant"
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="JohnsNotesStack"
-            component={JohnsNotesStack}
-            options={{
-              tabBarLabel: "John's Notes",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons
-                  name="library-books"
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="AccountStack"
-            component={AccountStack}
-            options={{
-              tabBarLabel: "Account",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons
-                  name="account"
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-          />
-        </Tab.Navigator> */}
         </AuthContext.Provider>
       </NavigationContainer>
     </Screen>

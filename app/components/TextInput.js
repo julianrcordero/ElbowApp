@@ -18,7 +18,7 @@ function AppTextInput({ icon, width = "100%", ...otherProps }) {
         // multiline
         numberOfLines={4}
         placeholderTextColor={defaultStyles.colors.medium}
-        style={defaultStyles.text}
+        style={defaultStyles.bibleText}
         {...otherProps}
       />
     </View>
