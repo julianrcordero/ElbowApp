@@ -2,14 +2,15 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeArea } from "react-native-safe-area-context";
 
 import AccountNavigator from "./AccountNavigator";
 import FeedNavigator from "./FeedNavigator";
 import ListingEditScreen from "../screens/ListingEditScreen";
+import BibleScreen from "../screens/BibleScreen";
 
 import NewListingButton from "./NewListingButton";
 import useNotifications from "../hooks/useNotifications";
-import BibleNavigator from "./BibleNavigator";
 import Animated from "react-native-reanimated";
 import MenuButton from "../components/MenuButton";
 import colors from "../config/colors";
@@ -45,10 +46,9 @@ const AppNavigator = ({ user }) => {
       <Tab.Screen
         name="Bible"
         children={() => (
-          <BibleNavigator
+          <BibleScreen
             HEADER_HEIGHT={HEADER_HEIGHT}
             scrollY={scrollY}
-            diffClampScrollY={diffClampScrollY}
             headerY={headerY}
             navigationY={navigationY}
           />
@@ -76,6 +76,9 @@ const AppNavigator = ({ user }) => {
 };
 
 function MyTabBar({ state, descriptors, navigation }) {
+  const insets = useSafeArea();
+  console.log(insets);
+
   return (
     <Animated.View
       style={{

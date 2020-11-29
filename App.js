@@ -6,6 +6,7 @@ import jwtDecode from "jwt-decode";
 import { AppLoading } from "expo";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import colors from "./app/config/colors";
 import Screen from "./app/components/Screen";
@@ -31,6 +32,7 @@ import OfflineNotice from "./app/components/OfflineNotice";
 import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
 import { navigationRef } from "./app/navigation/rootNavigation";
+// import StaticSafeAreaInsets from "react-native-static-safe-area-insets";
 
 const Stack = createStackNavigator();
 const StackNavigator = () => (
@@ -101,6 +103,9 @@ export default function App() {
   const [user, setUser] = useState();
   const [isReady, setIsReady] = useState();
 
+  // const insets = useSafeArea();
+  // console.log(insets.bottom + ", " + insets.top);
+
   const restoreUser = async () => {
     const user = await authStorage.getUser();
     if (user) setUser(user);
@@ -170,17 +175,7 @@ export default function App() {
 
 function HomeStack() {
   return (
-    <Stack.Navigator
-      screenOptions={
-        {
-          // headerStyle: {
-          //   backgroundColor: "#345171",
-          // },
-          // headerTintColor: colors.white,
-        }
-      }
-      initialRouteName="Listings"
-    >
+    <Stack.Navigator screenOptions={{}} initialRouteName="Listings">
       <Stack.Screen
         name="Listings"
         options={({ route }) => ({
@@ -221,10 +216,6 @@ function AccountStack() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        // headerStyle: {
-        //   backgroundColor: "#345171",
-        // },
-        // headerTintColor: colors.white,
       }}
       initialRouteName="Home"
     >

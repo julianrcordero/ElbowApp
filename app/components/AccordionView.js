@@ -12,7 +12,6 @@ import * as Animatable from "react-native-animatable";
 import Collapsible from "react-native-collapsible";
 import Accordion from "react-native-collapsible/Accordion";
 import VerseBox from "./VerseBox";
-import VerseByVerse from "../screens/VerseByVerseView";
 import defaultStyles from "../config/styles";
 import Highlighter from "react-native-highlight-words";
 

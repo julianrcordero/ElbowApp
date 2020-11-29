@@ -14,17 +14,22 @@ import AppText from "../components/Text";
 
 import ResourcesScreen from "../screens/ResourcesScreen";
 import { ScrollView } from "react-native-gesture-handler";
+import ActivityIndicator from "./ActivityIndicator";
 
 export default function PanelBox({
+  fontSize,
   landscape,
-  book,
-  verseReference,
+  panelLoading,
   verseContent,
+  johnsNote,
 }) {
   return (
     <>
-      <AppText>{book + " " + verseReference}</AppText>
-      <AppText style={{ marginVertical: 10 }}>{verseContent}</AppText>
+      <ActivityIndicator visible={panelLoading} />
+
+      <AppText style={{ fontSize: fontSize, marginVertical: 10 }}>
+        {verseContent}
+      </AppText>
       <TextInput
         style={{
           backgroundColor: colors.light,
@@ -63,9 +68,10 @@ export default function PanelBox({
           <AppText style={styles.titleText}>John's Note</AppText>
         </View>
         <AppText style={styles.macArthurText}>
-          This is a note from John MacArthur. The Bible is the inspired word of
+          {johnsNote}
+          {/* This is a note from John MacArthur. The Bible is the inspired word of
           God. My middle name is Fullerton, like the city. Sometimes I eat
-          cheeseburgers. Sin is bad.
+          cheeseburgers. Sin is bad. */}
         </AppText>
       </View>
       <View
