@@ -47,6 +47,7 @@
     "react-native-safe-area": "^0.5.1",
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
+    "react-native-snap-carousel": "^3.9.1",
     "react-native-static-safe-area-insets": "^2.1.1",
     "react-native-swipe-up-down": "^1.0.7",
     "react-native-vertical-slider-smartlife": "^1.0.9",
@@ -54,6 +55,7 @@
     "react-native-xml2js": "^1.0.3",
     "react-string-replace": "^0.4.4",
     "react-xml-parser": "^1.1.8",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "rn-sliding-up-panel": "^2.4.4",
     "rn-vertical-slider": "^2.0.2",
     "yup": "^0.29.3"

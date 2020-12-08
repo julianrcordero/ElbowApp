@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from "react";
+import React, { PureComponent, useState, useEffect } from "react";
 import {
   FlatList,
   InteractionManager,
@@ -23,6 +23,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SlidingUpPanel from "rn-sliding-up-panel";
 import { useDeviceOrientation } from "@react-native-community/hooks";
 import Slider from "@react-native-community/slider";
+import BottomSheet from "reanimated-bottom-sheet";
+import Carousel from "react-native-snap-carousel";
 
 // import * as IJohn from "../json/bible/I John.json";
 import bookPaths from "../json/bible/Bible";
@@ -63,15 +65,24 @@ class SectionHeader extends PureComponent {
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 const AnimatedSectionHeader = Animated.createAnimatedComponent(SectionHeader);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-let screenTop = 0;
-let screenBottom = 0;
+const AnimatedSlidingUpPanel = Animated.createAnimatedComponent(SlidingUpPanel);
 
 export default function BibleScreen({
   HEADER_HEIGHT,
   scrollY,
   headerY,
   navigationY,
+  diffClampScrollY,
 }) {
+  useEffect(() => {
+    changeBibleBook({
+      label: "Genesis",
+      value: 1,
+      backgroundColor: "#345171",
+      icon: "apps",
+    });
+  }, []);
+
   const books = [
     ////
     { label: "Genesis", value: 1, backgroundColor: "#345171", icon: "apps" },
@@ -191,7 +202,7 @@ export default function BibleScreen({
     JSON.stringify(require("../json/bible/esvmsb.notes.json"))
   )["crossway-studynotes"]["book"];
 
-  let [sections, setSections] = useState([]);
+  const [sections, setSections] = useState([]);
   const [searchWords] = useState([]);
   const [currentBook, setCurrentBook] = useState(books[0]);
   const [bookNotes, setBookNotes] = useState([]);
@@ -208,9 +219,13 @@ export default function BibleScreen({
   const [allowDragging, setAllowDragging] = useState(true);
   // const [theCollapsed, setTheCollapsed] = useState();
   var _panel;
-  const { height } = Dimensions.get("window");
+  const { height, width } = Dimensions.get("window");
   const listRef = React.useRef();
-  const [panelPosition, setPanelPosition] = useState(0);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const top = height - Constants.statusBarHeight - getBottomSpace();
+  const low = HEADER_HEIGHT * 2 + 35;
+  const sheetRef = React.useRef(null);
+  const carousel = React.useRef();
 
   const changeBibleBook = (newBook) => {
     setCurrentBook(newBook);
@@ -226,10 +241,12 @@ export default function BibleScreen({
     const bookSections = [];
     chapters.map((chapter) => {
       verses = [];
+      const reactStringReplace = require("react-string-replace");
       chapter["verse"].forEach((verse) => {
         verses.push({
-          title: verse,
-          content: "Commentary",
+          id: "id",
+          title: "title",
+          content: verse["__text"]
         });
       });
 
@@ -247,50 +264,61 @@ export default function BibleScreen({
             paragraphData: verses,
           });
     });
-    setSections(bookSections);
+    setSections(bookSections));
   };
 
   const toggleParagraphView = () => {
     setParagraphView(!paragraphView);
   };
 
-  const toggleSlideView = (reference, passage, msbNote) => {
-    _panel.show(350); //height - Constants.statusBarHeight - getBottomSpace());
+  const toggleSlideView = (reference, passage, msbNote) =>
+    //
+    {
+      panelOpen ? sheetRef.current.snapTo(1) : sheetRef.current.snapTo(0);
 
-    // setPanelLoading(true);
-    InteractionManager.runAfterInteractions(() => {
-      setVerseReference(reference);
-      setVerseContent(passage);
+      const interactionPromise = InteractionManager.runAfterInteractions(() => {
+        // setTimeout(() => setPanelLoading(true), 0);
+        setTimeout(() => {
+          carousel.current.snapToItem(2, false, false);
 
-      let note = bookNotes.find((el) => el["_start"] === msbNote);
+          // setVerseReference(reference);
+          // setVerseContent(passage);
+          // setJohnsNote(msbNote);
 
-      if (note) {
-        const reactStringReplace = require("react-string-replace");
-        const pTag = note["content"]["p"][0];
+          // let note = bookNotes.find((el) => el["_start"] === msbNote);
+          // if (note) {
+          //   const reactStringReplace = require("react-string-replace");
+          //   const pTag = note["content"]["p"][0];
+          //   const parsedNote = pTag["a"]
+          //     ? reactStringReplace(pTag["__text"], /\n/g, (match, i) => (
+          //         <Text
+          //           key={i}
+          //           style={{ flexDirection: "row", alignItems: "flex-start" }}
+          //         >
+          //           <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
+          //             {Array.isArray(pTag["a"])
+          //               ? "REF1" //pTag["a"][0]["__text"] //"a" is always an array
+          //               : "REF2"}
+          //           </Text>
+          //           {match}
+          //         </Text>
+          //       ))
+          //     : reactStringReplace(pTag["__text"], /\n/, (match, i) => (
+          //         <Text key={i}>{"REF3"}</Text>
+          //       ));
+          //   setJohnsNote(parsedNote);
+          // } else {
+          //   setJohnsNote("There is no note for this passage");
+          // }
 
-        const parsedNote = pTag["a"]
-          ? reactStringReplace(pTag["__text"], /\n/g, (match, i) => (
-              <Text
-                key={i}
-                style={{ flexDirection: "row", alignItems: "flex-start" }}
-              >
-                <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
-                  {Array.isArray(pTag["a"])
-                    ? "REF1" //pTag["a"][0]["__text"] //"a" is always an array
-                    : "REF2"}
-                </Text>
-                {match}
-              </Text>
-            ))
-          : reactStringReplace(pTag["__text"], /\n/, (match, i) => (
-              <Text key={i}>{"REF3"}</Text>
-            ));
-        setJohnsNote(parsedNote);
-      } else {
-        setJohnsNote("There is no note for this passage");
-      }
-    });
-  };
+          // setPanelLoading(false);
+        }, 0);
+
+        setPanelOpen(true);
+      });
+
+      () => interactionPromise.cancel();
+    };
 
   const handleSlide = (value) => setFontSize(value);
   const handleFontSize = () => setSliderVisible(!sliderVisible);
@@ -305,14 +333,34 @@ export default function BibleScreen({
         <AnimatedSectionHeader title={title} titleSize={titleSize} />
       )}
       renderItem={({ item, index, section }) => (
-        <Text style={{ fontSize: fontSize }}>
+        <Text
+          style={[
+            defaultStyles.bibleText,
+            { fontSize: fontSize, lineHeight: fontSize * 2 },
+          ]}
+          // selectable
+          selectionColor={"purple"}
+        >
           <Verse
             key={index}
             chapterNum={section.chapterNum}
             crossrefSize={crossrefSize}
             verse={item}
             searchWords={searchWords}
-            onPress={toggleSlideView}
+            onPress={
+              // toggleSlideView
+              () =>
+                toggleSlideView(
+                  section.chapterNum + " : " + (index + 1),
+                  item["__text"],
+                  "n" +
+                    "01" +
+                    ("000" + section.chapterNum).substr(-3) +
+                    ("000" + item["_num"]).substr(-3)
+                )
+            }
+            // renderContent={renderContent}
+            // sheetRef={sheetRef}
             // landscape={landscape}
           />
         </Text>
@@ -333,6 +381,7 @@ export default function BibleScreen({
       }}
       stickySectionHeadersEnabled={false}
       ref={listRef}
+      onDragEnd
     />
   );
 
@@ -399,62 +448,246 @@ export default function BibleScreen({
     />
   );
 
-  // let paragraph = (
-  //   <Animated.ScrollView
-  //     bounces={false}
-  //     scrollEventThrottle={16}
-  //     onScroll={Animated.event([
-  //       {
-  //         nativeEvent: { contentOffset: { y: scrollY } },
-  //       },
-  //     ])}
-  //     style={{
-  //       // flex: 1,
-  //       backgroundColor: colors.white,
-  //       paddingTop: HEADER_HEIGHT,
-  //       paddingHorizontal: 25,
-  //     }}
-  //   >
-  //     {sections.map((section, i) => (
-  //       <React.Fragment key={i}>
-  //         <AnimatedSectionHeader title={section.title} />
-  //         <Paragraph
-  //           key={i}
-  //           chapterNum={section.chapterNum}
-  //           crossrefSize={crossrefSize}
-  //           fontSize={fontSize}
-  //           section={section}
-  //           searchWords={searchWords}
-  //           // onPress={toggleSlideView}
-  //         />
-  //       </React.Fragment>
-  //     ))}
-  //   </Animated.ScrollView>
-  // );
+  const DATA = [
+    {
+      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+      title: "First Item",
+      backgroundColor: "red",
+    },
+    {
+      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+      title: "Second Item",
+      backgroundColor: "green",
+    },
+    {
+      id: "58694a0f-3da1-471f-bd96-145571e29d72",
+      title: "Third Item",
+      backgroundColor: "blue",
+    },
+  ];
+
+  const _renderItem = ({ item, index }) => {
+    return (
+      <View
+        key={index}
+        style={{
+          // backgroundColor: item.backgroundColor,
+          height: "100%",
+        }}
+      >
+        <Text>{item.content}</Text>
+      </View>
+    );
+  };
+
+  const renderContent = (reference, passage, msbNote) => (
+    <View style={{ height: top }}>
+      <View
+        style={{
+          backgroundColor: colors.white,
+          borderRadius: 4,
+          borderWidth: 0.2,
+          borderColor: colors.medium,
+          flex: 1,
+          height: HEADER_HEIGHT,
+          justifyContent: "flex-start",
+          padding: 20,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-start",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                borderColor: colors.medium,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="marker"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                borderColor: colors.medium,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="bookmark-outline"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                borderColor: colors.medium,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+              onPress={toggleParagraphView}
+            >
+              <MaterialCommunityIcons
+                name="heart-outline"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                borderColor: colors.medium,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="file-multiple"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                borderColor: colors.medium,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+              onPress={toggleParagraphView}
+            >
+              <MaterialCommunityIcons
+                name="file-upload-outline"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+            <Button
+              title="Low"
+              onPress={() => {
+                setTimeout(() => {
+                  sheetRef.current.snapTo(1);
+                  setPanelOpen(true);
+                }, 0);
+              }}
+            />
+            <Button
+              title="Done"
+              onPress={() => {
+                sheetRef.current.snapTo(2);
+                setPanelOpen(false);
+              }}
+            />
+          </View>
+        </View>
+        <View>
+          <Carousel
+            ref={carousel}
+            data={sections[0].paragraphData}
+            renderItem={_renderItem}
+            sliderWidth={width}
+            itemHeight={top - HEADER_HEIGHT}
+            itemWidth={width}
+            layout={"stack"}
+          />
+          {/* <FlatList
+            data={DATA}
+            renderItem={renderFlatListItem}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyExtractor={(item) => item.id}
+            horizontal
+            snapToAlignment={"center"}
+            snapToInterval={width}
+            decelerationRate={"fast"}
+            pagingEnabled
+          ></FlatList> */}
+          {/* <ActivityIndicator visible={panelLoading} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+            }}
+          >
+            <AppText
+              style={{
+                fontWeight: "bold",
+                textAlign: "left",
+                paddingVertical: 10,
+              }}
+            >
+              {currentBook.label + " " + verseReference}
+            </AppText>
+          </View>
+          <ScrollView
+            onTouchStart={() => setAllowDragging(false)}
+            onTouchEnd={() => setAllowDragging(true)}
+            onTouchCancel={() => setAllowDragging(true)}
+            showsVerticalScrollIndicator={false}
+          >
+            <PanelBox
+              fontSize={fontSize}
+              // crossrefSize={crossrefSize}
+              verseContent={verseContent}
+              johnsNote={johnsNote}
+              // landscape={landscape}
+            ></PanelBox>
+          </ScrollView> */}
+        </View>
+      </View>
+    </View>
+  );
 
   return (
     <View style={{ flex: 1 }}>
       <Animated.View
         style={{
-          // left: 0,
-          // right: 0,
-          // top: 0,
-          height: HEADER_HEIGHT,
           backgroundColor: colors.light,
+          borderColor: colors.medium,
+          borderBottomWidth: 0.5,
+          flex: 1,
+          flexDirection: "row",
+          elevation: 1,
+          height: HEADER_HEIGHT,
+          position: "absolute",
           transform: [{ translateY: headerY }],
-          position: "relative",
-          // zIndex: 400,
+          width: "100%",
+          zIndex: 1,
         }}
       >
         <View
-        // style={{
-        //   alignItems: "center",
-        //   justifyContent: "flex-start",
-        //   flexDirection: "row",
-        //   position: "relative",
-        //   zIndex: 300,
-        //   // elevation: 300,
-        // }}
+          style={{
+            alignItems: "center",
+            // justifyContent: "flex-start",
+            width: "100%",
+            flexDirection: "row",
+            position: "relative",
+            // zIndex: 300,
+            // elevation: 300,
+          }}
         >
           <BiblePicker
             currentBook={bookPaths.Genesis}
@@ -473,7 +706,7 @@ export default function BibleScreen({
           <TouchableOpacity
             style={{
               flexDirection: "row",
-              backgroundColor: colors.light,
+              // backgroundColor: colors.light,
               borderRadius: 4,
               borderWidth: 0.2,
               borderColor: colors.medium,
@@ -481,6 +714,7 @@ export default function BibleScreen({
               alignItems: "center",
               paddingHorizontal: 8,
               paddingVertical: 4,
+              zIndex: 100,
             }}
           >
             <Text style={styles.text}>NASB</Text>
@@ -488,7 +722,7 @@ export default function BibleScreen({
           <TouchableOpacity
             style={{
               flexDirection: "row",
-              backgroundColor: colors.light,
+              // backgroundColor: colors.light,
               borderColor: colors.medium,
               justifyContent: "center",
               alignItems: "center",
@@ -537,7 +771,7 @@ export default function BibleScreen({
             />
           </TouchableOpacity>
         </View>
-        {/* <View style={{ alignItems: "flex-end" }}>
+        <View style={{ alignItems: "flex-end", position: "absolute" }}>
           {sliderVisible ? (
             <Slider
               style={{ width: 200, height: 40 }}
@@ -550,7 +784,7 @@ export default function BibleScreen({
               value={fontSize}
             />
           ) : null}
-        </View> */}
+        </View>
       </Animated.View>
 
       {/* <TextInput
@@ -560,166 +794,21 @@ export default function BibleScreen({
       /> */}
       {paragraphView ? paragraph2 : verseByVerse1}
 
-      <SlidingUpPanel
-        allowDragging={allowDragging}
-        draggableRange={{
-          top: height - Constants.statusBarHeight - getBottomSpace(),
-          bottom: 0,
-        }}
-        // height={height}
-        onDragEnd={(position, number, gestureState, GestureState) => {
-          console.log(position);
-          setPanelPosition(position);
-        }}
-        ref={(c) => (_panel = c)}
-        // snappingPoints={[0, (height - HEADER_HEIGHT) / 3, height]}
-        showBackdrop={false}
-        style={{
-          position: "absolute",
-          // elevation: 200,
-          zIndex: 200,
-        }} //other style }}
-      >
-        <Animated.View
-          style={{
-            // alignItems: "center",
-            backgroundColor: colors.white,
-            borderColor: colors.medium,
-            borderWidth: 1,
-            // bottom: 70,
-            // elevation: 1000,
-            flex: 1,
-            justifyContent: "flex-start",
-            // marginHorizontal: 10,
-            padding: 20,
-            // position: "relative",
-            // top: 70, // + screenTop + screenBottom,
-            // transform: [{ translateY: headerY }], //navigationY
-            // zIndex: 2,
-          }}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                justifyContent: "flex-start",
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  borderColor: colors.medium,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="marker"
-                  color={colors.black}
-                  size={20}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  borderColor: colors.medium,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="bookmark-outline"
-                  color={colors.black}
-                  size={20}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  borderColor: colors.medium,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                }}
-                onPress={toggleParagraphView}
-              >
-                <MaterialCommunityIcons
-                  name="heart-outline"
-                  color={colors.black}
-                  size={20}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  borderColor: colors.medium,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="file-multiple"
-                  color={colors.black}
-                  size={20}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  borderColor: colors.medium,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                }}
-                onPress={toggleParagraphView}
-              >
-                <MaterialCommunityIcons
-                  name="file-upload-outline"
-                  color={colors.black}
-                  size={20}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{ justifyContent: "flex-end" }}>
-              <Button title="Done" onPress={() => _panel.hide()} />
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-            }}
-          >
-            <AppText style={{ fontWeight: "bold", textAlign: "left" }}>
-              {currentBook.label + " " + verseReference}
-            </AppText>
-          </View>
-          <ScrollView
-            onTouchStart={() => setAllowDragging(false)}
-            onTouchEnd={() => setAllowDragging(true)}
-            onTouchCancel={() => setAllowDragging(true)}
-            showsVerticalScrollIndicator={false}
-          >
-            <PanelBox
-              fontSize={fontSize}
-              // crossrefSize={crossrefSize}
-              verseContent={verseContent}
-              johnsNote={johnsNote}
-              // landscape={landscape}
-              panelLoading={panelLoading}
-            ></PanelBox>
-          </ScrollView>
-        </Animated.View>
-      </SlidingUpPanel>
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[top, low, 0]}
+        borderRadius={10}
+        renderContent={
+          renderContent
+          // () => renderContent("REFERENCE", "VERSE BODY", "JOHN'S NOTE")
+        }
+        onOpenStart={() => console.log("onOpenStart")} //setPanelLoading(true)}
+        onOpenEnd={() => console.log("onOpenEnd")}
+        onCloseStart={() =>
+          panelOpen ? console.log("panel is already low") : setPanelOpen(true)
+        }
+        onCloseEnd={() => setPanelOpen(false)}
+      />
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View, StyleSheet, TextInput } from "react-native";
+import { Image, View, StyleSheet, Text, TextInput } from "react-native";
 import {
   Collapse,
   CollapseHeader,
@@ -11,6 +11,7 @@ import { useDeviceOrientation } from "@react-native-community/hooks";
 
 import colors from "../config/colors";
 import AppText from "../components/Text";
+import defaultStyles from "../config/styles";
 
 import ResourcesScreen from "../screens/ResourcesScreen";
 import { ScrollView } from "react-native-gesture-handler";
@@ -19,15 +20,15 @@ import ActivityIndicator from "./ActivityIndicator";
 export default function PanelBox({
   fontSize,
   landscape,
-  panelLoading,
   verseContent,
   johnsNote,
 }) {
+  const macarthurText = fontSize * 0.85;
+  const macarthurLineHeight = macarthurText * 2;
+
   return (
     <>
-      <ActivityIndicator visible={panelLoading} />
-
-      <AppText style={{ fontSize: fontSize, marginVertical: 10 }}>
+      <AppText style={{ fontSize: fontSize, lineHeight: fontSize * 2 }}>
         {verseContent}
       </AppText>
       <TextInput
@@ -65,14 +66,21 @@ export default function PanelBox({
             style={{ width: 30, height: 30 }}
             source={require("../assets/studyBibleAppLogo.jpg")}
           ></Image>
-          <AppText style={styles.titleText}>John's Note</AppText>
+          <AppText style={[styles.titleText, defaultStyles.macArthurText]}>
+            John's Note
+          </AppText>
         </View>
-        <AppText style={styles.macArthurText}>
+        <Text
+          style={[
+            defaultStyles.macArthurText,
+            { fontSize: macarthurText, lineHeight: macarthurLineHeight },
+          ]}
+        >
           {johnsNote}
           {/* This is a note from John MacArthur. The Bible is the inspired word of
           God. My middle name is Fullerton, like the city. Sometimes I eat
           cheeseburgers. Sin is bad. */}
-        </AppText>
+        </Text>
       </View>
       <View
         style={{
@@ -112,16 +120,15 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     padding: 10,
   },
-  macArthurText: {
-    color: colors.medium,
-    fontSize: 13,
-    fontFamily: Platform.OS === "android" ? "normal" : "Georgia-Italic",
-  },
 
   relatedResourcesBox: {
     borderColor: colors.medium,
     borderWidth: 1,
     marginVertical: 5,
     padding: 10,
+  },
+
+  titleText: {
+    paddingVertical: 10,
   },
 });

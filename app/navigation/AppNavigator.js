@@ -51,6 +51,7 @@ const AppNavigator = ({ user }) => {
             scrollY={scrollY}
             headerY={headerY}
             navigationY={navigationY}
+            diffClampScrollY={diffClampScrollY}
           />
         )}
         options={{
@@ -77,7 +78,6 @@ const AppNavigator = ({ user }) => {
 
 function MyTabBar({ state, descriptors, navigation }) {
   const insets = useSafeArea();
-  console.log(insets);
 
   return (
     <Animated.View

@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import defaultStyles from "../config/styles";
 import Highlighter from "react-native-highlight-words";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -10,14 +9,23 @@ export default class Verse extends PureComponent {
 
     this.state = {
       backgroundColor: "white",
+      textDecorationLine: "none",
     };
   }
 
   _toggleHighlight = () => {
     if (this.state.backgroundColor === "white") {
-      this.setState({ backgroundColor: "yellow" });
+      this.setState({ backgroundColor: "#FFFB79" });
     } else {
       this.setState({ backgroundColor: "white" });
+    }
+  };
+
+  _toggleUnderline = () => {
+    if (this.state.textDecorationLine === "none") {
+      this.setState({ textDecorationLine: "underline" });
+    } else {
+      this.setState({ textDecorationLine: "none" });
     }
   };
 
@@ -28,6 +36,8 @@ export default class Verse extends PureComponent {
       verse,
       searchWords,
       onPress,
+      renderContent,
+      sheetRef,
     } = this.props;
 
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
@@ -51,24 +61,45 @@ export default class Verse extends PureComponent {
           <Text key={i}>{match}</Text>
         ));
 
+    const MyVerse = () => {
+      return (
+        <View style={{ backgroundColor: "green" }}>
+          <Text>{"HELLO"}</Text>
+        </View>
+      );
+    };
+
     return (
       <Text
-        style={[
-          defaultStyles.bibleText,
-          {
-            backgroundColor: this.state.backgroundColor,
-          },
-        ]}
-        onPress={() => {
-          onPress(
-            parsedReference,
-            parsedVerse,
-            "n" +
-              "01" +
-              ("000" + chapterNum).substr(-3) +
-              ("000" + verse["_num"]).substr(-3)
-          );
+        style={{
+          backgroundColor: this.state.backgroundColor,
+          textDecorationLine: this.state.textDecorationLine,
         }}
+        onPress={
+          // () => {
+          //   sheetRef.current.snapTo(1);
+          //   renderContent(
+          //     parsedReference,
+          //     parsedVerse,
+          //     "n" +
+          //       "01" +
+          //       ("000" + chapterNum).substr(-3) +
+          //       ("000" + verse["_num"]).substr(-3)
+          //   );
+          // }
+          onPress
+          // () => {
+          //   this._toggleUnderline();
+          //   onPress(
+          //     parsedReference,
+          //     parsedVerse,
+          //     "n" +
+          //       "01" +
+          //       ("000" + chapterNum).substr(-3) +
+          //       ("000" + verse["_num"]).substr(-3)
+          //   );
+          // }
+        }
         onLongPress={this._toggleHighlight}
       >
         <Text style={{ fontWeight: "bold" }}> {verse["_num"]} </Text>
@@ -96,33 +127,4 @@ class HighlightComponent extends PureComponent {
       />
     );
   }
-}
-
-{
-  /* <TouchableOpacity
-        onPress={() => {
-          onPress();
-          // setVerseReference(parsedReference);
-          // setVerseContent(parsedVerse);
-        }}
-        onLongPress={this._toggleHighlight}
-      >
-        <VerseBox
-          content={
-            <Text
-              style={[
-                defaultStyles.bibleText,
-                { backgroundColor: this.state.backgroundColor },
-              ]}
-            >
-              <Text style={{ fontWeight: "bold" }}> {verse["_num"]} </Text>
-              <HighlightComponent
-                highlightStyle={{ backgroundColor: "red" }}
-                searchWords={searchWords}
-                textToHighlight={parsedVerse}
-              />
-            </Text>
-          }
-        />
-      </TouchableOpacity> */
 }
