@@ -36,8 +36,6 @@ export default class Verse extends PureComponent {
       verse,
       searchWords,
       onPress,
-      renderContent,
-      sheetRef,
     } = this.props;
 
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
@@ -75,31 +73,7 @@ export default class Verse extends PureComponent {
           backgroundColor: this.state.backgroundColor,
           textDecorationLine: this.state.textDecorationLine,
         }}
-        onPress={
-          // () => {
-          //   sheetRef.current.snapTo(1);
-          //   renderContent(
-          //     parsedReference,
-          //     parsedVerse,
-          //     "n" +
-          //       "01" +
-          //       ("000" + chapterNum).substr(-3) +
-          //       ("000" + verse["_num"]).substr(-3)
-          //   );
-          // }
-          onPress
-          // () => {
-          //   this._toggleUnderline();
-          //   onPress(
-          //     parsedReference,
-          //     parsedVerse,
-          //     "n" +
-          //       "01" +
-          //       ("000" + chapterNum).substr(-3) +
-          //       ("000" + verse["_num"]).substr(-3)
-          //   );
-          // }
-        }
+        onPress={onPress}
         onLongPress={this._toggleHighlight}
       >
         <Text style={{ fontWeight: "bold" }}> {verse["_num"]} </Text>

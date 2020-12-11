@@ -17,7 +17,7 @@ import colors from "../config/colors";
 
 const Tab = createBottomTabNavigator();
 
-const HEADER_HEIGHT = 70;
+const HEADER_HEIGHT = 60;
 const scrollY = new Animated.Value(0);
 const diffClampScrollY = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
 const headerY = Animated.interpolate(diffClampScrollY, {
@@ -33,8 +33,15 @@ const AppNavigator = ({ user }) => {
   return (
     <Tab.Navigator
       initialRouteName="Bible"
+      swipeEnabled
       tabBar={(props) => <MyTabBar {...props} />}
-      tabBarOptions={{ activeTintColor: "#e91e63" }}
+      tabBarOptions={{
+        activeTintColor: "#e91e63",
+        // position: "absolute",
+        // zIndex: 0,
+      }}
+      zIndex={1}
+      elevation={1}
     >
       <Tab.Screen
         name="Home"
@@ -87,10 +94,8 @@ function MyTabBar({ state, descriptors, navigation }) {
         left: 0,
         right: 0,
         bottom: 0,
-        height: 70,
+        height: 60,
         backgroundColor: colors.light,
-        // zIndex: 0,
-        // elevation: 1000,
         transform: [{ translateY: navigationY }],
         alignItems: "center",
         justifyContent: "center",
@@ -138,7 +143,6 @@ function MyTabBar({ state, descriptors, navigation }) {
         );
       })}
     </Animated.View>
-    // </View>
   );
 }
 

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     borderWidth: 0.1,
     flex: 1,
-    height: 70,
+    height: 60,
     justifyContent: "center",
     // paddingBottom: 10,
     paddingTop: 12,

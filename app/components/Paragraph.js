@@ -33,8 +33,15 @@ export default class Paragraph extends PureComponent {
             chapterNum={chapterNum}
             crossrefSize={crossrefSize}
             verse={data}
-            onPress={() => console.log(j)}
+            onPress={() => onPress(chapterNum, j + 1)}
             searchWords={searchWords}
+            // key={index}
+            // chapterNum={section.chapterNum}
+            // crossrefSize={crossrefSize}
+            // verse={item}
+            // searchWords={searchWords}
+            // onPress={() => toggleSlideView(section.chapterNum, index + 1)}
+            // // landscape={landscape}
           />
         ))}
       </Text>

@@ -25,10 +25,12 @@ import { useDeviceOrientation } from "@react-native-community/hooks";
 import Slider from "@react-native-community/slider";
 import BottomSheet from "reanimated-bottom-sheet";
 import Carousel from "react-native-snap-carousel";
+import reactStringReplace from "react-string-replace";
 
 // import * as IJohn from "../json/bible/I John.json";
 import bookPaths from "../json/bible/Bible";
 import PanelBox from "../components/PanelBox";
+import VerseCard from "../components/VerseCard";
 import defaultStyles from "../config/styles";
 import colors from "../config/colors";
 
@@ -205,11 +207,8 @@ export default function BibleScreen({
   const [sections, setSections] = useState([]);
   const [searchWords] = useState([]);
   const [currentBook, setCurrentBook] = useState(books[0]);
-  const [bookNotes, setBookNotes] = useState([]);
+  // const [bookNotes, setBookNotes] = useState([]);
   const [paragraphView, setParagraphView] = useState(false);
-  const [verseReference, setVerseReference] = useState("");
-  const [verseContent, setVerseContent] = useState("");
-  const [johnsNote, setJohnsNote] = useState("");
   const [sliderVisible, setSliderVisible] = useState(false);
   const [panelLoading, setPanelLoading] = useState(false);
   const [fontSize, setFontSize] = useState(16);
@@ -221,11 +220,12 @@ export default function BibleScreen({
   var _panel;
   const { height, width } = Dimensions.get("window");
   const listRef = React.useRef();
-  const [panelOpen, setPanelOpen] = useState(false);
   const top = height - Constants.statusBarHeight - getBottomSpace();
-  const low = HEADER_HEIGHT * 2 + 35;
+  const verseCardReferenceHeight = 40;
+  const low = HEADER_HEIGHT * 2 + verseCardReferenceHeight;
   const sheetRef = React.useRef(null);
   const carousel = React.useRef();
+  const [verseList, setVerseList] = useState([]);
 
   const changeBibleBook = (newBook) => {
     setCurrentBook(newBook);
@@ -234,91 +234,112 @@ export default function BibleScreen({
     var jsonObject = JSON.parse(jsonString);
 
     let verses = [];
-    const book = jsonObject["crossway-bible"]["book"]["_title"];
+    let johnsNote = "";
+    // const book = jsonObject["crossway-bible"]["book"]["_title"];
     const chapters = jsonObject["crossway-bible"]["book"]["chapter"];
-    setBookNotes(notesArray[newBook.value - 1]["note"]);
+    const notes = notesArray[newBook.value - 1]["note"];
 
     const bookSections = [];
     chapters.map((chapter) => {
-      verses = [];
-      const reactStringReplace = require("react-string-replace");
       chapter["verse"].forEach((verse) => {
+        let note = notes.find(
+          (el) =>
+            el["_start"] ===
+            "n" +
+              "01" +
+              ("000" + chapter["_num"]).substr(-3) +
+              ("000" + verse["_num"]).substr(-3)
+        );
+
+        if (note) {
+          const pTag = note["content"]["p"][0];
+          const parsedNote = pTag["a"]
+            ? reactStringReplace(pTag["__text"], /\n/g, (match, i) => (
+                <Text
+                  key={i}
+                  style={{ flexDirection: "row", alignItems: "flex-start" }}
+                >
+                  <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
+                    {Array.isArray(pTag["a"])
+                      ? "REF1" //pTag["a"][0]["__text"] //"a" is always an array
+                      : "REF2"}
+                  </Text>
+                  {match}
+                </Text>
+              ))
+            : reactStringReplace(pTag["__text"], /\n/, (match, i) => (
+                <Text key={i}>{"REF3"}</Text>
+              ));
+          johnsNote = parsedNote;
+        } else {
+          johnsNote = "There is no note for this passage";
+        }
+
         verses.push({
-          id: "id",
-          title: "title",
-          content: verse["__text"]
+          chapter: Number(chapter["_num"]),
+          title: Number(verse["_num"]),
+          content: verse["crossref"]
+            ? reactStringReplace(verse["__text"], /\n/, (match, i) => (
+                <Text
+                  key={i}
+                  style={{ flexDirection: "row", alignItems: "flex-start" }}
+                >
+                  <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
+                    {Array.isArray(verse["crossref"])
+                      ? verse["crossref"][0]["_let"]
+                      : verse["crossref"]["_let"]}
+                  </Text>
+                  {match}
+                </Text>
+              ))
+            : reactStringReplace(verse["__text"], /\n/, (match, i) => (
+                <Text key={i}>{match}</Text>
+              )),
+          johnsNote: johnsNote,
         });
       });
 
       Array.isArray(chapter["heading"])
         ? bookSections.push({
-            chapterNum: chapter["_num"],
+            chapterNum: Number(chapter["_num"]),
             title: chapter["heading"][0],
             data: chapter["verse"],
-            paragraphData: verses,
           })
         : bookSections.push({
-            chapterNum: chapter["_num"],
+            chapterNum: Number(chapter["_num"]),
             title: chapter["heading"],
             data: chapter["verse"],
-            paragraphData: verses,
           });
     });
-    setSections(bookSections));
+    setSections(bookSections);
+    setVerseList(verses);
   };
 
   const toggleParagraphView = () => {
     setParagraphView(!paragraphView);
   };
 
-  const toggleSlideView = (reference, passage, msbNote) =>
-    //
-    {
-      panelOpen ? sheetRef.current.snapTo(1) : sheetRef.current.snapTo(0);
+  const toggleSlideView = (chapter, verse) => {
+    // panelOpen ?
+    sheetRef.current.snapTo(1);
+    // : sheetRef.current.snapTo(0);
 
-      const interactionPromise = InteractionManager.runAfterInteractions(() => {
-        // setTimeout(() => setPanelLoading(true), 0);
-        setTimeout(() => {
-          carousel.current.snapToItem(2, false, false);
+    const interactionPromise = InteractionManager.runAfterInteractions(() => {
+      // setPanelLoading(true);
 
-          // setVerseReference(reference);
-          // setVerseContent(passage);
-          // setJohnsNote(msbNote);
-
-          // let note = bookNotes.find((el) => el["_start"] === msbNote);
-          // if (note) {
-          //   const reactStringReplace = require("react-string-replace");
-          //   const pTag = note["content"]["p"][0];
-          //   const parsedNote = pTag["a"]
-          //     ? reactStringReplace(pTag["__text"], /\n/g, (match, i) => (
-          //         <Text
-          //           key={i}
-          //           style={{ flexDirection: "row", alignItems: "flex-start" }}
-          //         >
-          //           <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
-          //             {Array.isArray(pTag["a"])
-          //               ? "REF1" //pTag["a"][0]["__text"] //"a" is always an array
-          //               : "REF2"}
-          //           </Text>
-          //           {match}
-          //         </Text>
-          //       ))
-          //     : reactStringReplace(pTag["__text"], /\n/, (match, i) => (
-          //         <Text key={i}>{"REF3"}</Text>
-          //       ));
-          //   setJohnsNote(parsedNote);
-          // } else {
-          //   setJohnsNote("There is no note for this passage");
-          // }
-
-          // setPanelLoading(false);
-        }, 0);
-
-        setPanelOpen(true);
+      let myIndex = verseList.findIndex(
+        (obj) => obj.chapter === chapter && obj.title === verse
+      );
+      setTimeout(() => {
+        // carousel.current.snapToItem(myIndex, false, false);
+        carousel.current.scrollToIndex({ animated: false, index: myIndex });
       });
 
-      () => interactionPromise.cancel();
-    };
+      // setPanelLoading(false);
+    });
+
+    () => interactionPromise.cancel();
+  };
 
   const handleSlide = (value) => setFontSize(value);
   const handleFontSize = () => setSliderVisible(!sliderVisible);
@@ -347,20 +368,7 @@ export default function BibleScreen({
             crossrefSize={crossrefSize}
             verse={item}
             searchWords={searchWords}
-            onPress={
-              // toggleSlideView
-              () =>
-                toggleSlideView(
-                  section.chapterNum + " : " + (index + 1),
-                  item["__text"],
-                  "n" +
-                    "01" +
-                    ("000" + section.chapterNum).substr(-3) +
-                    ("000" + item["_num"]).substr(-3)
-                )
-            }
-            // renderContent={renderContent}
-            // sheetRef={sheetRef}
+            onPress={() => toggleSlideView(section.chapterNum, index + 1)}
             // landscape={landscape}
           />
         </Text>
@@ -386,33 +394,33 @@ export default function BibleScreen({
   );
 
   //SINGLE VERSE VIEW #3 (THIS WORKS)
-  let verseByVerse2 = (
-    <Animated.ScrollView
-      bounces={false}
-      scrollEventThrottle={16}
-      onScroll={Animated.event([
-        {
-          nativeEvent: { contentOffset: { y: scrollY } },
-        },
-      ])}
-      style={{
-        flex: 1,
-        backgroundColor: colors.white,
-        paddingTop: HEADER_HEIGHT,
-        paddingHorizontal: 25,
-      }}
-    >
-      {sections.map((section, i) => (
-        <AccordionView
-          key={i}
-          verses={section.paragraphData}
-          searchWords={searchWords}
-        />
-      ))}
-    </Animated.ScrollView>
-  );
+  // let verseByVerse2 = (
+  //   <Animated.ScrollView
+  //     bounces={false}
+  //     scrollEventThrottle={16}
+  //     onScroll={Animated.event([
+  //       {
+  //         nativeEvent: { contentOffset: { y: scrollY } },
+  //       },
+  //     ])}
+  //     style={{
+  //       flex: 1,
+  //       backgroundColor: colors.white,
+  //       paddingTop: HEADER_HEIGHT,
+  //       paddingHorizontal: 25,
+  //     }}
+  //   >
+  //     {sections.map((section, i) => (
+  //       <AccordionView
+  //         key={i}
+  //         verses={section.paragraphData}
+  //         searchWords={searchWords}
+  //       />
+  //     ))}
+  //   </Animated.ScrollView>
+  // );
 
-  const renderItem = ({ item, i }) => (
+  const renderParagraphItem = ({ item, i }) => (
     <React.Fragment key={i}>
       <AnimatedSectionHeader title={item.title} titleSize={titleSize} />
       <Paragraph
@@ -443,226 +451,184 @@ export default function BibleScreen({
         paddingHorizontal: 25,
       }}
       data={sections}
-      renderItem={renderItem}
+      renderItem={renderParagraphItem}
       keyExtractor={(item) => item.chapterNum}
     />
   );
 
-  const DATA = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item",
-      backgroundColor: "red",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item",
-      backgroundColor: "green",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item",
-      backgroundColor: "blue",
-    },
-  ];
-
-  const _renderItem = ({ item, index }) => {
+  const renderVerseCardItem = ({ item, index }) => {
     return (
       <View
         key={index}
         style={{
-          // backgroundColor: item.backgroundColor,
-          height: "100%",
+          backgroundColor: colors.white,
+          borderTopWidth: 0.5,
+          borderColor: colors.medium,
+          // height: top * 2,
+          width: width - 36,
+          paddingHorizontal: 15,
         }}
       >
-        <Text>{item.content}</Text>
+        <VerseCard
+          key={index}
+          currentBook={currentBook}
+          item={item}
+          fontSize={fontSize}
+          height={
+            top - HEADER_HEIGHT - HEADER_HEIGHT - verseCardReferenceHeight
+          }
+        />
       </View>
     );
   };
 
-  const renderContent = (reference, passage, msbNote) => (
-    <View style={{ height: top }}>
+  const renderBottomSheetContent = (reference, passage, msbNote) => (
+    <View
+      style={{
+        backgroundColor: colors.white,
+        borderColor: colors.medium,
+        borderRadius: 4,
+        borderWidth: 0.2,
+        height: top,
+        justifyContent: "flex-start",
+        paddingHorizontal: 15,
+      }}
+    >
       <View
         style={{
-          backgroundColor: colors.white,
-          borderRadius: 4,
-          borderWidth: 0.2,
-          borderColor: colors.medium,
-          flex: 1,
-          height: HEADER_HEIGHT,
-          justifyContent: "flex-start",
-          padding: 20,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          // paddingVertical: 15,
+          height: 60,
         }}
       >
-        <View style={{ flexDirection: "row" }}>
-          <View
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "flex-start",
+          }}
+        >
+          <TouchableOpacity
             style={{
-              flex: 1,
               flexDirection: "row",
-              justifyContent: "flex-start",
+              borderColor: colors.medium,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 12,
             }}
           >
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                borderColor: colors.medium,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-              }}
-            >
-              <MaterialCommunityIcons
-                name="marker"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                borderColor: colors.medium,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-              }}
-            >
-              <MaterialCommunityIcons
-                name="bookmark-outline"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                borderColor: colors.medium,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-              }}
-              onPress={toggleParagraphView}
-            >
-              <MaterialCommunityIcons
-                name="heart-outline"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                borderColor: colors.medium,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-              }}
-            >
-              <MaterialCommunityIcons
-                name="file-multiple"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                borderColor: colors.medium,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-              }}
-              onPress={toggleParagraphView}
-            >
-              <MaterialCommunityIcons
-                name="file-upload-outline"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Button
-              title="Low"
-              onPress={() => {
-                setTimeout(() => {
-                  sheetRef.current.snapTo(1);
-                  setPanelOpen(true);
-                }, 0);
-              }}
+            <MaterialCommunityIcons
+              name="marker"
+              color={colors.black}
+              size={22}
             />
-            <Button
-              title="Done"
-              onPress={() => {
-                sheetRef.current.snapTo(2);
-                setPanelOpen(false);
-              }}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              borderColor: colors.medium,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 12,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="bookmark-outline"
+              color={colors.black}
+              size={22}
             />
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              borderColor: colors.medium,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 12,
+            }}
+            onPress={toggleParagraphView}
+          >
+            <MaterialCommunityIcons
+              name="heart-outline"
+              color={colors.black}
+              size={22}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              borderColor: colors.medium,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 12,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="file-multiple"
+              color={colors.black}
+              size={22}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              borderColor: colors.medium,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 12,
+            }}
+            onPress={toggleParagraphView}
+          >
+            <MaterialCommunityIcons
+              name="file-upload-outline"
+              color={colors.black}
+              size={22}
+            />
+          </TouchableOpacity>
         </View>
-        <View>
-          <Carousel
-            ref={carousel}
-            data={sections[0].paragraphData}
-            renderItem={_renderItem}
-            sliderWidth={width}
-            itemHeight={top - HEADER_HEIGHT}
-            itemWidth={width}
-            layout={"stack"}
-          />
-          {/* <FlatList
-            data={DATA}
-            renderItem={renderFlatListItem}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyExtractor={(item) => item.id}
-            horizontal
-            snapToAlignment={"center"}
-            snapToInterval={width}
-            decelerationRate={"fast"}
-            pagingEnabled
-          ></FlatList> */}
-          {/* <ActivityIndicator visible={panelLoading} />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
+        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+          <Button
+            title="Low"
+            onPress={() => {
+              setTimeout(() => {
+                sheetRef.current.snapTo(1);
+              }, 0);
             }}
-          >
-            <AppText
-              style={{
-                fontWeight: "bold",
-                textAlign: "left",
-                paddingVertical: 10,
-              }}
-            >
-              {currentBook.label + " " + verseReference}
-            </AppText>
-          </View>
-          <ScrollView
-            onTouchStart={() => setAllowDragging(false)}
-            onTouchEnd={() => setAllowDragging(true)}
-            onTouchCancel={() => setAllowDragging(true)}
-            showsVerticalScrollIndicator={false}
-          >
-            <PanelBox
-              fontSize={fontSize}
-              // crossrefSize={crossrefSize}
-              verseContent={verseContent}
-              johnsNote={johnsNote}
-              // landscape={landscape}
-            ></PanelBox>
-          </ScrollView> */}
+            // style={{ padding: 15 }}
+          />
+          <Button
+            title="Done"
+            onPress={() => {
+              sheetRef.current.snapTo(2);
+            }}
+            // style={{ padding: 15 }}
+          />
         </View>
       </View>
+      <FlatList
+        ref={carousel}
+        data={verseList}
+        renderItem={renderVerseCardItem}
+        getItemLayout={(data, index) => ({
+          length: width - 36,
+          offset: (width - 36) * index,
+          index,
+        })}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal={true}
+        snapToAlignment={"start"}
+        snapToInterval={width - 36}
+        decelerationRate={"fast"}
+        showsHorizontalScrollIndicator={false}
+        // pagingEnabled
+      />
     </View>
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <Animated.View
         style={{
           backgroundColor: colors.light,
@@ -670,7 +636,7 @@ export default function BibleScreen({
           borderBottomWidth: 0.5,
           flex: 1,
           flexDirection: "row",
-          elevation: 1,
+          // elevation: 1,
           height: HEADER_HEIGHT,
           position: "absolute",
           transform: [{ translateY: headerY }],
@@ -685,8 +651,6 @@ export default function BibleScreen({
             width: "100%",
             flexDirection: "row",
             position: "relative",
-            // zIndex: 300,
-            // elevation: 300,
           }}
         >
           <BiblePicker
@@ -714,7 +678,7 @@ export default function BibleScreen({
               alignItems: "center",
               paddingHorizontal: 8,
               paddingVertical: 4,
-              zIndex: 100,
+              // zIndex: 100,
             }}
           >
             <Text style={styles.text}>NASB</Text>
@@ -798,18 +762,10 @@ export default function BibleScreen({
         ref={sheetRef}
         snapPoints={[top, low, 0]}
         borderRadius={10}
-        renderContent={
-          renderContent
-          // () => renderContent("REFERENCE", "VERSE BODY", "JOHN'S NOTE")
-        }
+        renderContent={renderBottomSheetContent}
         onOpenStart={() => console.log("onOpenStart")} //setPanelLoading(true)}
-        onOpenEnd={() => console.log("onOpenEnd")}
-        onCloseStart={() =>
-          panelOpen ? console.log("panel is already low") : setPanelOpen(true)
-        }
-        onCloseEnd={() => setPanelOpen(false)}
       />
-    </View>
+    </>
   );
 }
 
