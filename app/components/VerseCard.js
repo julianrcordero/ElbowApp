@@ -1,28 +1,30 @@
 import React, { PureComponent } from "react";
 import { ScrollView, View } from "react-native";
 
-import PanelBox from "../components/PanelBox";
 import colors from "../config/colors";
-
+import PanelBox from "../components/PanelBox";
 import AppText from "../components/Text";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default class VerseCard extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.state = {
+      loved: false,
+    };
   }
 
-  // state = {
-  //   screenHeight: 0,
-  // };
-
-  // onContentSizeChange = (contentWidth, contentHeight) => {
-  //   this.setState({ screenHeight: contentHeight });
-  // };
-
   render() {
-    const { currentBook, item, fontSize, height, johnsNote } = this.props;
-
-    // const scrollEnabled = this.state.screenHeight > height - 70 - 59;
+    const {
+      currentBook,
+      item,
+      fontSize,
+      height,
+      crossRefSize,
+      verseCardReferenceHeight,
+    } = this.props;
 
     return (
       <>
@@ -30,44 +32,42 @@ export default class VerseCard extends PureComponent {
         <View
           style={{
             alignItems: "center",
-            // borderBottomWidth: 0.2,
-            // paddingVertical: 15,
-            height: 40,
+            height: verseCardReferenceHeight,
             flexDirection: "row",
             justifyContent: "flex-start",
           }}
         >
-          <AppText
-            style={{
-              fontWeight: "bold",
-              textAlign: "left",
-            }}
-          >
-            {currentBook.label + " " + item.chapter + " : " + item.title}
-          </AppText>
+          <View style={{ alignContent: "flex-start", flexDirection: "column" }}>
+            <AppText
+              style={{
+                fontSize: fontSize,
+                fontWeight: "bold",
+                textAlign: "left",
+              }}
+            >
+              {currentBook.label + " " + item.chapter + " : " + item.title}
+            </AppText>
+            {this.state.loved ? (
+              <MaterialCommunityIcons name="heart" color="red" size={22} />
+            ) : null}
+          </View>
         </View>
         <ScrollView
           style={{
-            // flex: 1,
-            // paddingTop: 15,
             height: height,
-            // borderBottomWidth: scrollEnabled ? 0.2 : 0,
-            borderTopWidth: 0.2,
           }}
           showsVerticalScrollIndicator={false}
         >
           <PanelBox
             fontSize={fontSize}
-            // crossrefSize={crossrefSize}
             verseContent={item.content}
             johnsNote={item.johnsNote}
+            crossRefSize={crossRefSize}
             // landscape={landscape}
           ></PanelBox>
 
           <View
             style={{
-              // backgroundColor: "white",
-              // borderTopWidth: 0.2,
               height: height,
             }}
           ></View>

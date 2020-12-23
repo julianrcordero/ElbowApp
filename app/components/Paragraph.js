@@ -15,12 +15,21 @@ export default class Paragraph extends PureComponent {
       chapterNum,
       crossrefSize,
       fontSize,
+      paragraphView,
       section,
       searchWords,
       onPress,
     } = this.props;
 
+    const ConditionalWrapper = ({ condition, wrapper, children }) =>
+      condition ? wrapper(children) : children;
+
     return (
+      //   <ConditionalWrapper
+      //     condition={paragraphView}
+      //     wrapper={(children) => <Text>{children}</Text>}
+      //   >
+      //   </ConditionalWrapper>
       <Text
         style={[
           defaultStyles.bibleText,
@@ -35,13 +44,10 @@ export default class Paragraph extends PureComponent {
             verse={data}
             onPress={() => onPress(chapterNum, j + 1)}
             searchWords={searchWords}
-            // key={index}
-            // chapterNum={section.chapterNum}
-            // crossrefSize={crossrefSize}
-            // verse={item}
-            // searchWords={searchWords}
-            // onPress={() => toggleSlideView(section.chapterNum, index + 1)}
-            // // landscape={landscape}
+            style={[
+              defaultStyles.bibleText,
+              { fontSize: fontSize, lineHeight: fontSize * 2 },
+            ]}
           />
         ))}
       </Text>

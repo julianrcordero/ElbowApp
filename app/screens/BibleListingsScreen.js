@@ -20,8 +20,6 @@ const listings = [
 ];
 
 function BibleListingsScreen({ navigation }) {
-  // console.log(listings);
-
   return (
     <View style={styles.screen}>
       <FlatList

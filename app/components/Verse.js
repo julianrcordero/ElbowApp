@@ -35,6 +35,7 @@ export default class Verse extends PureComponent {
       crossrefSize,
       verse,
       searchWords,
+      style,
       onPress,
     } = this.props;
 
@@ -69,10 +70,13 @@ export default class Verse extends PureComponent {
 
     return (
       <Text
-        style={{
-          backgroundColor: this.state.backgroundColor,
-          textDecorationLine: this.state.textDecorationLine,
-        }}
+        style={[
+          style,
+          {
+            backgroundColor: this.state.backgroundColor,
+            textDecorationLine: this.state.textDecorationLine,
+          },
+        ]}
         onPress={onPress}
         onLongPress={this._toggleHighlight}
       >

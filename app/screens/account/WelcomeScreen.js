@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: "absolute",
-    top: 60,
+    top: 70,
     alignItems: "center",
   },
   tagline: {

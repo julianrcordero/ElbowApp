@@ -1,46 +1,35 @@
-import React, { PureComponent, useState, useEffect } from "react";
+import React, { PureComponent, useState, useEffect, useCallback } from "react";
 import {
   FlatList,
   InteractionManager,
-  ScrollView,
   SectionList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Button,
   Dimensions,
 } from "react-native";
 import Animated from "react-native-reanimated";
 import Constants from "expo-constants";
-import {
-  isIphonex,
-  getStatusBarHeight,
-  getBottomSpace,
-} from "react-native-iphone-x-helper";
+import { getBottomSpace } from "react-native-iphone-x-helper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SlidingUpPanel from "rn-sliding-up-panel";
-import { useDeviceOrientation } from "@react-native-community/hooks";
 import Slider from "@react-native-community/slider";
 import BottomSheet from "reanimated-bottom-sheet";
-import Carousel from "react-native-snap-carousel";
 import reactStringReplace from "react-string-replace";
 
 // import * as IJohn from "../json/bible/I John.json";
 import bookPaths from "../json/bible/Bible";
-import PanelBox from "../components/PanelBox";
 import VerseCard from "../components/VerseCard";
-import defaultStyles from "../config/styles";
-import colors from "../config/colors";
-
 import Paragraph from "../components/Paragraph";
-import AccordionView from "../components/AccordionView";
 import Verse from "../components/Verse";
 import BiblePicker from "../components/BiblePicker";
 import CategoryPickerItem from "../components/CategoryPickerItem";
-import ActivityIndicator from "../components/ActivityIndicator";
-import AppText from "../components/Text";
+import BottomSheetToolBar from "../components/BottomSheetToolBar";
+
+import defaultStyles from "../config/styles";
+import colors from "../config/colors";
 
 class SectionHeader extends PureComponent {
   constructor(props) {
@@ -67,15 +56,8 @@ class SectionHeader extends PureComponent {
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 const AnimatedSectionHeader = Animated.createAnimatedComponent(SectionHeader);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-const AnimatedSlidingUpPanel = Animated.createAnimatedComponent(SlidingUpPanel);
 
-export default function BibleScreen({
-  HEADER_HEIGHT,
-  scrollY,
-  headerY,
-  navigationY,
-  diffClampScrollY,
-}) {
+export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   useEffect(() => {
     changeBibleBook({
       label: "Genesis",
@@ -207,25 +189,28 @@ export default function BibleScreen({
   const [sections, setSections] = useState([]);
   const [searchWords] = useState([]);
   const [currentBook, setCurrentBook] = useState(books[0]);
+  const [currentChapter, setCurrentChapter] = useState(1);
+  const [currentVerse, setCurrentVerse] = useState(1);
   // const [bookNotes, setBookNotes] = useState([]);
-  const [paragraphView, setParagraphView] = useState(false);
+  const [paragraphView, setParagraphView] = useState(true);
   const [sliderVisible, setSliderVisible] = useState(false);
-  const [panelLoading, setPanelLoading] = useState(false);
+  const [] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const crossrefSize = fontSize * 0.6;
   const titleSize = fontSize * 1.5;
   // const { landscape } = useDeviceOrientation();
-  const [allowDragging, setAllowDragging] = useState(true);
-  // const [theCollapsed, setTheCollapsed] = useState();
-  var _panel;
+  const [] = useState(true);
   const { height, width } = Dimensions.get("window");
-  const listRef = React.useRef();
   const top = height - Constants.statusBarHeight - getBottomSpace();
-  const verseCardReferenceHeight = 40;
-  const low = HEADER_HEIGHT * 2 + verseCardReferenceHeight;
+  const verseCardToolbarHeight = 50;
+  const verseCardReferenceHeight = 50;
+  const low = HEADER_HEIGHT + verseCardToolbarHeight + verseCardReferenceHeight;
   const sheetRef = React.useRef(null);
   const carousel = React.useRef();
   const [verseList, setVerseList] = useState([]);
+
+  const handleSlide = (value) => setFontSize(value);
+  const handleFontSize = () => setSliderVisible(!sliderVisible);
 
   const changeBibleBook = (newBook) => {
     setCurrentBook(newBook);
@@ -296,6 +281,7 @@ export default function BibleScreen({
                 <Text key={i}>{match}</Text>
               )),
           johnsNote: johnsNote,
+          loved: false,
         });
       });
 
@@ -341,18 +327,17 @@ export default function BibleScreen({
     () => interactionPromise.cancel();
   };
 
-  const handleSlide = (value) => setFontSize(value);
-  const handleFontSize = () => setSliderVisible(!sliderVisible);
-
   //SINGLE VERSE VIEW #1 (THIS WORKS)
   let verseByVerse1 = (
     <AnimatedSectionList
-      sections={sections}
-      keyExtractor={(item, index) => item + index}
+      bounces={false}
       initialNumToRender={1}
-      renderSectionHeader={({ section: { title } }) => (
-        <AnimatedSectionHeader title={title} titleSize={titleSize} />
-      )}
+      keyExtractor={(item, index) => item + index}
+      onScroll={Animated.event([
+        {
+          nativeEvent: { contentOffset: { y: scrollY } },
+        },
+      ])}
       renderItem={({ item, index, section }) => (
         <Text
           style={[
@@ -373,52 +358,17 @@ export default function BibleScreen({
           />
         </Text>
       )}
-      showsVerticalScrollIndicator={false}
-      bounces={false}
+      renderSectionHeader={({ section: { title } }) => (
+        <AnimatedSectionHeader title={title} titleSize={titleSize} />
+      )}
       scrollEventThrottle={16}
-      onScroll={Animated.event([
-        {
-          nativeEvent: { contentOffset: { y: scrollY } },
-        },
-      ])}
-      style={{
-        backgroundColor: colors.white,
-        // flex: 1,
-        paddingHorizontal: 25,
-        paddingTop: HEADER_HEIGHT,
-      }}
+      sections={sections}
+      showsVerticalScrollIndicator={false}
       stickySectionHeadersEnabled={false}
-      ref={listRef}
-      onDragEnd
+      style={[styles.bibleTextView, { paddingTop: HEADER_HEIGHT }]}
+      // onDragEnd
     />
   );
-
-  //SINGLE VERSE VIEW #3 (THIS WORKS)
-  // let verseByVerse2 = (
-  //   <Animated.ScrollView
-  //     bounces={false}
-  //     scrollEventThrottle={16}
-  //     onScroll={Animated.event([
-  //       {
-  //         nativeEvent: { contentOffset: { y: scrollY } },
-  //       },
-  //     ])}
-  //     style={{
-  //       flex: 1,
-  //       backgroundColor: colors.white,
-  //       paddingTop: HEADER_HEIGHT,
-  //       paddingHorizontal: 25,
-  //     }}
-  //   >
-  //     {sections.map((section, i) => (
-  //       <AccordionView
-  //         key={i}
-  //         verses={section.paragraphData}
-  //         searchWords={searchWords}
-  //       />
-  //     ))}
-  //   </Animated.ScrollView>
-  // );
 
   const renderParagraphItem = ({ item, i }) => (
     <React.Fragment key={i}>
@@ -435,24 +385,33 @@ export default function BibleScreen({
     </React.Fragment>
   );
 
+  const _onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
+    console.log("Visible items are", viewableItems);
+    console.log("Changed in this iteration", changed);
+  }, []);
+
+  const _viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+
   let paragraph2 = (
     <AnimatedFlatList
       bounces={false}
-      scrollEventThrottle={16}
+      data={sections}
+      keyExtractor={(item) => item.chapterNum.toString()} //item.chapterNum}
       onScroll={Animated.event([
         {
           nativeEvent: { contentOffset: { y: scrollY } },
         },
       ])}
-      style={{
-        // flex: 1,
-        backgroundColor: colors.white,
-        paddingTop: HEADER_HEIGHT,
-        paddingHorizontal: 25,
-      }}
-      data={sections}
+      paragraphView={paragraphView}
       renderItem={renderParagraphItem}
-      keyExtractor={(item) => item.chapterNum}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      style={[
+        styles.bibleTextView,
+        { paddingTop: HEADER_HEIGHT, paddingBottom: HEADER_HEIGHT + 300 },
+      ]}
     />
   );
 
@@ -462,167 +421,62 @@ export default function BibleScreen({
         key={index}
         style={{
           backgroundColor: colors.white,
-          borderTopWidth: 0.5,
-          borderColor: colors.medium,
-          // height: top * 2,
-          width: width - 36,
-          paddingHorizontal: 15,
+          width: width,
+          paddingHorizontal: 30,
         }}
       >
         <VerseCard
           key={index}
           currentBook={currentBook}
           item={item}
+          crossrefSize={crossrefSize}
           fontSize={fontSize}
           height={
-            top - HEADER_HEIGHT - HEADER_HEIGHT - verseCardReferenceHeight
+            top -
+            HEADER_HEIGHT -
+            verseCardToolbarHeight -
+            verseCardReferenceHeight
           }
+          verseCardReferenceHeight={verseCardReferenceHeight}
         />
       </View>
     );
   };
 
-  const renderBottomSheetContent = (reference, passage, msbNote) => (
+  const renderBottomSheetContent = () => (
     <View
       style={{
         backgroundColor: colors.white,
         borderColor: colors.medium,
-        borderRadius: 4,
-        borderWidth: 0.2,
+        borderTopWidth: 0.2,
         height: top,
         justifyContent: "flex-start",
-        paddingHorizontal: 15,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          // paddingVertical: 15,
-          height: 60,
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "flex-start",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 12,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="marker"
-              color={colors.black}
-              size={22}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 12,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="bookmark-outline"
-              color={colors.black}
-              size={22}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 12,
-            }}
-            onPress={toggleParagraphView}
-          >
-            <MaterialCommunityIcons
-              name="heart-outline"
-              color={colors.black}
-              size={22}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 12,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="file-multiple"
-              color={colors.black}
-              size={22}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 12,
-            }}
-            onPress={toggleParagraphView}
-          >
-            <MaterialCommunityIcons
-              name="file-upload-outline"
-              color={colors.black}
-              size={22}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <Button
-            title="Low"
-            onPress={() => {
-              setTimeout(() => {
-                sheetRef.current.snapTo(1);
-              }, 0);
-            }}
-            // style={{ padding: 15 }}
-          />
-          <Button
-            title="Done"
-            onPress={() => {
-              sheetRef.current.snapTo(2);
-            }}
-            // style={{ padding: 15 }}
-          />
-        </View>
-      </View>
+      <BottomSheetToolBar
+        verseCardToolbarHeight={verseCardToolbarHeight}
+        sheetRef={sheetRef}
+      />
       <FlatList
-        ref={carousel}
+        bounces={false}
         data={verseList}
-        renderItem={renderVerseCardItem}
+        decelerationRate={"fast"}
         getItemLayout={(data, index) => ({
-          length: width - 36,
-          offset: (width - 36) * index,
+          length: width,
+          offset: width * index,
           index,
         })}
-        keyExtractor={(item, index) => index.toString()}
         horizontal={true}
-        snapToAlignment={"start"}
-        snapToInterval={width - 36}
-        decelerationRate={"fast"}
+        initialNumToRender={5}
+        keyExtractor={(item, index) => item + index}
+        ref={carousel}
+        renderItem={renderVerseCardItem}
+        scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
-        // pagingEnabled
+        snapToAlignment={"start"}
+        snapToInterval={width}
+        // onViewableItemsChanged={_onViewableItemsChanged}
+        // viewabilityConfig={_viewabilityConfig}
       />
     </View>
   );
@@ -633,7 +487,6 @@ export default function BibleScreen({
         style={{
           backgroundColor: colors.light,
           borderColor: colors.medium,
-          borderBottomWidth: 0.5,
           flex: 1,
           flexDirection: "row",
           // elevation: 1,
@@ -647,16 +500,19 @@ export default function BibleScreen({
         <View
           style={{
             alignItems: "center",
-            // justifyContent: "flex-start",
+            borderColor: colors.medium,
+            borderBottomWidth: 0.2,
             width: "100%",
             flexDirection: "row",
             position: "relative",
           }}
         >
           <BiblePicker
-            currentBook={bookPaths.Genesis}
-            selectedItem={currentBook}
+            currentBook={currentBook}
+            currentChapter={currentChapter}
+            currentVerse={currentVerse}
             onSelectItem={(item) => changeBibleBook(item)}
+            fontSize={fontSize}
             height={HEADER_HEIGHT}
             icon="magnify"
             items={books}
@@ -665,75 +521,40 @@ export default function BibleScreen({
             numberOfColumns={7}
             PickerItemComponent={CategoryPickerItem}
             flex={1}
-            width="55%"
+            width="60%"
           />
-          <TouchableOpacity
+          <View
             style={{
               flexDirection: "row",
-              // backgroundColor: colors.light,
-              borderRadius: 4,
-              borderWidth: 0.2,
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              // zIndex: 100,
+              justifyContent: "space-evenly",
+              width: "40%",
             }}
           >
-            <Text style={styles.text}>NASB</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              // backgroundColor: colors.light,
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="speaker"
-              color={colors.black}
-              size={20}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
-            onPress={handleFontSize}
-          >
-            <MaterialCommunityIcons
-              name="format-letter-case"
-              color={colors.black}
-              size={20}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              borderColor: colors.medium,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-            }}
-            onPress={toggleParagraphView}
-          >
-            <MaterialCommunityIcons
-              name="book-open"
-              color={colors.black}
-              size={20}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                borderRadius: 4,
+                borderWidth: 0.2,
+                borderColor: colors.medium,
+              }}
+              onPress={toggleParagraphView}
+            >
+              <Text style={styles.text}>NASB</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <MaterialCommunityIcons
+                name="speaker"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleFontSize}>
+              <MaterialCommunityIcons
+                name="format-letter-case"
+                color={colors.black}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={{ alignItems: "flex-end", position: "absolute" }}>
           {sliderVisible ? (
@@ -756,6 +577,7 @@ export default function BibleScreen({
         placeholder="TYPE HERE"
         onChangeText={(text) => setSearchWords([text])}
       /> */}
+      {/* {paragraph2} */}
       {paragraphView ? paragraph2 : verseByVerse1}
 
       <BottomSheet
@@ -789,6 +611,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     // marginTop: 22,
   },
+  bibleTextView: {
+    backgroundColor: colors.white,
+    paddingHorizontal: 25,
+  },
   openButton: {
     backgroundColor: "#F194FF",
     borderRadius: 20,
@@ -801,3 +627,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+//SINGLE VERSE VIEW #3 (THIS WORKS)
+// let verseByVerse2 = (
+//   <Animated.ScrollView
+//     bounces={false}
+//     scrollEventThrottle={16}
+//     onScroll={Animated.event([
+//       {
+//         nativeEvent: { contentOffset: { y: scrollY } },
+//       },
+//     ])}
+//     style={{
+//       flex: 1,
+//       backgroundColor: colors.white,
+//       paddingTop: HEADER_HEIGHT,
+//       paddingHorizontal: 25,
+//     }}
+//   >
+//     {sections.map((section, i) => (
+//       <AccordionView
+//         key={i}
+//         verses={section.paragraphData}
+//         searchWords={searchWords}
+//       />
+//     ))}
+//   </Animated.ScrollView>
+// );

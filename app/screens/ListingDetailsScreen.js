@@ -5,9 +5,13 @@ import { Image } from "react-native-expo-image-cache";
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
+import AppText from "../components/Text";
+import VerseCard from "../components/VerseCard";
+import { ScrollView } from "react-native-gesture-handler";
 
 function ListingDetailsScreen({ route }) {
   const listing = route.params;
+  const fontSize = 16;
 
   return (
     <View>
@@ -19,14 +23,24 @@ function ListingDetailsScreen({ route }) {
       />
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{listing.title}</Text>
-        <Text style={styles.price}>${listing.price}</Text>
-        <View style={styles.userContainer}>
-          <ListItem
-            image={require("../assets/gtylogo.jpg")}
-            title="Mosh Hamedani"
-            subTitle="5 Listings"
-          />
-        </View>
+        <Text style={styles.scripture}>${listing.scripture}</Text>
+        <ScrollView>
+          <View style={styles.userContainer}>
+            <ListItem
+              image={require("../assets/gtylogo.jpg")}
+              title="Mosh Hamedani"
+              subTitle="5 Listings"
+            />
+          </View>
+          <AppText
+            style={{
+              fontSize: fontSize,
+              lineHeight: fontSize * 2,
+            }}
+          >
+            {listing.content}
+          </AppText>
+        </ScrollView>
       </View>
     </View>
   );
@@ -40,7 +54,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
-  price: {
+  scripture: {
     color: colors.secondary,
     fontWeight: "bold",
     fontSize: 20,

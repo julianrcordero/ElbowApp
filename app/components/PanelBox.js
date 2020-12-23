@@ -35,17 +35,22 @@ export default class PanelBox extends PureComponent {
 
     return (
       <>
-        <AppText style={{ fontSize: fontSize, lineHeight: fontSize * 2 }}>
+        <AppText
+          style={{
+            fontSize: fontSize,
+            lineHeight: fontSize * 2,
+          }}
+        >
           {verseContent}
         </AppText>
         <TextInput
           style={{
             backgroundColor: colors.light,
             borderColor: colors.medium,
-            borderWidth: 1,
+            borderWidth: 0.5,
             fontFamily:
               Platform.OS === "android" ? "notoserif" : "ChalkboardSE-Light",
-            marginVertical: 7.5,
+            marginVertical: 15,
             padding: 10,
             width: "100%",
           }}
@@ -55,8 +60,8 @@ export default class PanelBox extends PureComponent {
         <View
           style={{
             borderColor: colors.medium,
-            borderWidth: 1,
-            marginVertical: 7.5,
+            borderWidth: 0.5,
+            marginVertical: 0,
             padding: 10,
             width: "100%",
           }}
@@ -94,8 +99,8 @@ export default class PanelBox extends PureComponent {
             flexDirection: "column",
             // flex: 1,
             borderColor: colors.medium,
-            borderWidth: 1,
-            marginVertical: 7.5,
+            borderWidth: 0.5,
+            marginVertical: 15,
             padding: 10,
             width: "100%",
           }}

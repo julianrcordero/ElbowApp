@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   Modal,
   Button,
-  Picker,
+  Text,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -18,6 +18,9 @@ import BiblePickerItem from "./BiblePickerItem";
 
 function BiblePicker({
   currentBook,
+  currentChapter,
+  currentVerse,
+  fontSize,
   height,
   icon,
   items,
@@ -25,32 +28,48 @@ function BiblePicker({
   onSelectItem,
   PickerItemComponent = BiblePickerItem,
   placeholder,
-  selectedItem,
   width,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <>
+    <View style={[styles.container, { height: height - 1, width }]}>
+      {icon && (
+        <MaterialCommunityIcons
+          name={icon}
+          size={24}
+          color={colors.black}
+          style={styles.icon}
+        />
+      )}
       <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-        <View style={[styles.container, { width, height }]}>
-          {icon && (
-            <MaterialCommunityIcons
-              name={icon}
-              size={24}
-              color={colors.black}
-              style={styles.icon}
-            />
-          )}
-          {selectedItem ? (
-            <AppText style={styles.text}>{selectedItem.label}</AppText>
-          ) : (
-            <AppText style={styles.placeholder}>{placeholder}</AppText>
-          )}
+        <View style={{ flexDirection: "row" }}>
+          <Text style={{ fontSize: fontSize }}>
+            {currentBook ? (
+              <AppText
+                style={[
+                  styles.text,
+                  // { backgroundColor: "blue", flexShrink: 1 },
+                ]}
+              >
+                {currentBook.label +
+                  " " +
+                  currentChapter +
+                  " : " +
+                  currentVerse}
+              </AppText>
+            ) : (
+              <AppText style={styles.placeholder}>{placeholder}</AppText>
+            )}
+          </Text>
           <MaterialCommunityIcons
             name="chevron-down"
             size={20}
             color={defaultStyles.colors.dark}
+            style={{
+              // backgroundColor: "white",
+              paddingHorizontal: 3,
+            }}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -105,7 +124,7 @@ function BiblePicker({
           />
         </Screen>
       </Modal>
-    </>
+    </View>
   );
 }
 
@@ -113,11 +132,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     backgroundColor: colors.light,
-    // borderRadius: 25,
+    // borderWidth: 1,
     flexDirection: "row",
     // height: 70,
     paddingHorizontal: 15,
-    // marginVertical: 10,
   },
   icon: {
     marginRight: 10,

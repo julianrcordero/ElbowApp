@@ -41,10 +41,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     borderWidth: 0.1,
     flex: 1,
-    height: 60,
+    // height: 70,
     justifyContent: "center",
     // paddingBottom: 10,
-    paddingTop: 12,
+    // paddingTop: 12,
   },
   image: {
     paddingBottom: 5,
