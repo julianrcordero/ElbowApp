@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Highlighter from "react-native-highlight-words";
+import reactStringReplace from "react-string-replace";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class Verse extends PureComponent {
@@ -33,6 +34,7 @@ export default class Verse extends PureComponent {
     const {
       chapterNum,
       crossrefSize,
+      fontSize,
       // focusedVerse,
       verse,
       searchWords,
@@ -41,16 +43,23 @@ export default class Verse extends PureComponent {
     } = this.props;
 
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
-
-    const reactStringReplace = require("react-string-replace");
-    const parsedVerse = "This is a parsed verse";
+    // const parsedVerse =
     // verse["crossref"]
-    //   ? reactStringReplace(verse["__text"], /\n/, (match, i) => (
+    //   ?
+
+    //   "The quick brown fox jumps over the lazy dog. The dog did not comprehend."
+    //   :
+    //   "You took my only food. Now I'm gonna starve."
+    // verse["crossref"]
+    //   ?
+    //   reactStringReplace(verse["__text"], /\n/, (match, i) => (
     //       <Text
     //         key={i}
-    //         style={{ flexDirection: "row", alignItems: "flex-start" }}
+    //         // style={{ flexDirection: "row", alignItems: "flex-start" }}
     //       >
-    //         <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
+    //         <Text style={{ fontSize: crossrefSize,
+    //           // lineHeight: 10
+    //           }}>
     //           {Array.isArray(verse["crossref"])
     //             ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
     //             : verse["crossref"]["_let"]}
@@ -63,28 +72,14 @@ export default class Verse extends PureComponent {
     //   <Text key={i}>{match}</Text>
     // ));
 
-    // const superFontSize = crossrefSize; //Math.floor(fontSize * 0.6);
-    // const superlineHeight = superFontSize * 1.1;
-    // const superStyle = {
-    //   textAlignVertical: "top",
-    //   fontSize: superFontSize,
-    //   lineHeight: superlineHeight,
-    // };
-    // const regular = {
-    //   textAlignVertical: "bottom",
-    //   fontSize: fontSize,
-    // };
-
     return (
-      // <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-      //   <Text style={superStyle}>Super</Text>
-      //   <Text style={regular}> Regular Text</Text>
-      // </View>
       <Text
         style={[
           style,
           {
             backgroundColor: this.state.backgroundColor,
+            // flexDirection: "row",
+            // alignItems: "flex-start"
             // textDecorationLine: this.state.textDecorationLine,
             // focusedVerse == Number(verse["_num"]) ? "underline" : "none",
           },
@@ -92,11 +87,52 @@ export default class Verse extends PureComponent {
         onPress={onPress}
         onLongPress={this._toggleHighlight}
       >
-        <Text style={{ fontWeight: "bold", color: "#00aeef" }}>
+        <Text
+          style={{
+            fontWeight: "bold",
+            color: "#00aeef",
+            // fontSize: crossrefSize,
+            // textAlignVertical: "top",
+            // lineHeight: crossrefSize * 1.1
+          }}
+        >
           {" "}
           {verse["_num"]}{" "}
         </Text>
-        {parsedVerse}
+        <Text
+          style={
+            ({ textAlignVertical: "bottom" },
+            { fontSize: fontSize, lineHeight: fontSize * 2 })
+          }
+        >
+          {verse["crossref"]
+            ? verse["__text"].replace(
+                "\n",
+                Array.isArray(verse["crossref"])
+                  ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
+                  : verse["crossref"]["_let"]
+              )
+            : // reactStringReplace(verse["__text"], /\n/, (match, i) => (
+              //     <Text
+              //       key={i}
+              //       // style={{ flexDirection: "row", alignItems: "flex-start" }}
+              //     >
+              //       <Text
+              //         style={{
+              //           fontSize: crossrefSize,
+              //           // lineHeight: 10
+              //         }}
+              //       >
+              //         {Array.isArray(verse["crossref"])
+              //           ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
+              //           : verse["crossref"]["_let"]}
+              //       </Text>
+              //     </Text>
+              //   ))
+              reactStringReplace(verse["__text"], /\n/, (match, i) => (
+                <Text key={i}>{match}</Text>
+              ))}
+        </Text>
         {/* <HighlightComponent
           highlightStyle={{ backgroundColor: "red" }}
           searchWords={searchWords}
