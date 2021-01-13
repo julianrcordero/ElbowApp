@@ -1,5 +1,13 @@
 import React, { PureComponent } from "react";
-import { Image, View, StyleSheet, Text, TextInput } from "react-native";
+import {
+  Button,
+  Image,
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import {
   Collapse,
   CollapseHeader,
@@ -14,7 +22,7 @@ import AppText from "../components/Text";
 import defaultStyles from "../config/styles";
 
 import ResourcesScreen from "../screens/ResourcesScreen";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, FlatList } from "react-native-gesture-handler";
 import ActivityIndicator from "./ActivityIndicator";
 
 export default class PanelBox extends PureComponent {
@@ -28,10 +36,42 @@ export default class PanelBox extends PureComponent {
   }
 
   render() {
-    const { fontSize, landscape, verseContent, johnsNote } = this.props;
+    const {
+      fontSize,
+      landscape,
+      verseContent,
+      johnsNote,
+      crossrefs,
+      paragraphBibleRef,
+      scrollY,
+      sheetRef,
+    } = this.props;
 
     const macarthurText = fontSize * 0.85;
     const macarthurLineHeight = macarthurText * 2;
+
+    const navigateBible = (code) => {
+      // console.log(code.substr(2, 3));
+      //save current position
+      // console.log(scrollY);
+      sheetRef.current.snapTo(1);
+      paragraphBibleRef.current.getNode().scrollToIndex({
+        animated: true,
+        index: Number(code.substr(2, 3)) - 1,
+      });
+    };
+
+    function VerseHyperlink({ cr }) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            navigateBible(cr["for"]);
+          }}
+        >
+          <Text style={styles.verseLink}>{cr["text"] + "\t\t"}</Text>
+        </TouchableOpacity>
+      );
+    }
 
     return (
       <>
@@ -43,6 +83,38 @@ export default class PanelBox extends PureComponent {
         >
           {verseContent}
         </AppText>
+        {Array.isArray(crossrefs) ? (
+          crossrefs.map((crossref) => (
+            <Text key={crossref["id"]}>
+              {"\n" + crossref["title"] + "\t"}
+              {Array.isArray(crossref["refs"]["ref"]) ? (
+                crossref["refs"]["ref"].map((cr) => (
+                  <VerseHyperlink key={cr["for"]} cr={cr} />
+                ))
+              ) : (
+                <VerseHyperlink
+                  key={crossref["for"]}
+                  cr={crossref["refs"]["ref"]}
+                />
+              )}
+            </Text>
+          ))
+        ) : crossrefs["title"] == "" ? null : (
+          <Text>
+            {"\n" + crossrefs["title"] + "\t"}
+            {Array.isArray(crossrefs["refs"]["ref"]) ? (
+              crossrefs["refs"]["ref"].map((cr) => (
+                <VerseHyperlink key={cr["for"]} cr={cr} />
+              ))
+            ) : (
+              <VerseHyperlink
+                key={crossrefs["for"]}
+                cr={crossrefs["refs"]["ref"]}
+              />
+            )}
+          </Text>
+        )}
+        {/* <Text>{"\n"}</Text> */}
         <TextInput
           style={{
             backgroundColor: colors.light,
@@ -89,9 +161,6 @@ export default class PanelBox extends PureComponent {
             ]}
           >
             {johnsNote}
-            {/* This is a note from John MacArthur. The Bible is the inspired word of
-          God. My middle name is Fullerton, like the city. Sometimes I eat
-          cheeseburgers. Sin is bad. */}
           </Text>
         </View>
         <View
@@ -125,101 +194,6 @@ export default class PanelBox extends PureComponent {
   }
 }
 
-// export default function PanelBox({
-//   fontSize,
-//   landscape,
-//   verseContent,
-//   johnsNote,
-// }) {
-//   const macarthurText = fontSize * 0.85;
-//   const macarthurLineHeight = macarthurText * 2;
-
-//   return (
-//     <>
-//       <AppText style={{ fontSize: fontSize, lineHeight: fontSize * 2 }}>
-//         {verseContent}
-//       </AppText>
-//       <TextInput
-//         style={{
-//           backgroundColor: colors.light,
-//           borderColor: colors.medium,
-//           borderWidth: 1,
-//           fontFamily:
-//             Platform.OS === "android" ? "notoserif" : "ChalkboardSE-Light",
-//           marginVertical: 10,
-//           padding: 15,
-//           width: "100%",
-//         }}
-//         multiline
-//         placeholder="This is my note about the Bible verse."
-//       ></TextInput>
-//       <View
-//         style={{
-//           borderColor: colors.medium,
-//           borderWidth: 1,
-//           marginVertical: 10,
-//           padding: 15,
-//           width: "100%",
-//         }}
-//       >
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             alignSelf: "flex-start",
-//             alignItems: "center",
-//             // marginBottom: 5,
-//           }}
-//         >
-//           <Image
-//             style={{ width: 30, height: 30 }}
-//             source={require("../assets/studyBibleAppLogo.jpg")}
-//           ></Image>
-//           <AppText style={[styles.titleText, defaultStyles.macArthurText]}>
-//             John's Note
-//           </AppText>
-//         </View>
-//         <Text
-//           style={[
-//             defaultStyles.macArthurText,
-//             { fontSize: macarthurText, lineHeight: macarthurLineHeight },
-//           ]}
-//         >
-//           {johnsNote}
-//           {/* This is a note from John MacArthur. The Bible is the inspired word of
-//           God. My middle name is Fullerton, like the city. Sometimes I eat
-//           cheeseburgers. Sin is bad. */}
-//         </Text>
-//       </View>
-//       <View
-//         style={{
-//           flexDirection: "column",
-//           // flex: 1,
-//           borderColor: colors.medium,
-//           borderWidth: 1,
-//           marginVertical: 10,
-//           padding: 15,
-//           width: "100%",
-//         }}
-//       >
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             alignSelf: "flex-start",
-//             alignItems: "center",
-//           }}
-//         >
-//           <Image
-//             style={{ width: 40, height: 40 }}
-//             source={require("../assets/gtylogo.jpg")}
-//           ></Image>
-//           <AppText style={styles.titleText}>Related Resources</AppText>
-//         </View>
-//         {/* <ResourcesScreen /> */}
-//       </View>
-//     </>
-//   );
-// }
-
 const styles = StyleSheet.create({
   macArthurBox: {
     height: "100%",
@@ -238,5 +212,9 @@ const styles = StyleSheet.create({
 
   titleText: {
     paddingVertical: 10,
+  },
+
+  verseLink: {
+    color: "#00aeef",
   },
 });

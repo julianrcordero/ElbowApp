@@ -23,12 +23,14 @@ export default class VerseCard extends PureComponent {
       fontSize,
       height,
       crossRefSize,
+      paragraphBibleRef,
+      scrollY,
+      sheetRef,
       verseCardReferenceHeight,
     } = this.props;
 
     return (
       <>
-        {/* <ActivityIndicator visible={panelLoading} /> */}
         <View
           style={{
             alignItems: "center",
@@ -62,7 +64,11 @@ export default class VerseCard extends PureComponent {
             fontSize={fontSize}
             verseContent={item.content}
             johnsNote={item.johnsNote}
+            crossrefs={item.crossrefs}
             crossRefSize={crossRefSize}
+            paragraphBibleRef={paragraphBibleRef}
+            scrollY={scrollY}
+            sheetRef={sheetRef}
             // landscape={landscape}
           ></PanelBox>
 

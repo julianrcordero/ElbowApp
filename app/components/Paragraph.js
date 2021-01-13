@@ -14,8 +14,8 @@ export default class Paragraph extends PureComponent {
     const {
       chapterNum,
       crossrefSize,
+      // focusedVerse,
       fontSize,
-      paragraphView,
       section,
       searchWords,
       onPress,
@@ -26,21 +26,17 @@ export default class Paragraph extends PureComponent {
 
     return (
       //   <ConditionalWrapper
-      //     condition={paragraphView}
+      //     condition={paragraphMode}
       //     wrapper={(children) => <Text>{children}</Text>}
       //   >
       //   </ConditionalWrapper>
-      <Text
-        style={[
-          defaultStyles.bibleText,
-          { fontSize: fontSize, lineHeight: fontSize * 2 },
-        ]}
-      >
+      <Text style={[defaultStyles.bibleText]}>
         {section.data.map((data, j) => (
           <Verse
             key={j}
             chapterNum={chapterNum}
             crossrefSize={crossrefSize}
+            // focusedVerse={focusedVerse}
             verse={data}
             onPress={() => onPress(chapterNum, j + 1)}
             searchWords={searchWords}

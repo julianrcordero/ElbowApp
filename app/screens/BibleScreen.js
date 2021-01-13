@@ -30,6 +30,7 @@ import BottomSheetToolBar from "../components/BottomSheetToolBar";
 
 import defaultStyles from "../config/styles";
 import colors from "../config/colors";
+import BibleScreenToolBar from "../components/BibleScreenToolBar";
 
 class SectionHeader extends PureComponent {
   constructor(props) {
@@ -56,6 +57,12 @@ class SectionHeader extends PureComponent {
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 const AnimatedSectionHeader = Animated.createAnimatedComponent(SectionHeader);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+// const onViewableItemsChanged = ({ viewableItems, changed }) => {
+//   console.log(viewableItems[0]["index"]);
+//   setFocusedVerse(viewableItems[0]["index"]);
+//   // console.log("Visible items are", viewableItems);
+//   // console.log("Changed in this iteration", changed);
+// };
 
 export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   useEffect(() => {
@@ -186,14 +193,17 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
     JSON.stringify(require("../json/bible/esvmsb.notes.json"))
   )["crossway-studynotes"]["book"];
 
+  var crossrefsJsonObject = JSON.parse(
+    JSON.stringify(require("../json/bible/GenesisCrossrefs.json"))
+  )["book"];
+
   const [sections, setSections] = useState([]);
   const [searchWords] = useState([]);
   const [currentBook, setCurrentBook] = useState(books[0]);
   const [currentChapter, setCurrentChapter] = useState(1);
   const [currentVerse, setCurrentVerse] = useState(1);
   // const [bookNotes, setBookNotes] = useState([]);
-  const [paragraphView, setParagraphView] = useState(true);
-  const [sliderVisible, setSliderVisible] = useState(false);
+  const [paragraphMode, setParagraphMode] = useState(true);
   const [] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const crossrefSize = fontSize * 0.6;
@@ -206,22 +216,20 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   const verseCardReferenceHeight = 50;
   const low = HEADER_HEIGHT + verseCardToolbarHeight + verseCardReferenceHeight;
   const sheetRef = React.useRef(null);
+  const paragraphBibleRef = React.useRef();
   const carousel = React.useRef();
   const [verseList, setVerseList] = useState([]);
-
-  const handleSlide = (value) => setFontSize(value);
-  const handleFontSize = () => setSliderVisible(!sliderVisible);
+  // const [focusedVerse, setFocusedVerse] = useState(null);
 
   const changeBibleBook = (newBook) => {
     setCurrentBook(newBook);
-    // console.log(notesArray[newBook.value - 1]["note"]);
-    var jsonString = JSON.stringify(bookPaths[newBook.label]);
-    var jsonObject = JSON.parse(jsonString);
+    var bibleJsonString = JSON.stringify(bookPaths[newBook.label]);
+    var bibleJsonObject = JSON.parse(bibleJsonString);
 
     let verses = [];
     let johnsNote = "";
-    // const book = jsonObject["crossway-bible"]["book"]["_title"];
-    const chapters = jsonObject["crossway-bible"]["book"]["chapter"];
+    let crossrefs = "";
+    const chapters = bibleJsonObject["crossway-bible"]["book"]["chapter"];
     const notes = notesArray[newBook.value - 1]["note"];
 
     const bookSections = [];
@@ -260,28 +268,48 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
           johnsNote = "There is no note for this passage";
         }
 
+        let crossrefList = crossrefsJsonObject["chapter"][
+          Number(chapter["_num"]) - 1
+        ]["verse"].find(
+          (el) =>
+            el["id"] ===
+            "01" +
+              ("000" + chapter["_num"]).substr(-3) +
+              ("000" + verse["_num"]).substr(-3)
+        );
+
+        if (crossrefList) {
+          crossrefs = crossrefList["letter"];
+        } else {
+          crossrefs = {
+            title: "",
+            text: "",
+          };
+        }
+
         verses.push({
           chapter: Number(chapter["_num"]),
           title: Number(verse["_num"]),
           content: verse["crossref"]
-            ? reactStringReplace(verse["__text"], /\n/, (match, i) => (
+            ? reactStringReplace(verse["__text"], /(\n)/g, (match, index) => (
                 <Text
-                  key={i}
+                  key={index}
                   style={{ flexDirection: "row", alignItems: "flex-start" }}
                 >
                   <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
                     {Array.isArray(verse["crossref"])
-                      ? verse["crossref"][0]["_let"]
-                      : verse["crossref"]["_let"]}
+                      ? " " + verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
+                      : " " + verse["crossref"]["_let"]}
                   </Text>
-                  {match}
+                  {/* {match} */}
                 </Text>
               ))
-            : reactStringReplace(verse["__text"], /\n/, (match, i) => (
-                <Text key={i}>{match}</Text>
+            : reactStringReplace(verse["__text"], "\n", (match, i) => (
+                <Text key={i}>{""}</Text>
               )),
           johnsNote: johnsNote,
           loved: false,
+          crossrefs: crossrefs,
         });
       });
 
@@ -301,34 +329,64 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
     setVerseList(verses);
   };
 
-  const toggleParagraphView = () => {
-    setParagraphView(!paragraphView);
+  const toggleParagraphMode = () => {
+    setParagraphMode(!paragraphMode);
   };
 
   const toggleSlideView = (chapter, verse) => {
-    // panelOpen ?
     sheetRef.current.snapTo(1);
-    // : sheetRef.current.snapTo(0);
 
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      // setPanelLoading(true);
-
       let myIndex = verseList.findIndex(
         (obj) => obj.chapter === chapter && obj.title === verse
       );
       setTimeout(() => {
-        // carousel.current.snapToItem(myIndex, false, false);
         carousel.current.scrollToIndex({ animated: false, index: myIndex });
       });
-
-      // setPanelLoading(false);
     });
 
     () => interactionPromise.cancel();
   };
 
-  //SINGLE VERSE VIEW #1 (THIS WORKS)
-  let verseByVerse1 = (
+  const renderParagraphItem = ({ item, i }) => (
+    <React.Fragment key={i}>
+      <AnimatedSectionHeader title={item.title} titleSize={titleSize} />
+      <Paragraph
+        key={i}
+        chapterNum={item.chapterNum}
+        crossrefSize={crossrefSize}
+        // focusedVerse={focusedVerse}
+        fontSize={fontSize}
+        section={item}
+        searchWords={searchWords}
+        onPress={toggleSlideView}
+      />
+    </React.Fragment>
+  );
+
+  let paragraphBible = (
+    <AnimatedFlatList
+      bounces={false}
+      data={sections}
+      initialNumToRender={60}
+      keyExtractor={(item) => item.chapterNum.toString()}
+      onScroll={Animated.event([
+        {
+          nativeEvent: { contentOffset: { y: scrollY } },
+        },
+      ])}
+      ref={paragraphBibleRef}
+      renderItem={renderParagraphItem}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      style={[
+        styles.bibleTextView,
+        { paddingTop: HEADER_HEIGHT, paddingBottom: HEADER_HEIGHT + 300 },
+      ]}
+    />
+  );
+
+  let verseByVerseBible = (
     <AnimatedSectionList
       bounces={false}
       initialNumToRender={1}
@@ -339,14 +397,7 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
         },
       ])}
       renderItem={({ item, index, section }) => (
-        <Text
-          style={[
-            defaultStyles.bibleText,
-            { fontSize: fontSize, lineHeight: fontSize * 2 },
-          ]}
-          // selectable
-          selectionColor={"purple"}
-        >
+        <Text style={[defaultStyles.bibleText]}>
           <Verse
             key={index}
             chapterNum={section.chapterNum}
@@ -354,6 +405,10 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
             verse={item}
             searchWords={searchWords}
             onPress={() => toggleSlideView(section.chapterNum, index + 1)}
+            style={[
+              defaultStyles.bibleText,
+              { fontSize: fontSize, lineHeight: fontSize * 2 },
+            ]}
             // landscape={landscape}
           />
         </Text>
@@ -366,52 +421,6 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
       showsVerticalScrollIndicator={false}
       stickySectionHeadersEnabled={false}
       style={[styles.bibleTextView, { paddingTop: HEADER_HEIGHT }]}
-      // onDragEnd
-    />
-  );
-
-  const renderParagraphItem = ({ item, i }) => (
-    <React.Fragment key={i}>
-      <AnimatedSectionHeader title={item.title} titleSize={titleSize} />
-      <Paragraph
-        key={i}
-        chapterNum={item.chapterNum}
-        crossrefSize={crossrefSize}
-        fontSize={fontSize}
-        section={item}
-        searchWords={searchWords}
-        onPress={toggleSlideView}
-      />
-    </React.Fragment>
-  );
-
-  const _onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
-    console.log("Visible items are", viewableItems);
-    console.log("Changed in this iteration", changed);
-  }, []);
-
-  const _viewabilityConfig = {
-    itemVisiblePercentThreshold: 50,
-  };
-
-  let paragraph2 = (
-    <AnimatedFlatList
-      bounces={false}
-      data={sections}
-      keyExtractor={(item) => item.chapterNum.toString()} //item.chapterNum}
-      onScroll={Animated.event([
-        {
-          nativeEvent: { contentOffset: { y: scrollY } },
-        },
-      ])}
-      paragraphView={paragraphView}
-      renderItem={renderParagraphItem}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      style={[
-        styles.bibleTextView,
-        { paddingTop: HEADER_HEIGHT, paddingBottom: HEADER_HEIGHT + 300 },
-      ]}
     />
   );
 
@@ -437,11 +446,21 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
             verseCardToolbarHeight -
             verseCardReferenceHeight
           }
+          paragraphBibleRef={paragraphBibleRef}
+          scrollY={scrollY}
+          sheetRef={sheetRef}
           verseCardReferenceHeight={verseCardReferenceHeight}
         />
       </View>
     );
   };
+
+  // const onViewRef = React.useRef((viewableItems) => {
+  //   console.log(viewableItems); //[0]["index"]);
+  //   // setFocusedVerse(viewableItems[0]["index"]);
+  //   // Use viewable items in state or as intended
+  // });
+  // const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   const renderBottomSheetContent = () => (
     <View
@@ -475,117 +494,46 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
         showsHorizontalScrollIndicator={false}
         snapToAlignment={"start"}
         snapToInterval={width}
-        // onViewableItemsChanged={_onViewableItemsChanged}
-        // viewabilityConfig={_viewabilityConfig}
+        // onViewableItemsChanged={onViewRef.current}
+        // viewabilityConfig={viewConfigRef.current}
+        // onViewableItemsChanged={onViewableItemsChanged}
+        // viewabilityConfig={{
+        //   itemVisiblePercentThreshold: 50,
+        // }}
       />
     </View>
   );
 
   return (
     <>
-      <Animated.View
-        style={{
-          backgroundColor: colors.light,
-          borderColor: colors.medium,
-          flex: 1,
-          flexDirection: "row",
-          // elevation: 1,
-          height: HEADER_HEIGHT,
-          position: "absolute",
-          transform: [{ translateY: headerY }],
-          width: "100%",
-          zIndex: 1,
-        }}
-      >
-        <View
-          style={{
-            alignItems: "center",
-            borderColor: colors.medium,
-            borderBottomWidth: 0.2,
-            width: "100%",
-            flexDirection: "row",
-            position: "relative",
-          }}
-        >
-          <BiblePicker
-            currentBook={currentBook}
-            currentChapter={currentChapter}
-            currentVerse={currentVerse}
-            onSelectItem={(item) => changeBibleBook(item)}
-            fontSize={fontSize}
-            height={HEADER_HEIGHT}
-            icon="magnify"
-            items={books}
-            placeholder="Category"
-            backgroundColor={colors.dark}
-            numberOfColumns={7}
-            PickerItemComponent={CategoryPickerItem}
-            flex={1}
-            width="60%"
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              width: "40%",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                borderRadius: 4,
-                borderWidth: 0.2,
-                borderColor: colors.medium,
-              }}
-              onPress={toggleParagraphView}
-            >
-              <Text style={styles.text}>NASB</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <MaterialCommunityIcons
-                name="speaker"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleFontSize}>
-              <MaterialCommunityIcons
-                name="format-letter-case"
-                color={colors.black}
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{ alignItems: "flex-end", position: "absolute" }}>
-          {sliderVisible ? (
-            <Slider
-              style={{ width: 200, height: 40 }}
-              minimumValue={10}
-              maximumValue={30}
-              minimumTrackTintColor="#FFFFFF"
-              maximumTrackTintColor={colors.primary}
-              onSlidingComplete={handleSlide}
-              step={2}
-              value={fontSize}
-            />
-          ) : null}
-        </View>
-      </Animated.View>
+      <BibleScreenToolBar
+        HEADER_HEIGHT={HEADER_HEIGHT}
+        headerY={headerY}
+        currentBook={currentBook}
+        currentChapter={currentChapter}
+        currentVerse={currentVerse}
+        changeBibleBook={changeBibleBook}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
+        books={books}
+        toggleParagraphMode={toggleParagraphMode}
+      />
 
       {/* <TextInput
         style={{ height: 40 }}
         placeholder="TYPE HERE"
         onChangeText={(text) => setSearchWords([text])}
       /> */}
-      {/* {paragraph2} */}
-      {paragraphView ? paragraph2 : verseByVerse1}
+      {/* {paragraphBible} */}
+      {paragraphMode ? paragraphBible : verseByVerseBible}
 
       <BottomSheet
         ref={sheetRef}
         snapPoints={[top, low, 0]}
+        initialSnap={2}
         borderRadius={10}
         renderContent={renderBottomSheetContent}
-        onOpenStart={() => console.log("onOpenStart")} //setPanelLoading(true)}
+        // onCloseEnd={() => setFocusedVerse(null)}
       />
     </>
   );

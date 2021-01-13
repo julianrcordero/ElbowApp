@@ -24,7 +24,7 @@ function ListingDetailsScreen({ route }) {
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{listing.title}</Text>
         <Text style={styles.scripture}>${listing.scripture}</Text>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.userContainer}>
             <ListItem
               image={require("../assets/gtylogo.jpg")}
@@ -36,10 +36,16 @@ function ListingDetailsScreen({ route }) {
             style={{
               fontSize: fontSize,
               lineHeight: fontSize * 2,
+              marginVertical: 15,
             }}
           >
             {listing.content}
           </AppText>
+          <View
+            style={{
+              height: 800,
+            }}
+          ></View>
         </ScrollView>
       </View>
     </View>
@@ -48,7 +54,7 @@ function ListingDetailsScreen({ route }) {
 
 const styles = StyleSheet.create({
   detailsContainer: {
-    padding: 20,
+    padding: 30,
   },
   image: {
     width: "100%",
@@ -65,7 +71,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   userContainer: {
-    marginVertical: 40,
+    // marginVertical: 40,
   },
 });
 

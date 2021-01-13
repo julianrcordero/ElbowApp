@@ -9,7 +9,7 @@ export default class Verse extends PureComponent {
 
     this.state = {
       backgroundColor: "white",
-      textDecorationLine: "none",
+      // textDecorationLine: "none",
     };
   }
 
@@ -21,18 +21,19 @@ export default class Verse extends PureComponent {
     }
   };
 
-  _toggleUnderline = () => {
-    if (this.state.textDecorationLine === "none") {
-      this.setState({ textDecorationLine: "underline" });
-    } else {
-      this.setState({ textDecorationLine: "none" });
-    }
-  };
+  // _toggleUnderline = () => {
+  //   if (this.state.textDecorationLine === "none") {
+  //     this.setState({ textDecorationLine: "underline" });
+  //   } else {
+  //     this.setState({ textDecorationLine: "none" });
+  //   }
+  // };
 
   render() {
     const {
       chapterNum,
       crossrefSize,
+      // focusedVerse,
       verse,
       searchWords,
       style,
@@ -42,45 +43,59 @@ export default class Verse extends PureComponent {
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
 
     const reactStringReplace = require("react-string-replace");
-    const parsedVerse = verse["crossref"]
-      ? reactStringReplace(verse["__text"], /\n/, (match, i) => (
-          <Text
-            key={i}
-            style={{ flexDirection: "row", alignItems: "flex-start" }}
-          >
-            <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
-              {Array.isArray(verse["crossref"])
-                ? verse["crossref"][0]["_let"]
-                : verse["crossref"]["_let"]}
-            </Text>
-            {match}
-          </Text>
-        ))
-      : reactStringReplace(verse["__text"], /\n/, (match, i) => (
-          <Text key={i}>{match}</Text>
-        ));
+    const parsedVerse = "This is a parsed verse";
+    // verse["crossref"]
+    //   ? reactStringReplace(verse["__text"], /\n/, (match, i) => (
+    //       <Text
+    //         key={i}
+    //         style={{ flexDirection: "row", alignItems: "flex-start" }}
+    //       >
+    //         <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
+    //           {Array.isArray(verse["crossref"])
+    //             ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
+    //             : verse["crossref"]["_let"]}
+    //         </Text>
+    //         {match}
+    //       </Text>
+    //     ))
+    //   :
+    // reactStringReplace(verse["__text"], /\n/, (match, i) => (
+    //   <Text key={i}>{match}</Text>
+    // ));
 
-    const MyVerse = () => {
-      return (
-        <View style={{ backgroundColor: "green" }}>
-          <Text>{"HELLO"}</Text>
-        </View>
-      );
-    };
+    // const superFontSize = crossrefSize; //Math.floor(fontSize * 0.6);
+    // const superlineHeight = superFontSize * 1.1;
+    // const superStyle = {
+    //   textAlignVertical: "top",
+    //   fontSize: superFontSize,
+    //   lineHeight: superlineHeight,
+    // };
+    // const regular = {
+    //   textAlignVertical: "bottom",
+    //   fontSize: fontSize,
+    // };
 
     return (
+      // <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+      //   <Text style={superStyle}>Super</Text>
+      //   <Text style={regular}> Regular Text</Text>
+      // </View>
       <Text
         style={[
           style,
           {
             backgroundColor: this.state.backgroundColor,
-            textDecorationLine: this.state.textDecorationLine,
+            // textDecorationLine: this.state.textDecorationLine,
+            // focusedVerse == Number(verse["_num"]) ? "underline" : "none",
           },
         ]}
         onPress={onPress}
         onLongPress={this._toggleHighlight}
       >
-        <Text style={{ fontWeight: "bold" }}> {verse["_num"]} </Text>
+        <Text style={{ fontWeight: "bold", color: "#00aeef" }}>
+          {" "}
+          {verse["_num"]}{" "}
+        </Text>
         {parsedVerse}
         {/* <HighlightComponent
           highlightStyle={{ backgroundColor: "red" }}
