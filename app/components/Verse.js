@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Highlighter from "react-native-highlight-words";
 import reactStringReplace from "react-string-replace";
+import verseFormatted from "./VerseFormatted";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class Verse extends PureComponent {
@@ -34,7 +35,6 @@ export default class Verse extends PureComponent {
     const {
       chapterNum,
       crossrefSize,
-      fontSize,
       // focusedVerse,
       verse,
       searchWords,
@@ -43,34 +43,8 @@ export default class Verse extends PureComponent {
     } = this.props;
 
     const parsedReference = `${chapterNum} : ${verse["_num"]}`;
-    // const parsedVerse =
-    // verse["crossref"]
-    //   ?
 
-    //   "The quick brown fox jumps over the lazy dog. The dog did not comprehend."
-    //   :
-    //   "You took my only food. Now I'm gonna starve."
-    // verse["crossref"]
-    //   ?
-    //   reactStringReplace(verse["__text"], /\n/, (match, i) => (
-    //       <Text
-    //         key={i}
-    //         // style={{ flexDirection: "row", alignItems: "flex-start" }}
-    //       >
-    //         <Text style={{ fontSize: crossrefSize,
-    //           // lineHeight: 10
-    //           }}>
-    //           {Array.isArray(verse["crossref"])
-    //             ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
-    //             : verse["crossref"]["_let"]}
-    //         </Text>
-    //         {match}
-    //       </Text>
-    //     ))
-    //   :
-    // reactStringReplace(verse["__text"], /\n/, (match, i) => (
-    //   <Text key={i}>{match}</Text>
-    // ));
+    const parsedVerse = verseFormatted(verse, crossrefSize);
 
     return (
       <Text
@@ -78,8 +52,6 @@ export default class Verse extends PureComponent {
           style,
           {
             backgroundColor: this.state.backgroundColor,
-            // flexDirection: "row",
-            // alignItems: "flex-start"
             // textDecorationLine: this.state.textDecorationLine,
             // focusedVerse == Number(verse["_num"]) ? "underline" : "none",
           },
@@ -91,48 +63,13 @@ export default class Verse extends PureComponent {
           style={{
             fontWeight: "bold",
             color: "#00aeef",
-            // fontSize: crossrefSize,
-            // textAlignVertical: "top",
-            // lineHeight: crossrefSize * 1.1
           }}
         >
           {" "}
           {verse["_num"]}{" "}
         </Text>
-        <Text
-          style={
-            ({ textAlignVertical: "bottom" },
-            { fontSize: fontSize, lineHeight: fontSize * 2 })
-          }
-        >
-          {verse["crossref"]
-            ? verse["__text"].replace(
-                "\n",
-                Array.isArray(verse["crossref"])
-                  ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
-                  : verse["crossref"]["_let"]
-              )
-            : // reactStringReplace(verse["__text"], /\n/, (match, i) => (
-              //     <Text
-              //       key={i}
-              //       // style={{ flexDirection: "row", alignItems: "flex-start" }}
-              //     >
-              //       <Text
-              //         style={{
-              //           fontSize: crossrefSize,
-              //           // lineHeight: 10
-              //         }}
-              //       >
-              //         {Array.isArray(verse["crossref"])
-              //           ? verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
-              //           : verse["crossref"]["_let"]}
-              //       </Text>
-              //     </Text>
-              //   ))
-              reactStringReplace(verse["__text"], /\n/, (match, i) => (
-                <Text key={i}>{match}</Text>
-              ))}
-        </Text>
+
+        {parsedVerse}
         {/* <HighlightComponent
           highlightStyle={{ backgroundColor: "red" }}
           searchWords={searchWords}

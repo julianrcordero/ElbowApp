@@ -14,7 +14,11 @@ import Screen from "./Screen";
 import { FlatList } from "react-native-gesture-handler";
 import PickerItem from "./PickerItem";
 import colors from "../config/colors";
-import BiblePickerItem from "./BiblePickerItem";
+
+import { createStackNavigator } from "@react-navigation/stack";
+import BooksScreen from "../screens/BooksScreen";
+import ChaptersScreen from "../screens/ChaptersScreen";
+const Stack = createStackNavigator();
 
 function BiblePicker({
   currentBook,
@@ -23,10 +27,7 @@ function BiblePicker({
   fontSize,
   height,
   icon,
-  items,
-  numberOfColumns,
   onSelectItem,
-  PickerItemComponent = BiblePickerItem,
   placeholder,
   width,
 }) {
@@ -46,17 +47,10 @@ function BiblePicker({
         <View style={{ flexDirection: "row" }}>
           <Text style={{ fontSize: fontSize }}>
             {currentBook ? (
-              <AppText
-                style={[
-                  styles.text,
-                  // { backgroundColor: "blue", flexShrink: 1 },
-                ]}
-              >
-                {currentBook.label +
-                  " " +
-                  currentChapter +
-                  " : " +
-                  currentVerse}
+              <AppText style={[styles.text]}>
+                {
+                  currentBook.label + " " + currentChapter // +" : " +currentVerse
+                }
               </AppText>
             ) : (
               <AppText style={styles.placeholder}>{placeholder}</AppText>
@@ -74,7 +68,21 @@ function BiblePicker({
         </View>
       </TouchableWithoutFeedback>
       <Modal visible={modalVisible} animationType="slide">
-        <Screen style={styles.modal}>
+        <Stack.Navigator mode="modal" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Books" component={BooksScreen} />
+          <Stack.Screen
+            name="Chapters"
+            children={() => (
+              <ChaptersScreen
+                setModalVisible={setModalVisible}
+                onSelectItem={onSelectItem}
+              />
+            )}
+          />
+          {/* <Stack.Screen name="Chapters" component={ChaptersScreen} /> */}
+        </Stack.Navigator>
+
+        {/* <Screen style={styles.modal}>
           <Button
             title="Close"
             // style={{
@@ -122,7 +130,7 @@ function BiblePicker({
               />
             )}
           />
-        </Screen>
+        </Screen> */}
       </Modal>
     </View>
   );

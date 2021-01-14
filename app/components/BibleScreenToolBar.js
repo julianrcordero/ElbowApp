@@ -9,6 +9,7 @@ import BiblePicker from "../components/BiblePicker";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 
 import colors from "../config/colors";
+import BiblePickerItem from "./BiblePickerItem";
 
 export default function BibleScreenToolBar(props) {
   const [sliderVisible, setSliderVisible] = useState(false);
@@ -48,11 +49,10 @@ export default function BibleScreenToolBar(props) {
           fontSize={props.fontSize}
           height={props.HEADER_HEIGHT}
           icon="magnify"
-          items={props.books}
+          // items={props.books}
           placeholder="Category"
           backgroundColor={colors.dark}
-          numberOfColumns={7}
-          PickerItemComponent={CategoryPickerItem}
+          PickerItemComponent={BiblePickerItem}
           flex={1}
           width="60%"
         />

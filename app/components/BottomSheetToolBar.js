@@ -34,7 +34,6 @@ export default class Verse extends PureComponent {
     return (
       <View
         style={{
-          backgroundColor: colors.light,
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",

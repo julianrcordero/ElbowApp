@@ -31,6 +31,7 @@ import BottomSheetToolBar from "../components/BottomSheetToolBar";
 import defaultStyles from "../config/styles";
 import colors from "../config/colors";
 import BibleScreenToolBar from "../components/BibleScreenToolBar";
+import verseFormatted from "../components/VerseFormatted";
 
 class SectionHeader extends PureComponent {
   constructor(props) {
@@ -57,12 +58,6 @@ class SectionHeader extends PureComponent {
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 const AnimatedSectionHeader = Animated.createAnimatedComponent(SectionHeader);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-// const onViewableItemsChanged = ({ viewableItems, changed }) => {
-//   console.log(viewableItems[0]["index"]);
-//   setFocusedVerse(viewableItems[0]["index"]);
-//   // console.log("Visible items are", viewableItems);
-//   // console.log("Changed in this iteration", changed);
-// };
 
 export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   useEffect(() => {
@@ -76,117 +71,468 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
 
   const books = [
     ////
-    { label: "Genesis", value: 1, backgroundColor: "#345171", icon: "apps" },
-    { label: "Exodus", value: 2, backgroundColor: "red", icon: "apps" },
-    { label: "Leviticus", value: 3, backgroundColor: "red", icon: "apps" },
-    { label: "Numbers", value: 4, backgroundColor: "red", icon: "apps" },
-    { label: "Deuteronomy", value: 5, backgroundColor: "red", icon: "apps" },
-    { label: "Joshua", value: 6, backgroundColor: "red", icon: "apps" },
-    { label: "Judges", value: 7, backgroundColor: "red", icon: "apps" },
-    { label: "Ruth", value: 8, backgroundColor: "red", icon: "apps" },
-    { label: "I Samuel", value: 9, backgroundColor: "red", icon: "apps" },
-    { label: "II Samuel", value: 10, backgroundColor: "red", icon: "apps" },
-    { label: "I Kings", value: 11, backgroundColor: "red", icon: "apps" },
-    { label: "II Kings", value: 12, backgroundColor: "red", icon: "apps" },
+    {
+      label: "Genesis",
+      short: "Ge",
+      value: 1,
+      backgroundColor: "#FFFB79",
+      icon: "apps",
+    },
+    {
+      label: "Exodus",
+      short: "Ex",
+      value: 2,
+      backgroundColor: "#FFFB79",
+      icon: "apps",
+    },
+    {
+      label: "Leviticus",
+      short: "Le",
+      value: 3,
+      backgroundColor: "#FFFB79",
+      icon: "apps",
+    },
+    {
+      label: "Numbers",
+      short: "Nu",
+      value: 4,
+      backgroundColor: "#FFFB79",
+      icon: "apps",
+    },
+    {
+      label: "Deuteronomy",
+      short: "Dt",
+      value: 5,
+      backgroundColor: "#FFFB79",
+      icon: "apps",
+    },
+    {
+      label: "Joshua",
+      short: "Jos",
+      value: 6,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "Judges",
+      short: "Jdg",
+      value: 7,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "Ruth",
+      short: "Ru",
+      value: 8,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "I Samuel",
+      short: "1Sa",
+      value: 9,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "II Samuel",
+      short: "2Sa",
+      value: 10,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "I Kings",
+      short: "1Ki",
+      value: 11,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "II Kings",
+      short: "2Ki",
+      value: 12,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
     {
       label: "I Chronicles",
+      short: "1Ch",
       value: 13,
-      backgroundColor: "red",
+      backgroundColor: "#F9E4B7",
       icon: "apps",
     },
     {
       label: "II Chronicles",
+      short: "2Ch",
       value: 14,
-      backgroundColor: "red",
+      backgroundColor: "#F9E4B7",
       icon: "apps",
     },
-    { label: "Ezra", value: 15, backgroundColor: "red", icon: "apps" },
-    { label: "Nehemiah", value: 16, backgroundColor: "red", icon: "apps" },
-    { label: "Esther", value: 17, backgroundColor: "red", icon: "apps" },
-    { label: "Job", value: 18, backgroundColor: "red", icon: "apps" },
-    { label: "Psalms", value: 19, backgroundColor: "red", icon: "apps" },
-    { label: "Proverbs", value: 20, backgroundColor: "red", icon: "apps" },
+    {
+      label: "Ezra",
+      short: "Ezr",
+      value: 15,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "Nehemiah",
+      short: "Ne",
+      value: 16,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "Esther",
+      short: "Es",
+      value: 17,
+      backgroundColor: "#F9E4B7",
+      icon: "apps",
+    },
+    {
+      label: "Job",
+      short: "Job",
+      value: 18,
+      backgroundColor: "#CDEBF9",
+      icon: "apps",
+    },
+    {
+      label: "Psalms",
+      short: "Ps",
+      value: 19,
+      backgroundColor: "#CDEBF9",
+      icon: "apps",
+    },
+    {
+      label: "Proverbs",
+      short: "Pr",
+      value: 20,
+      backgroundColor: "#CDEBF9",
+      icon: "apps",
+    },
     {
       label: "Ecclesiastes",
+      short: "Ec",
       value: 21,
-      backgroundColor: "red",
+      backgroundColor: "#CDEBF9",
       icon: "apps",
     },
     {
       label: "Song of Solomon",
+      short: "So",
       value: 22,
-      backgroundColor: "red",
+      backgroundColor: "#CDEBF9",
       icon: "apps",
     },
-    { label: "Isaiah", value: 23, backgroundColor: "red", icon: "apps" },
-    { label: "Jeremiah", value: 24, backgroundColor: "red", icon: "apps" },
+    {
+      label: "Isaiah",
+      short: "Is",
+      value: 23,
+      backgroundColor: "#FFC0CB",
+      icon: "apps",
+    },
+    {
+      label: "Jeremiah",
+      short: "Je",
+      value: 24,
+      backgroundColor: "#FFC0CB",
+      icon: "apps",
+    },
     {
       label: "Lamentations",
+      short: "La",
       value: 25,
-      backgroundColor: "red",
+      backgroundColor: "#CDEBF9",
       icon: "apps",
     },
-    { label: "Ezekiel", value: 26, backgroundColor: "red", icon: "apps" },
-    { label: "Daniel", value: 27, backgroundColor: "red", icon: "apps" },
-    { label: "Hosea", value: 28, backgroundColor: "red", icon: "apps" },
-    { label: "Joel", value: 29, backgroundColor: "red", icon: "apps" },
-    { label: "Amos", value: 30, backgroundColor: "red", icon: "apps" },
-    { label: "Obadiah", value: 31, backgroundColor: "red", icon: "apps" },
-    { label: "Jonah", value: 32, backgroundColor: "red", icon: "apps" },
-    { label: "Micah", value: 33, backgroundColor: "red", icon: "apps" },
-    { label: "Nahum", value: 34, backgroundColor: "red", icon: "apps" },
-    { label: "Habbakuk", value: 35, backgroundColor: "red", icon: "apps" },
-    { label: "Zephaniah", value: 36, backgroundColor: "red", icon: "apps" },
-    { label: "Haggai", value: 37, backgroundColor: "red", icon: "apps" },
-    { label: "Zachariah", value: 38, backgroundColor: "red", icon: "apps" },
-    { label: "Malachi", value: 39, backgroundColor: "red", icon: "apps" },
-    { label: "Matthew", value: 40, backgroundColor: "red", icon: "apps" },
-    { label: "Mark", value: 41, backgroundColor: "red", icon: "apps" },
-    { label: "Luke", value: 42, backgroundColor: "red", icon: "apps" },
-    { label: "John", value: 43, backgroundColor: "red", icon: "apps" },
-    { label: "Acts", value: 44, backgroundColor: "red", icon: "apps" },
-    { label: "Romans", value: 45, backgroundColor: "red", icon: "apps" },
+    {
+      label: "Ezekiel",
+      short: "Eze",
+      value: 26,
+      backgroundColor: "#FFC0CB",
+      icon: "apps",
+    },
+    {
+      label: "Daniel",
+      short: "Da",
+      value: 27,
+      backgroundColor: "#FFC0CB",
+      icon: "apps",
+    },
+    {
+      label: "Hosea",
+      short: "Ho",
+      value: 28,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Joel",
+      short: "Joe",
+      value: 29,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Amos",
+      short: "Am",
+      value: 30,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Obadiah",
+      short: "Ob",
+      value: 31,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Jonah",
+      short: "Jon",
+      value: 32,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Micah",
+      short: "Mic",
+      value: 33,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Nahum",
+      short: "Na",
+      value: 34,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Habbakuk",
+      short: "Hab",
+      value: 35,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Zephaniah",
+      short: "Zep",
+      value: 36,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Haggai",
+      short: "Hag",
+      value: 37,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Zachariah",
+      short: "Zec",
+      value: 38,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Malachi",
+      short: "Mal",
+      value: 39,
+      backgroundColor: "#89F0AA",
+      icon: "apps",
+    },
+    {
+      label: "Matthew",
+      short: "Mt",
+      value: 40,
+      backgroundColor: "#89F0DE",
+      icon: "apps",
+    },
+    {
+      label: "Mark",
+      short: "Mk",
+      value: 41,
+      backgroundColor: "#89F0DE",
+      icon: "apps",
+    },
+    {
+      label: "Luke",
+      short: "Lk",
+      value: 42,
+      backgroundColor: "#89F0DE",
+      icon: "apps",
+    },
+    {
+      label: "John",
+      short: "Jn",
+      value: 43,
+      backgroundColor: "#89F0DE",
+      icon: "apps",
+    },
+    {
+      label: "Acts",
+      short: "Ac",
+      value: 44,
+      backgroundColor: "#F0AA89",
+      icon: "apps",
+    },
+    {
+      label: "Romans",
+      short: "Ro",
+      value: 45,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
     {
       label: "I Corinthians",
+      short: "1Co",
       value: 46,
-      backgroundColor: "red",
+      backgroundColor: "#b5cde1",
       icon: "apps",
     },
     {
       label: "II Corinthians",
+      short: "2Co",
       value: 47,
-      backgroundColor: "red",
+      backgroundColor: "#b5cde1",
       icon: "apps",
     },
-    { label: "Galatians", value: 48, backgroundColor: "red", icon: "apps" },
-    { label: "Ephesians", value: 49, backgroundColor: "red", icon: "apps" },
-    { label: "Philippians", value: 50, backgroundColor: "red", icon: "apps" },
-    { label: "Colossians", value: 51, backgroundColor: "red", icon: "apps" },
+    {
+      label: "Galatians",
+      short: "Ga",
+      value: 48,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "Ephesians",
+      short: "Eph",
+      value: 49,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "Philippians",
+      short: "Php",
+      value: 50,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "Colossians",
+      short: "Col",
+      value: 51,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
     {
       label: "I Thessalonians",
+      short: "1Th",
       value: 52,
-      backgroundColor: "red",
+      backgroundColor: "#b5cde1",
       icon: "apps",
     },
     {
       label: "II Thessalonians",
+      short: "2Th",
       value: 53,
-      backgroundColor: "red",
+      backgroundColor: "#b5cde1",
       icon: "apps",
     },
-    { label: "I Timothy", value: 54, backgroundColor: "red", icon: "apps" },
-    { label: "II Timothy", value: 55, backgroundColor: "red", icon: "apps" },
-    { label: "Titus", value: 56, backgroundColor: "red", icon: "apps" },
-    { label: "Philemon", value: 57, backgroundColor: "red", icon: "apps" },
-    { label: "Hebrews", value: 58, backgroundColor: "red", icon: "apps" },
-    { label: "James", value: 59, backgroundColor: "red", icon: "apps" },
-    { label: "I Peter", value: 60, backgroundColor: "red", icon: "apps" },
-    { label: "II Peter", value: 61, backgroundColor: "red", icon: "apps" },
-    { label: "I John", value: 62, backgroundColor: "red", icon: "apps" },
-    { label: "II John", value: 63, backgroundColor: "red", icon: "apps" },
-    { label: "III John", value: 64, backgroundColor: "red", icon: "apps" },
-    { label: "Jude", value: 65, backgroundColor: "red", icon: "apps" },
-    { label: "Revelation", value: 66, backgroundColor: "red", icon: "apps" },
+    {
+      label: "I Timothy",
+      short: "1Ti",
+      value: 54,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "II Timothy",
+      short: "2Ti",
+      value: 55,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "Titus",
+      short: "Tt",
+      value: 56,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "Philemon",
+      short: "Phm",
+      value: 57,
+      backgroundColor: "#b5cde1",
+      icon: "apps",
+    },
+    {
+      label: "Hebrews",
+      short: "Heb",
+      value: 58,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "James",
+      short: "Jas",
+      value: 59,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "I Peter",
+      short: "1Pe",
+      value: 60,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "II Peter",
+      short: "2Pe",
+      value: 61,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "I John",
+      short: "1Jn",
+      value: 62,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "II John",
+      short: "2Jn",
+      value: 63,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "III John",
+      short: "3Jn",
+      value: 64,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "Jude",
+      short: "Jud",
+      value: 65,
+      backgroundColor: "#FFDB58",
+      icon: "apps",
+    },
+    {
+      label: "Revelation",
+      short: "Re",
+      value: 66,
+      backgroundColor: "#58d0ff",
+      icon: "apps",
+    },
   ];
 
   const notesArray = JSON.parse(
@@ -206,7 +552,7 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   const [paragraphMode, setParagraphMode] = useState(true);
   const [] = useState(false);
   const [fontSize, setFontSize] = useState(16);
-  const crossrefSize = fontSize * 0.6;
+  const crossrefSize = 12; //fontSize * 0.6;
   const titleSize = fontSize * 1.5;
   // const { landscape } = useDeviceOrientation();
   const [] = useState(true);
@@ -248,10 +594,7 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
           const pTag = note["content"]["p"][0];
           const parsedNote = pTag["a"]
             ? reactStringReplace(pTag["__text"], /\n/g, (match, i) => (
-                <Text
-                  key={i}
-                  style={{ flexDirection: "row", alignItems: "flex-start" }}
-                >
+                <Text key={i}>
                   <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
                     {Array.isArray(pTag["a"])
                       ? "REF1" //pTag["a"][0]["__text"] //"a" is always an array
@@ -290,23 +633,7 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
         verses.push({
           chapter: Number(chapter["_num"]),
           title: Number(verse["_num"]),
-          content: verse["crossref"]
-            ? reactStringReplace(verse["__text"], /(\n)/g, (match, index) => (
-                <Text
-                  key={index}
-                  style={{ flexDirection: "row", alignItems: "flex-start" }}
-                >
-                  <Text style={{ fontSize: crossrefSize, lineHeight: 10 }}>
-                    {Array.isArray(verse["crossref"])
-                      ? " " + verse["crossref"][0]["_let"] // can't index, quotes must be replaced with quote literals
-                      : " " + verse["crossref"]["_let"]}
-                  </Text>
-                  {/* {match} */}
-                </Text>
-              ))
-            : reactStringReplace(verse["__text"], "\n", (match, i) => (
-                <Text key={i}>{""}</Text>
-              )),
+          content: verseFormatted(verse, crossrefSize),
           johnsNote: johnsNote,
           loved: false,
           crossrefs: crossrefs,
@@ -515,7 +842,7 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
         changeBibleBook={changeBibleBook}
         fontSize={fontSize}
         setFontSize={setFontSize}
-        books={books}
+        // books={books}
         toggleParagraphMode={toggleParagraphMode}
       />
 
