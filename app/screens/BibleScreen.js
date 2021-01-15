@@ -1,11 +1,10 @@
-import React, { PureComponent, useState, useEffect, useCallback } from "react";
+import React, { PureComponent, useState, useEffect } from "react";
 import {
   FlatList,
   InteractionManager,
   SectionList,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Dimensions,
 } from "react-native";
@@ -13,9 +12,6 @@ import Animated from "react-native-reanimated";
 import Constants from "expo-constants";
 import { getBottomSpace } from "react-native-iphone-x-helper";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import SlidingUpPanel from "rn-sliding-up-panel";
-import Slider from "@react-native-community/slider";
 import BottomSheet from "reanimated-bottom-sheet";
 import reactStringReplace from "react-string-replace";
 
@@ -24,8 +20,6 @@ import bookPaths from "../json/bible/Bible";
 import VerseCard from "../components/VerseCard";
 import Paragraph from "../components/Paragraph";
 import Verse from "../components/Verse";
-import BiblePicker from "../components/BiblePicker";
-import CategoryPickerItem from "../components/CategoryPickerItem";
 import BottomSheetToolBar from "../components/BottomSheetToolBar";
 
 import defaultStyles from "../config/styles";
@@ -546,8 +540,8 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   const [sections, setSections] = useState([]);
   const [searchWords] = useState([]);
   const [currentBook, setCurrentBook] = useState(books[0]);
-  const [currentChapter, setCurrentChapter] = useState(1);
-  const [currentVerse, setCurrentVerse] = useState(1);
+  const [currentChapter] = useState(1);
+  const [currentVerse] = useState(1);
   // const [bookNotes, setBookNotes] = useState([]);
   const [paragraphMode, setParagraphMode] = useState(true);
   const [] = useState(false);

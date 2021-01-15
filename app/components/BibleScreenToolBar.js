@@ -54,40 +54,8 @@ export default function BibleScreenToolBar(props) {
           backgroundColor={colors.dark}
           PickerItemComponent={BiblePickerItem}
           flex={1}
-          width="60%"
+          // width="60%"
         />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            width: "40%",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              borderRadius: 4,
-              borderWidth: 0.2,
-              borderColor: colors.medium,
-            }}
-            onPress={props.toggleParagraphMode}
-          >
-            <Text>NASB</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <MaterialCommunityIcons
-              name="speaker"
-              color={colors.black}
-              size={20}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleFontSize}>
-            <MaterialCommunityIcons
-              name="format-letter-case"
-              color={colors.black}
-              size={20}
-            />
-          </TouchableOpacity>
-        </View>
       </View>
       <View style={{ alignItems: "flex-end", position: "absolute" }}>
         {sliderVisible ? (

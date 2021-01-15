@@ -30,13 +30,13 @@ function ChaptersScreen({ navigation, onSelectItem, setModalVisible }) {
 
   return (
     <Screen style={styles.modal}>
-      <Button
+      {/* <Button
         title="Close"
         // style={{
         //   marginBottom: 10,
         // }}
         onPress={() => setModalVisible(false)}
-      />
+      /> */}
       <AppText>Old Testament</AppText>
       <FlatList
         data={DATA}

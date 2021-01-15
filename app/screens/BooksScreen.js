@@ -485,13 +485,6 @@ function BooksScreen({ navigation }) {
 
   return (
     <Screen style={styles.modal}>
-      <Button
-        title="Close"
-        // style={{
-        //   marginBottom: 10,
-        // }}
-        onPress={() => setModalVisible(false)}
-      />
       <AppText>Old Testament</AppText>
       <FlatList
         data={books.slice(0, 39)}
@@ -538,6 +531,9 @@ function BooksScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    marginHorizontal: 15,
+  },
   screen: {
     padding: 20,
     backgroundColor: colors.light,

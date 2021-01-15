@@ -1,23 +1,27 @@
 import React, { useState } from "react";
 import {
+  Dimensions,
   View,
   StyleSheet,
   TouchableWithoutFeedback,
-  Modal,
+  // Modal,
   Button,
   Text,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
 import AppText from "./Text";
+import Modal from "react-native-modal";
 import Screen from "./Screen";
 import { FlatList } from "react-native-gesture-handler";
 import PickerItem from "./PickerItem";
 import colors from "../config/colors";
+const { height, width } = Dimensions.get("window");
 
 import { createStackNavigator } from "@react-navigation/stack";
 import BooksScreen from "../screens/BooksScreen";
 import ChaptersScreen from "../screens/ChaptersScreen";
+import CollapsibleView from "@eliav2/react-native-collapsible-view";
 const Stack = createStackNavigator();
 
 function BiblePicker({
@@ -25,114 +29,92 @@ function BiblePicker({
   currentChapter,
   currentVerse,
   fontSize,
-  height,
+  // height,
   icon,
   onSelectItem,
   placeholder,
-  width,
+  // width,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View style={[styles.container, { height: height - 1, width }]}>
-      {icon && (
-        <MaterialCommunityIcons
-          name={icon}
-          size={24}
-          color={colors.black}
-          style={styles.icon}
+    <CollapsibleView
+      title={
+        <Text style={{ fontSize: fontSize }}>
+          {currentBook ? (
+            <AppText style={[styles.text]}>
+              {
+                currentBook.label + " " + currentChapter // +" : " +currentVerse
+              }
+            </AppText>
+          ) : (
+            <AppText style={styles.placeholder}>{placeholder}</AppText>
+          )}
+        </Text>
+      }
+      collapsibleContainerStyle={{ position: "absolute", top: "100%" }}
+      style={{ width: width }}
+      noArrow
+    >
+      <View style={{ backgroundColor: "red", height: 200, width: 300 }}></View>
+      {/* <Stack.Navigator
+        // mode="card"
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="Books" component={BooksScreen} />
+        <Stack.Screen
+          name="Chapters"
+          children={() => (
+            <ChaptersScreen
+              setModalVisible={setModalVisible}
+              onSelectItem={onSelectItem}
+            />
+          )}
         />
-      )}
-      <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: fontSize }}>
-            {currentBook ? (
-              <AppText style={[styles.text]}>
-                {
-                  currentBook.label + " " + currentChapter // +" : " +currentVerse
-                }
-              </AppText>
-            ) : (
-              <AppText style={styles.placeholder}>{placeholder}</AppText>
-            )}
-          </Text>
-          <MaterialCommunityIcons
-            name="chevron-down"
-            size={20}
-            color={defaultStyles.colors.dark}
-            style={{
-              // backgroundColor: "white",
-              paddingHorizontal: 3,
-            }}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-      <Modal visible={modalVisible} animationType="slide">
-        <Stack.Navigator mode="modal" screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Books" component={BooksScreen} />
-          <Stack.Screen
-            name="Chapters"
-            children={() => (
-              <ChaptersScreen
-                setModalVisible={setModalVisible}
-                onSelectItem={onSelectItem}
-              />
-            )}
-          />
-          {/* <Stack.Screen name="Chapters" component={ChaptersScreen} /> */}
-        </Stack.Navigator>
-
-        {/* <Screen style={styles.modal}>
-          <Button
-            title="Close"
-            // style={{
-            //   marginBottom: 10,
-            // }}
-            onPress={() => setModalVisible(false)}
-          />
-          <AppText>Old Testament</AppText>
-          <FlatList
-            data={items.slice(0, 39)}
-            keyExtractor={(item) => item.value.toString()}
-            numColumns={numberOfColumns}
-            style={{
-              paddingTop: 10,
-              // marginHorizontal: 15
-            }}
-            renderItem={({ item }) => (
-              <PickerItemComponent
-                item={item}
-                label={item.label}
-                onPress={() => {
-                  setModalVisible(false);
-                  onSelectItem(item);
-                }}
-              />
-            )}
-          />
-          <AppText>New Testament</AppText>
-          <FlatList
-            data={items.slice(39, 66)}
-            keyExtractor={(item) => item.value.toString()}
-            numColumns={numberOfColumns}
-            style={{
-              paddingTop: 10,
-              // marginHorizontal: 15
-            }}
-            renderItem={({ item }) => (
-              <PickerItemComponent
-                item={item}
-                label={item.label}
-                onPress={() => {
-                  setModalVisible(false);
-                  onSelectItem(item);
-                }}
-              />
-            )}
-          />
-        </Screen> */}
-      </Modal>
-    </View>
+      </Stack.Navigator> */}
+    </CollapsibleView>
+    // <View
+    //   style={[
+    //     styles.container,
+    //     {
+    //       // height: height - 1,
+    //       width,
+    //     },
+    //   ]}
+    // >
+    //   {icon && (
+    //     <MaterialCommunityIcons
+    //       name={icon}
+    //       size={24}
+    //       color={colors.black}
+    //       style={styles.icon}
+    //     />
+    //   )}
+    //   <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
+    //     <View style={{ flexDirection: "row" }}>
+    //       <Text style={{ fontSize: fontSize }}>
+    //         {currentBook ? (
+    //           <AppText style={[styles.text]}>
+    //             {
+    //               currentBook.label + " " + currentChapter // +" : " +currentVerse
+    //             }
+    //           </AppText>
+    //         ) : (
+    //           <AppText style={styles.placeholder}>{placeholder}</AppText>
+    //         )}
+    //       </Text>
+    //       <MaterialCommunityIcons
+    //         name="chevron-down"
+    //         size={20}
+    //         color={defaultStyles.colors.dark}
+    //         style={{
+    //           // backgroundColor: "white",
+    //           paddingHorizontal: 3,
+    //         }}
+    //       />
+    //     </View>
+    //   </TouchableWithoutFeedback>
+    // </View>
   );
 }
 
@@ -147,9 +129,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
-  },
-  modal: {
-    marginHorizontal: 15,
   },
   placeholder: {
     color: defaultStyles.colors.medium,
