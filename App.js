@@ -3,7 +3,7 @@ import { Button, View } from "react-native";
 import "react-native-gesture-handler";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import jwtDecode from "jwt-decode";
-import { AppLoading } from "expo";
+import AppLoading from "expo-app-loading";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -113,7 +113,11 @@ export default function App() {
 
   if (!isReady)
     return (
-      <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} />
+      <AppLoading
+        startAsync={restoreUser}
+        onFinish={() => setIsReady(true)}
+        onError={console.warn}
+      />
     );
 
   return (

@@ -19,6 +19,9 @@ export default function BibleScreenToolBar(props) {
   return (
     <Animated.View
       style={{
+        alignItems: "center",
+        borderBottomWidth: 0.2,
+        justifyContent: "center",
         backgroundColor: colors.light,
         borderColor: colors.medium,
         flex: 1,
@@ -31,33 +34,27 @@ export default function BibleScreenToolBar(props) {
         zIndex: 1,
       }}
     >
-      <View
+      {/* <View
         style={{
-          alignItems: "center",
-          borderColor: colors.medium,
-          borderBottomWidth: 0.2,
-          width: "100%",
-          flexDirection: "row",
           position: "relative",
         }}
-      >
-        <BiblePicker
-          currentBook={props.currentBook}
-          currentChapter={props.currentChapter}
-          currentVerse={props.currentVerse}
-          onSelectItem={(item) => props.changeBibleBook(item)}
-          fontSize={props.fontSize}
-          height={props.HEADER_HEIGHT}
-          icon="magnify"
-          // items={props.books}
-          placeholder="Category"
-          backgroundColor={colors.dark}
-          PickerItemComponent={BiblePickerItem}
-          flex={1}
-          // width="60%"
-        />
-      </View>
-      <View style={{ alignItems: "flex-end", position: "absolute" }}>
+      > */}
+      <BiblePicker
+        currentBook={props.currentBook}
+        currentChapter={props.currentChapter}
+        currentVerse={props.currentVerse}
+        onSelectItem={(item) => props.changeBibleBook(item)}
+        fontSize={props.fontSize}
+        height={props.HEADER_HEIGHT}
+        icon="magnify"
+        // items={props.books}
+        placeholder="Category"
+        backgroundColor={colors.dark}
+        PickerItemComponent={BiblePickerItem}
+        // flex={1}
+      />
+      {/* </View> */}
+      {/* <View style={{ alignItems: "flex-end", position: "absolute" }}>
         {sliderVisible ? (
           <Slider
             style={{ width: 200, height: 40 }}
@@ -71,7 +68,7 @@ export default function BibleScreenToolBar(props) {
             vertical
           />
         ) : null}
-      </View>
+      </View> */}
     </Animated.View>
   );
 }

@@ -29,11 +29,10 @@ function BiblePicker({
   currentChapter,
   currentVerse,
   fontSize,
-  // height,
+  height,
   icon,
   onSelectItem,
   placeholder,
-  // width,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -52,26 +51,42 @@ function BiblePicker({
           )}
         </Text>
       }
-      collapsibleContainerStyle={{ position: "absolute", top: "100%" }}
-      style={{ width: width }}
+      collapsibleContainerStyle={{
+        position: "relative",
+        top: "72%",
+      }}
+      style={{
+        backgroundColor: "blue",
+        height: height,
+        width: "100%",
+      }}
       noArrow
     >
-      <View style={{ backgroundColor: "red", height: 200, width: 300 }}></View>
-      {/* <Stack.Navigator
-        // mode="card"
-        screenOptions={{ headerShown: false }}
+      <View
+        style={{
+          backgroundColor: "red",
+          height: 610,
+          // zIndex: 500,
+          width: "100%",
+        }}
       >
-        <Stack.Screen name="Books" component={BooksScreen} />
-        <Stack.Screen
-          name="Chapters"
-          children={() => (
-            <ChaptersScreen
-              setModalVisible={setModalVisible}
-              onSelectItem={onSelectItem}
-            />
-          )}
-        />
-      </Stack.Navigator> */}
+        <Stack.Navigator
+          // mode="card"
+          screenOptions={{ headerShown: false }}
+          // style={{ height: 500 }}
+        >
+          <Stack.Screen name="Books" component={BooksScreen} />
+          <Stack.Screen
+            name="Chapters"
+            children={() => (
+              <ChaptersScreen
+                setModalVisible={setModalVisible}
+                onSelectItem={onSelectItem}
+              />
+            )}
+          />
+        </Stack.Navigator>
+      </View>
     </CollapsibleView>
     // <View
     //   style={[

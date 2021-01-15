@@ -3,6 +3,7 @@ import {
   ActivityIndicator as Indicator,
   FlatList,
   StyleSheet,
+  View,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -484,7 +485,7 @@ function BooksScreen({ navigation }) {
   ];
 
   return (
-    <Screen style={styles.modal}>
+    <View style={styles.modal}>
       <AppText>Old Testament</AppText>
       <FlatList
         data={books.slice(0, 39)}
@@ -526,17 +527,14 @@ function BooksScreen({ navigation }) {
           />
         )}
       />
-    </Screen>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   modal: {
-    marginHorizontal: 15,
-  },
-  screen: {
-    padding: 20,
     backgroundColor: colors.light,
+    // marginHorizontal: 15,
   },
 });
 
