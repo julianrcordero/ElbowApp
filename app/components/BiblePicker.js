@@ -7,6 +7,7 @@ import {
   // Modal,
   Button,
   Text,
+  TouchableOpacity,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -36,28 +37,112 @@ function BiblePicker({
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const ToolBar = () => {};
+
   return (
     <CollapsibleView
+      // activeOpacityFeedback={1}
       title={
-        <Text style={{ fontSize: fontSize }}>
-          {currentBook ? (
-            <AppText style={[styles.text]}>
-              {
-                currentBook.label + " " + currentChapter // +" : " +currentVerse
-              }
-            </AppText>
-          ) : (
-            <AppText style={styles.placeholder}>{placeholder}</AppText>
-          )}
-        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "55%",
+            }}
+          >
+            <TouchableOpacity
+              style={[
+                styles.iconLeft,
+                {
+                  height: height,
+                  width: "20%",
+                },
+              ]}
+            >
+              <MaterialCommunityIcons
+                name="magnify"
+                color={colors.black}
+                size={28}
+              />
+            </TouchableOpacity>
+            <View
+              style={{
+                alignItems: "center",
+                flex: 1,
+                flexDirection: "row",
+                // borderWidth: 0.2,
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontSize: fontSize }}>
+                {currentBook ? (
+                  <AppText style={[styles.text]}>
+                    {
+                      currentBook.label + " " + currentChapter // +" : " +currentVerse
+                    }
+                  </AppText>
+                ) : (
+                  <AppText style={styles.placeholder}>{placeholder}</AppText>
+                )}
+              </Text>
+              <MaterialCommunityIcons
+                name="chevron-down"
+                size={24}
+                color={defaultStyles.colors.dark}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              width: "45%",
+            }}
+          >
+            <TouchableOpacity
+              style={[styles.icon, { paddingHorizontal: 17 }]}
+              // onPress={props.toggleParagraphMode}
+            >
+              <Text
+                style={{
+                  borderRadius: 4,
+                  borderWidth: 0.2,
+                  borderColor: colors.medium,
+                  paddingHorizontal: 6,
+                  paddingVertical: 4,
+                }}
+              >
+                NASB
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.icon}>
+              <MaterialCommunityIcons
+                name="speaker"
+                color={colors.black}
+                size={24}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.icon}
+              // onPress={handleFontSize}
+            >
+              <MaterialCommunityIcons
+                name="format-letter-case"
+                color={colors.black}
+                size={24}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
       }
       collapsibleContainerStyle={{
-        position: "relative",
-        top: "72%",
+        position: "absolute",
+        top: "100%",
       }}
       style={{
-        backgroundColor: "blue",
+        backgroundColor: colors.light,
         height: height,
+        justifyContent: "center",
         width: "100%",
       }}
       noArrow
@@ -88,48 +173,6 @@ function BiblePicker({
         </Stack.Navigator>
       </View>
     </CollapsibleView>
-    // <View
-    //   style={[
-    //     styles.container,
-    //     {
-    //       // height: height - 1,
-    //       width,
-    //     },
-    //   ]}
-    // >
-    //   {icon && (
-    //     <MaterialCommunityIcons
-    //       name={icon}
-    //       size={24}
-    //       color={colors.black}
-    //       style={styles.icon}
-    //     />
-    //   )}
-    //   <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
-    //     <View style={{ flexDirection: "row" }}>
-    //       <Text style={{ fontSize: fontSize }}>
-    //         {currentBook ? (
-    //           <AppText style={[styles.text]}>
-    //             {
-    //               currentBook.label + " " + currentChapter // +" : " +currentVerse
-    //             }
-    //           </AppText>
-    //         ) : (
-    //           <AppText style={styles.placeholder}>{placeholder}</AppText>
-    //         )}
-    //       </Text>
-    //       <MaterialCommunityIcons
-    //         name="chevron-down"
-    //         size={20}
-    //         color={defaultStyles.colors.dark}
-    //         style={{
-    //           // backgroundColor: "white",
-    //           paddingHorizontal: 3,
-    //         }}
-    //       />
-    //     </View>
-    //   </TouchableWithoutFeedback>
-    // </View>
   );
 }
 
@@ -142,8 +185,19 @@ const styles = StyleSheet.create({
     // height: 70,
     paddingHorizontal: 15,
   },
+  iconLeft: {
+    alignItems: "center",
+    // borderWidth: 0.5,
+    // flex: 1,
+    // height: height,
+    justifyContent: "center",
+  },
   icon: {
-    marginRight: 10,
+    alignItems: "center",
+    // borderWidth: 0.5,
+    flex: 1,
+    // height: height,
+    justifyContent: "center",
   },
   placeholder: {
     color: defaultStyles.colors.medium,

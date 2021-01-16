@@ -47,9 +47,7 @@ export default function BibleScreenToolBar(props) {
         fontSize={props.fontSize}
         height={props.HEADER_HEIGHT}
         icon="magnify"
-        // items={props.books}
         placeholder="Category"
-        backgroundColor={colors.dark}
         PickerItemComponent={BiblePickerItem}
         // flex={1}
       />
