@@ -3,7 +3,6 @@ import { Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Slider from "@react-native-community/slider";
 
 import BiblePicker from "../components/BiblePicker";
 import CategoryPickerItem from "../components/CategoryPickerItem";
@@ -14,7 +13,6 @@ import BiblePickerItem from "./BiblePickerItem";
 export default function BibleScreenToolBar(props) {
   const [sliderVisible, setSliderVisible] = useState(false);
   const handleFontSize = () => setSliderVisible(!sliderVisible);
-  const handleSlide = (value) => props.setFontSize(value);
 
   return (
     <Animated.View
@@ -49,6 +47,7 @@ export default function BibleScreenToolBar(props) {
         icon="magnify"
         placeholder="Category"
         PickerItemComponent={BiblePickerItem}
+        settingsRef={props.settingsRef}
         // flex={1}
       />
       {/* </View> */}

@@ -53,7 +53,15 @@ const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 const AnimatedSectionHeader = Animated.createAnimatedComponent(SectionHeader);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
+export default function BibleScreen({
+  HEADER_HEIGHT,
+  scrollY,
+  headerY,
+  fontSize,
+  crossrefSize,
+  titleSize,
+  settingsRef,
+}) {
   useEffect(() => {
     changeBibleBook({
       label: "Genesis",
@@ -545,9 +553,7 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
   // const [bookNotes, setBookNotes] = useState([]);
   const [paragraphMode, setParagraphMode] = useState(true);
   const [] = useState(false);
-  const [fontSize, setFontSize] = useState(16);
-  const crossrefSize = 12; //fontSize * 0.6;
-  const titleSize = fontSize * 1.5;
+
   // const { landscape } = useDeviceOrientation();
   const [] = useState(true);
   const { height, width } = Dimensions.get("window");
@@ -835,9 +841,10 @@ export default function BibleScreen({ HEADER_HEIGHT, scrollY, headerY }) {
         currentVerse={currentVerse}
         changeBibleBook={changeBibleBook}
         fontSize={fontSize}
-        setFontSize={setFontSize}
+        // setFontSize={setFontSize}
         // books={books}
         toggleParagraphMode={toggleParagraphMode}
+        settingsRef={settingsRef}
       />
 
       {/* <TextInput

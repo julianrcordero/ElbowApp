@@ -27,63 +27,67 @@ const headerY = Animated.interpolate(diffClampScrollY, {
 
 const navigationY = Animated.multiply(headerY, -1);
 
-const AppNavigator = ({ user }) => {
-  useNotifications();
+const AppNavigator = (props) =>
+  // { user }
+  {
+    useNotifications();
 
-  return (
-    <Tab.Navigator
-      initialRouteName="Bible"
-      swipeEnabled
-      tabBar={(props) => <MyTabBar {...props} />}
-      tabBarOptions={
-        {
-          // activeTintColor: colors.medium, //"#e91e63",
-          // position: "absolute",
-          // zIndex: 0,
+    return (
+      <Tab.Navigator
+        initialRouteName="Bible"
+        swipeEnabled
+        tabBar={(props) => <MyTabBar {...props} />}
+        tabBarOptions={
+          {
+            // activeTintColor: colors.medium, //"#e91e63",
+            // position: "absolute",
+            // zIndex: 0,
+          }
         }
-      }
-      zIndex={1}
-      elevation={1}
-    >
-      <Tab.Screen
-        name="Home"
-        component={FeedNavigator}
-        options={{
-          tabBarIcon: "home",
-        }}
-      />
-      <Tab.Screen
-        name="Bible"
-        children={() => (
-          <BibleScreen
-            HEADER_HEIGHT={HEADER_HEIGHT}
-            scrollY={scrollY}
-            headerY={headerY}
-            navigationY={navigationY}
-            diffClampScrollY={diffClampScrollY}
-          />
-        )}
-        options={{
-          tabBarIcon: "book-open-page-variant",
-        }}
-      />
-      <Tab.Screen
-        name="John's Notes"
-        component={ListingEditScreen}
-        options={{
-          tabBarIcon: "library-books",
-        }}
-      />
-      <Tab.Screen
-        name="More"
-        component={AccountNavigator}
-        options={{
-          tabBarIcon: "menu",
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
+        zIndex={1}
+        elevation={1}
+      >
+        <Tab.Screen
+          name="Home"
+          component={FeedNavigator}
+          options={{
+            tabBarIcon: "home",
+          }}
+        />
+        <Tab.Screen
+          name="Bible"
+          children={() => (
+            <BibleScreen
+              HEADER_HEIGHT={HEADER_HEIGHT}
+              scrollY={scrollY}
+              headerY={headerY}
+              fontSize={props.fontSize}
+              crossrefSize={props.crossrefSize}
+              titleSize={props.titleSize}
+              settingsRef={props.settingsRef}
+            />
+          )}
+          options={{
+            tabBarIcon: "book-open-page-variant",
+          }}
+        />
+        <Tab.Screen
+          name="John's Notes"
+          component={ListingEditScreen}
+          options={{
+            tabBarIcon: "library-books",
+          }}
+        />
+        <Tab.Screen
+          name="More"
+          component={AccountNavigator}
+          options={{
+            tabBarIcon: "menu",
+          }}
+        />
+      </Tab.Navigator>
+    );
+  };
 
 function MyTabBar({ state, descriptors, navigation }) {
   return (

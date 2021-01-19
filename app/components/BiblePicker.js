@@ -34,6 +34,7 @@ function BiblePicker({
   icon,
   onSelectItem,
   placeholder,
+  settingsRef,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -124,7 +125,7 @@ function BiblePicker({
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.icon}
-              // onPress={handleFontSize}
+              onPress={() => settingsRef.current.snapTo(0)}
             >
               <MaterialCommunityIcons
                 name="format-letter-case"
