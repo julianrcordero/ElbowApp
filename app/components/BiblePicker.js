@@ -1,23 +1,15 @@
 import React, { useState } from "react";
 import {
-  Dimensions,
   View,
   StyleSheet,
-  TouchableWithoutFeedback,
-  // Modal,
-  Button,
+  InteractionManager,
   Text,
   TouchableOpacity,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
 import AppText from "./Text";
-import Modal from "react-native-modal";
-import Screen from "./Screen";
-import { FlatList } from "react-native-gesture-handler";
-import PickerItem from "./PickerItem";
 import colors from "../config/colors";
-const { height, width } = Dimensions.get("window");
 
 import { createStackNavigator } from "@react-navigation/stack";
 import BooksScreen from "../screens/BooksScreen";
@@ -28,17 +20,28 @@ const Stack = createStackNavigator();
 function BiblePicker({
   currentBook,
   currentChapter,
-  currentVerse,
   fontSize,
   height,
-  icon,
   onSelectItem,
   placeholder,
-  settingsRef,
+  bottomSheetRef,
+  setSettingsMode,
 }) {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [, setModalVisible] = useState(false);
 
-  const ToolBar = () => {};
+  const toggleSettings = () => {
+    bottomSheetRef.current.snapTo(1);
+    const interactionPromise = InteractionManager.runAfterInteractions(() => {
+      // let myIndex = verseList.findIndex(
+      //   (obj) => obj.chapter === chapter && obj.title === verse
+      // );
+      setTimeout(() => {
+        setSettingsMode(true);
+        // carousel.current.scrollToIndex({ animated: false, index: myIndex });
+      });
+    });
+    () => interactionPromise.cancel();
+  };
 
   return (
     <CollapsibleView
@@ -123,10 +126,7 @@ function BiblePicker({
                 size={24}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.icon}
-              onPress={() => settingsRef.current.snapTo(0)}
-            >
+            <TouchableOpacity style={styles.icon} onPress={toggleSettings}>
               <MaterialCommunityIcons
                 name="format-letter-case"
                 color={colors.black}

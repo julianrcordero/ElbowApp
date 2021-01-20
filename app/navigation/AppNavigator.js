@@ -64,7 +64,8 @@ const AppNavigator = (props) =>
               fontSize={props.fontSize}
               crossrefSize={props.crossrefSize}
               titleSize={props.titleSize}
-              settingsRef={props.settingsRef}
+              bottomSheetRef={props.bottomSheetRef}
+              setSettingsMode={props.setSettingsMode}
             />
           )}
           options={{

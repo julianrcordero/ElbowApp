@@ -60,7 +60,8 @@ export default function BibleScreen({
   fontSize,
   crossrefSize,
   titleSize,
-  settingsRef,
+  bottomSheetRef,
+  setSettingsMode,
 }) {
   useEffect(() => {
     changeBibleBook({
@@ -661,17 +662,16 @@ export default function BibleScreen({
   };
 
   const toggleSlideView = (chapter, verse) => {
-    sheetRef.current.snapTo(1);
-
+    bottomSheetRef.current.snapTo(0);
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      let myIndex = verseList.findIndex(
-        (obj) => obj.chapter === chapter && obj.title === verse
-      );
+      // let myIndex = verseList.findIndex(
+      //   (obj) => obj.chapter === chapter && obj.title === verse
+      // );
       setTimeout(() => {
-        carousel.current.scrollToIndex({ animated: false, index: myIndex });
+        setSettingsMode(false);
+        // carousel.current.scrollToIndex({ animated: false, index: myIndex });
       });
     });
-
     () => interactionPromise.cancel();
   };
 
@@ -844,7 +844,8 @@ export default function BibleScreen({
         // setFontSize={setFontSize}
         // books={books}
         toggleParagraphMode={toggleParagraphMode}
-        settingsRef={settingsRef}
+        bottomSheetRef={bottomSheetRef}
+        setSettingsMode={setSettingsMode}
       />
 
       {/* <TextInput
@@ -855,14 +856,14 @@ export default function BibleScreen({
       {/* {paragraphBible} */}
       {paragraphMode ? paragraphBible : verseByVerseBible}
 
-      <BottomSheet
+      {/* <BottomSheet
         ref={sheetRef}
         snapPoints={[top, low, 0]}
         initialSnap={2}
         borderRadius={10}
         renderContent={renderBottomSheetContent}
         // onCloseEnd={() => setFocusedVerse(null)}
-      />
+      /> */}
     </>
   );
 }

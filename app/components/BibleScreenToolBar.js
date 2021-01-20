@@ -47,7 +47,8 @@ export default function BibleScreenToolBar(props) {
         icon="magnify"
         placeholder="Category"
         PickerItemComponent={BiblePickerItem}
-        settingsRef={props.settingsRef}
+        bottomSheetRef={props.bottomSheetRef}
+        setSettingsMode={props.setSettingsMode}
         // flex={1}
       />
       {/* </View> */}
