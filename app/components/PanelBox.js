@@ -42,34 +42,32 @@ export default class PanelBox extends PureComponent {
       verseContent,
       johnsNote,
       crossrefs,
-      paragraphBibleRef,
-      scrollY,
-      sheetRef,
+      // paragraphBibleRef,
+      bottomSheetRef,
     } = this.props;
 
     const macarthurText = fontSize * 0.85;
     const macarthurLineHeight = macarthurText * 2;
 
     const navigateBible = (code) => {
-      // console.log(code.substr(2, 3));
-      //save current position
-      // console.log(scrollY);
-      sheetRef.current.snapTo(1);
-      paragraphBibleRef.current.getNode().scrollToIndex({
-        animated: true,
-        index: Number(code.substr(2, 3)) - 1,
-      });
+      bottomSheetRef.current.snapTo(1);
+      // paragraphBibleRef.current.getNode().scrollToIndex({
+      //   animated: true,
+      //   index: Number(code.substr(2, 3)) - 1,
+      // });
     };
 
     function VerseHyperlink({ cr }) {
       return (
-        <TouchableOpacity
-          onPress={() => {
-            navigateBible(cr["for"]);
-          }}
-        >
-          <Text style={styles.verseLink}>{cr["text"] + "\t\t"}</Text>
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            onPress={() => {
+              navigateBible(cr["for"]);
+            }}
+          >
+            <Text style={styles.verseLink}>{cr["text"] + ",\t\t"}</Text>
+          </TouchableOpacity>
+        </>
       );
     }
 

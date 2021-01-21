@@ -58,6 +58,7 @@ const AppNavigator = (props) =>
           name="Bible"
           children={() => (
             <BibleScreen
+              carousel={props.carousel}
               HEADER_HEIGHT={HEADER_HEIGHT}
               scrollY={scrollY}
               headerY={headerY}
@@ -65,7 +66,10 @@ const AppNavigator = (props) =>
               crossrefSize={props.crossrefSize}
               titleSize={props.titleSize}
               bottomSheetRef={props.bottomSheetRef}
+              setCurrentBook={props.setCurrentBook}
               setSettingsMode={props.setSettingsMode}
+              setVerseList={props.setVerseList}
+              verseList={props.verseList}
             />
           )}
           options={{

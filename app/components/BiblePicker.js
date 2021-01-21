@@ -15,6 +15,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import BooksScreen from "../screens/BooksScreen";
 import ChaptersScreen from "../screens/ChaptersScreen";
 import CollapsibleView from "@eliav2/react-native-collapsible-view";
+
+import {
+  Collapse,
+  CollapseHeader,
+  CollapseBody,
+  AccordionList,
+} from "accordion-collapse-react-native";
 const Stack = createStackNavigator();
 
 function BiblePicker({
@@ -27,7 +34,7 @@ function BiblePicker({
   bottomSheetRef,
   setSettingsMode,
 }) {
-  const [, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const toggleSettings = () => {
     bottomSheetRef.current.snapTo(1);
@@ -44,136 +51,140 @@ function BiblePicker({
   };
 
   return (
-    <CollapsibleView
-      // activeOpacityFeedback={1}
-      title={
-        <View style={{ flexDirection: "row" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "55%",
-            }}
-          >
-            <TouchableOpacity
-              style={[
-                styles.iconLeft,
-                {
-                  height: height,
-                  width: "20%",
-                },
-              ]}
-            >
-              <MaterialCommunityIcons
-                name="magnify"
-                color={colors.black}
-                size={28}
-              />
-            </TouchableOpacity>
+    <View>
+      <Collapse>
+        <CollapseHeader>
+          <View style={{ flexDirection: "row" }}>
             <View
               style={{
-                alignItems: "center",
-                flex: 1,
                 flexDirection: "row",
-                // borderWidth: 0.2,
-                justifyContent: "center",
+                width: "55%",
               }}
             >
-              <Text style={{ fontSize: fontSize }}>
-                {currentBook ? (
-                  <AppText style={[styles.text]}>
-                    {
-                      currentBook.label + " " + currentChapter // +" : " +currentVerse
-                    }
-                  </AppText>
-                ) : (
-                  <AppText style={styles.placeholder}>{placeholder}</AppText>
-                )}
-              </Text>
-              <MaterialCommunityIcons
-                name="chevron-down"
-                size={24}
-                color={defaultStyles.colors.dark}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              width: "45%",
-            }}
-          >
-            <TouchableOpacity
-              style={[styles.icon, { paddingHorizontal: 17 }]}
-              // onPress={props.toggleParagraphMode}
-            >
-              <Text
+              <TouchableOpacity
+                style={[
+                  styles.iconLeft,
+                  {
+                    height: height,
+                    width: "20%",
+                  },
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name="magnify"
+                  color={colors.black}
+                  size={28}
+                />
+              </TouchableOpacity>
+              <View
                 style={{
-                  borderRadius: 4,
-                  borderWidth: 0.2,
-                  borderColor: colors.medium,
-                  paddingHorizontal: 6,
-                  paddingVertical: 4,
+                  alignItems: "center",
+                  flex: 1,
+                  flexDirection: "row",
+                  // borderWidth: 0.2,
+                  justifyContent: "center",
                 }}
               >
-                NASB
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <MaterialCommunityIcons
-                name="speaker"
-                color={colors.black}
-                size={24}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon} onPress={toggleSettings}>
-              <MaterialCommunityIcons
-                name="format-letter-case"
-                color={colors.black}
-                size={24}
-              />
-            </TouchableOpacity>
+                <Text style={{ fontSize: fontSize }}>
+                  {currentBook ? (
+                    <AppText style={[styles.text]}>
+                      {
+                        currentBook.label + " " + currentChapter // +" : " +currentVerse
+                      }
+                    </AppText>
+                  ) : (
+                    <AppText style={styles.placeholder}>{placeholder}</AppText>
+                  )}
+                </Text>
+                <MaterialCommunityIcons
+                  name="chevron-down"
+                  size={24}
+                  color={defaultStyles.colors.dark}
+                />
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                width: "45%",
+              }}
+            >
+              <TouchableOpacity
+                style={[styles.icon, { paddingHorizontal: 17 }]}
+                // onPress={props.toggleParagraphMode}
+              >
+                <Text
+                  style={{
+                    borderRadius: 4,
+                    borderWidth: 0.2,
+                    borderColor: colors.medium,
+                    paddingHorizontal: 6,
+                    paddingVertical: 4,
+                  }}
+                >
+                  NASB
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <MaterialCommunityIcons
+                  name="speaker"
+                  color={colors.black}
+                  size={24}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon} onPress={toggleSettings}>
+                <MaterialCommunityIcons
+                  name="format-letter-case"
+                  color={colors.black}
+                  size={24}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      }
-      collapsibleContainerStyle={{
-        position: "absolute",
-        top: "100%",
-      }}
-      style={{
-        backgroundColor: colors.light,
-        height: height,
-        justifyContent: "center",
-        width: "100%",
-      }}
-      noArrow
-    >
-      <View
-        style={{
-          backgroundColor: "red",
-          height: 610,
-          // zIndex: 500,
-          width: "100%",
-        }}
-      >
-        <Stack.Navigator
-          // mode="card"
-          screenOptions={{ headerShown: false }}
-          // style={{ height: 500 }}
-        >
-          <Stack.Screen name="Books" component={BooksScreen} />
-          <Stack.Screen
-            name="Chapters"
-            children={() => (
-              <ChaptersScreen
-                setModalVisible={setModalVisible}
-                onSelectItem={onSelectItem}
+        </CollapseHeader>
+        <CollapseBody style={{ backgroundColor: "green" }}>
+          <View
+            style={{
+              height: 610,
+              width: "100%",
+            }}
+          >
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Books" component={BooksScreen} />
+              <Stack.Screen
+                name="Chapters"
+                children={() => (
+                  <ChaptersScreen
+                    setModalVisible={setModalVisible}
+                    onSelectItem={onSelectItem}
+                  />
+                )}
               />
-            )}
-          />
-        </Stack.Navigator>
-      </View>
-    </CollapsibleView>
+            </Stack.Navigator>
+          </View>
+        </CollapseBody>
+      </Collapse>
+    </View>
+    // <CollapsibleView
+    //   title={
+    //
+    //   }
+    //   collapsibleContainerStyle={{
+    //     position: "absolute",
+    //     top: "100%",
+    //     width: "100%",
+    //   }}
+    //   style={{
+    //     backgroundColor: colors.light,
+    //     height: height,
+    //     justifyContent: "center",
+    //     width: "100%",
+    //   }}
+    //   noArrow
+    // >
+
+    // </CollapsibleView>
   );
 }
 

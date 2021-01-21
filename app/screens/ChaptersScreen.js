@@ -3,6 +3,7 @@ import {
   ActivityIndicator as Indicator,
   FlatList,
   StyleSheet,
+  View,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -29,7 +30,7 @@ function ChaptersScreen({ navigation, onSelectItem, setModalVisible }) {
   }
 
   return (
-    <Screen style={styles.modal}>
+    <View style={styles.modal}>
       {/* <Button
         title="Close"
         // style={{
@@ -57,14 +58,14 @@ function ChaptersScreen({ navigation, onSelectItem, setModalVisible }) {
           />
         )}
       />
-    </Screen>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    padding: 20,
-    backgroundColor: colors.light,
+  modal: {
+    backgroundColor: "red",
+    // marginHorizontal: 15,
   },
 });
 

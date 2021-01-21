@@ -486,43 +486,36 @@ function BooksScreen({ navigation }) {
 
   return (
     <View style={styles.modal}>
-      <AppText>Old Testament</AppText>
+      <View style={{ backgroundColor: "red" }}>
+        <AppText style={styles.sectionTitle}>Old Testament</AppText>
+      </View>
       <FlatList
         data={books.slice(0, 39)}
         keyExtractor={(item) => item.value.toString()}
         numColumns={7}
-        style={{
-          paddingTop: 10,
-          // marginHorizontal: 15
-        }}
         renderItem={({ item }) => (
           <BiblePickerItem
             item={item}
             label={item.label}
             onPress={() => {
               navigation.navigate("Chapters");
-              //   setModalVisible(false);
-              //   onSelectItem(item);
             }}
           />
         )}
       />
-      <AppText>New Testament</AppText>
+      <View>
+        <AppText style={styles.sectionTitle}>New Testament</AppText>
+      </View>
       <FlatList
         data={books.slice(39, 66)}
         keyExtractor={(item) => item.value.toString()}
         numColumns={7}
-        style={{
-          paddingTop: 10,
-          // marginHorizontal: 15
-        }}
         renderItem={({ item }) => (
           <BiblePickerItem
             item={item}
             label={item.label}
             onPress={() => {
-              setModalVisible(false);
-              onSelectItem(item);
+              navigation.navigate("Chapters");
             }}
           />
         )}
@@ -534,7 +527,11 @@ function BooksScreen({ navigation }) {
 const styles = StyleSheet.create({
   modal: {
     backgroundColor: colors.light,
-    // marginHorizontal: 15,
+    marginHorizontal: 15,
+  },
+  sectionTitle: {
+    backgroundColor: "green",
+    padding: 15,
   },
 });
 

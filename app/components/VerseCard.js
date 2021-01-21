@@ -23,18 +23,16 @@ export default class VerseCard extends PureComponent {
       fontSize,
       height,
       crossRefSize,
-      paragraphBibleRef,
-      scrollY,
-      sheetRef,
-      verseCardReferenceHeight,
+      // paragraphBibleRef,
+      bottomSheetRef,
     } = this.props;
 
     return (
-      <>
+      <View>
         <View
           style={{
             alignItems: "center",
-            height: verseCardReferenceHeight,
+            height: 50,
             flexDirection: "row",
             justifyContent: "flex-start",
           }}
@@ -54,31 +52,19 @@ export default class VerseCard extends PureComponent {
             ) : null}
           </View>
         </View>
-        <ScrollView
-          style={{
-            height: height,
-          }}
-          showsVerticalScrollIndicator={false}
-        >
+        <View>
           <PanelBox
             fontSize={fontSize}
             verseContent={item.content}
             johnsNote={item.johnsNote}
             crossrefs={item.crossrefs}
             crossRefSize={crossRefSize}
-            paragraphBibleRef={paragraphBibleRef}
-            scrollY={scrollY}
-            sheetRef={sheetRef}
+            // paragraphBibleRef={paragraphBibleRef}
+            bottomSheetRef={bottomSheetRef}
             // landscape={landscape}
           ></PanelBox>
-
-          <View
-            style={{
-              height: height,
-            }}
-          ></View>
-        </ScrollView>
-      </>
+        </View>
+      </View>
     );
   }
 }

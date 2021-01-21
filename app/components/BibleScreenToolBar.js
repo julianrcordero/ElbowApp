@@ -17,7 +17,7 @@ export default function BibleScreenToolBar(props) {
   return (
     <Animated.View
       style={{
-        alignItems: "center",
+        // alignItems: "center",
         borderBottomWidth: 0.2,
         justifyContent: "center",
         backgroundColor: colors.light,
