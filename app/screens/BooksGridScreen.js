@@ -17,7 +17,7 @@ import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import BiblePickerItem from "../components/BiblePickerItem";
 
-function BooksScreen({ navigation, route }) {
+function BooksGridScreen({ navigation, route }) {
   const books = [
     ////
     {
@@ -496,12 +496,18 @@ function BooksScreen({ navigation, route }) {
         renderItem={({ item }) => (
           <BiblePickerItem
             item={item}
-            label={item.label}
+            label={item.short}
             onPress={() => {
               navigation.navigate("Chapters");
             }}
           />
         )}
+        columnWrapperStyle={{
+          aspectRatio: 1,
+          justifyContent: "flex-start",
+          width: "14.2857%",
+        }}
+        showsVerticalScrollIndicator={false}
       />
       <View style={styles.titleCard}>
         <AppText style={styles.sectionTitle}>New Testament</AppText>
@@ -513,7 +519,7 @@ function BooksScreen({ navigation, route }) {
         renderItem={({ item }) => (
           <BiblePickerItem
             item={item}
-            label={item.label}
+            label={item.short}
             onPress={() => {
               navigation.navigate("Chapters", {
                 params: { title: item.label },
@@ -521,6 +527,12 @@ function BooksScreen({ navigation, route }) {
             }}
           />
         )}
+        columnWrapperStyle={{
+          aspectRatio: 1,
+          justifyContent: "flex-start",
+          width: "14.2857%",
+        }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -533,4 +545,4 @@ const styles = StyleSheet.create({
   titleCard: { alignItems: "flex-end", height: 55, justifyContent: "center" },
 });
 
-export default BooksScreen;
+export default BooksGridScreen;

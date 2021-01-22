@@ -3,12 +3,10 @@ import { TouchableOpacity, StyleSheet, View } from "react-native";
 import AppText from "./Text";
 import colors from "../config/colors";
 
-function BiblePickerItem({ item, onPress }) {
+function BiblePickerItem({ item, onPress, label }) {
   return (
     <View style={[styles.container, { backgroundColor: item.backgroundColor }]}>
-      <TouchableOpacity onPress={onPress}>
-        <AppText style={styles.text}>{item.short}</AppText>
-      </TouchableOpacity>
+      <AppText style={styles.text}>{label}</AppText>
     </View>
   );
 }
@@ -16,17 +14,14 @@ function BiblePickerItem({ item, onPress }) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    // backgroundColor: "#345171",
     borderColor: colors.white,
-    borderWidth: 0.5,
-    height: 55,
+    borderWidth: 1,
     justifyContent: "center",
-    // paddingHorizontal: 29,
-    // paddingBottom: 5,
-    width: "14.2857%",
+    width: "100%",
   },
   text: {
-    padding: 15,
+    // padding: 15,
+    fontSize: 12,
   },
 });
 

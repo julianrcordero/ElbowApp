@@ -14,8 +14,8 @@ import AppText from "./Text";
 import colors from "../config/colors";
 
 import { createStackNavigator } from "@react-navigation/stack";
-import BooksScreen from "../screens/BooksScreen";
-import ChaptersScreen from "../screens/ChaptersScreen";
+import BooksGridScreen from "../screens/BooksGridScreen";
+import ChaptersGridScreen from "../screens/ChaptersGridScreen";
 
 import Constants from "expo-constants";
 import { getBottomSpace } from "react-native-iphone-x-helper";
@@ -26,6 +26,7 @@ const Stack = createStackNavigator();
 
 import SegmentedControl from "@react-native-community/segmented-control";
 import { PureComponent } from "react";
+import BooksListScreen from "../screens/BooksListScreen";
 
 class BiblePicker extends PureComponent {
   constructor(props) {
@@ -46,6 +47,65 @@ class BiblePicker extends PureComponent {
       });
     });
     () => interactionPromise.cancel();
+  };
+
+  selectedPicker = () => {
+    switch (this.state.pickerType) {
+      case 0:
+        return (
+          <Stack.Navigator
+            screenOptions={{ headerShown: true }}
+            style={{ elevation: 0 }}
+          >
+            <Stack.Screen
+              name="Books"
+              component={BooksGridScreen}
+              options={{ headerShown: false, title: "Books" }}
+            />
+            <Stack.Screen
+              name="Chapters"
+              component={ChaptersGridScreen}
+              options={({}) => ({
+                headerTitle: (
+                  <AppText style={styles.sectionTitle}>II Hesitations</AppText>
+                ),
+                headerStyle: styles.titleCard,
+                headerTitleStyle: { alignItems: "flex-end" },
+                headerTitleContainerStyle: { alignItems: "flex-end" },
+              })}
+            />
+          </Stack.Navigator>
+        );
+      case 1:
+        return (
+          <Stack.Navigator
+            screenOptions={{ headerShown: true }}
+            style={{ elevation: 0 }}
+          >
+            <Stack.Screen
+              name="Books"
+              component={BooksListScreen}
+              options={{ headerShown: false, title: "Books" }}
+            />
+            <Stack.Screen
+              name="Chapters"
+              component={ChaptersGridScreen}
+              options={({}) => ({
+                headerTitle: (
+                  <AppText style={styles.sectionTitle}>II Hesitations</AppText>
+                ),
+                headerStyle: styles.titleCard,
+                headerTitleStyle: { alignItems: "flex-end" },
+                headerTitleContainerStyle: { alignItems: "flex-end" },
+              })}
+            />
+          </Stack.Navigator>
+        );
+      case 2:
+        break;
+      default:
+        break;
+    }
   };
 
   render() {
@@ -99,38 +159,15 @@ class BiblePicker extends PureComponent {
             </View>
             <SegmentedControl
               values={["GRID", "LIST", "RECENT"]}
-              selectedIndex={0}
-              onChange={() => {
+              selectedIndex={this.state.pickerType}
+              onChange={(event) => {
                 this.setState({
                   pickerType: event.nativeEvent.selectedSegmentIndex,
                 });
               }}
               style={{ backgroundColor: colors.light, height: 45 }}
             />
-            <Stack.Navigator
-              screenOptions={{ headerShown: true }}
-              style={{ elevation: 0 }}
-            >
-              <Stack.Screen
-                name="Books"
-                component={BooksScreen}
-                options={{ headerShown: false, title: "Books" }}
-              />
-              <Stack.Screen
-                name="Chapters"
-                component={ChaptersScreen}
-                options={({}) => ({
-                  headerTitle: (
-                    <AppText style={styles.sectionTitle}>
-                      II Hesitations
-                    </AppText>
-                  ),
-                  headerStyle: styles.titleCard,
-                  headerTitleStyle: { alignItems: "flex-end" },
-                  headerTitleContainerStyle: { alignItems: "flex-end" },
-                })}
-              />
-            </Stack.Navigator>
+            {this.selectedPicker()}
           </View>
         </Collapsible>
         <View style={{ flexDirection: "row", zIndex: 1 }}>
