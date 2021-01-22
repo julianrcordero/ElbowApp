@@ -485,7 +485,7 @@ function BooksScreen({ navigation, route }) {
   ];
 
   return (
-    <>
+    <View style={{ backgroundColor: colors.white }}>
       <View style={styles.titleCard}>
         <AppText style={styles.sectionTitle}>Old Testament</AppText>
       </View>
@@ -522,7 +522,7 @@ function BooksScreen({ navigation, route }) {
           />
         )}
       />
-    </>
+    </View>
   );
 }
 

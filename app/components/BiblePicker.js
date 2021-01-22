@@ -32,7 +32,7 @@ class BiblePicker extends PureComponent {
     super(props);
   }
 
-  state = { modalVisible: false, collapsed: true };
+  state = { pickerType: 0, collapsed: true };
 
   _toggleSettings = () => {
     this.props.bottomSheetRef.current.snapTo(1);
@@ -63,7 +63,7 @@ class BiblePicker extends PureComponent {
           align={"center"}
           collapsed={this.state.collapsed}
           // collapsedHeight={-70}
-          style={{ backgroundColor: "blue", width: width, zIndex: 0 }}
+          style={{ backgroundColor: "blue", width: width }}
         >
           <View
             style={{
@@ -77,7 +77,6 @@ class BiblePicker extends PureComponent {
               // marginHorizontal: 15,
               // width: "100%",
               // top: -70,
-              zIndex: 200,
             }}
           >
             <View
@@ -102,13 +101,16 @@ class BiblePicker extends PureComponent {
               values={["GRID", "LIST", "RECENT"]}
               selectedIndex={0}
               onChange={() => {
-                // this.setState({
-                //   selectedIndex: event.nativeEvent.selectedSegmentIndex,
-                // });
+                this.setState({
+                  pickerType: event.nativeEvent.selectedSegmentIndex,
+                });
               }}
               style={{ backgroundColor: colors.light, height: 45 }}
             />
-            <Stack.Navigator screenOptions={{ headerShown: true }}>
+            <Stack.Navigator
+              screenOptions={{ headerShown: true }}
+              style={{ elevation: 0 }}
+            >
               <Stack.Screen
                 name="Books"
                 component={BooksScreen}
