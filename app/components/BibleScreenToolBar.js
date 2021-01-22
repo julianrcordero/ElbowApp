@@ -32,41 +32,19 @@ export default function BibleScreenToolBar(props) {
         zIndex: 1,
       }}
     >
-      {/* <View
-        style={{
-          position: "relative",
-        }}
-      > */}
       <BiblePicker
         currentBook={props.currentBook}
         currentChapter={props.currentChapter}
         currentVerse={props.currentVerse}
         onSelectItem={(item) => props.changeBibleBook(item)}
         fontSize={props.fontSize}
-        height={props.HEADER_HEIGHT}
+        HEADER_HEIGHT={props.HEADER_HEIGHT}
         icon="magnify"
         placeholder="Category"
         PickerItemComponent={BiblePickerItem}
         bottomSheetRef={props.bottomSheetRef}
         setSettingsMode={props.setSettingsMode}
-        // flex={1}
       />
-      {/* </View> */}
-      {/* <View style={{ alignItems: "flex-end", position: "absolute" }}>
-        {sliderVisible ? (
-          <Slider
-            style={{ width: 200, height: 40 }}
-            minimumValue={12}
-            maximumValue={24}
-            minimumTrackTintColor="#FFFFFF"
-            maximumTrackTintColor={colors.primary}
-            onSlidingComplete={handleSlide}
-            step={2}
-            value={props.fontSize}
-            vertical
-          />
-        ) : null}
-      </View> */}
     </Animated.View>
   );
 }

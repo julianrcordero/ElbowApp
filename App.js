@@ -727,7 +727,7 @@ export default function App() {
       <BottomSheet
         ref={bottomSheetRef}
         snapPoints={[top, "50%", "0%"]}
-        initialSnap={1}
+        initialSnap={2}
         renderHeader={settingsMode ? renderSettingsHeader : renderBibleHeader}
         renderContent={
           settingsMode ? renderSettingsContent : renderBibleContent

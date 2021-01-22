@@ -17,7 +17,7 @@ import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import BiblePickerItem from "../components/BiblePickerItem";
 
-function BooksScreen({ navigation }) {
+function BooksScreen({ navigation, route }) {
   const books = [
     ////
     {
@@ -485,8 +485,8 @@ function BooksScreen({ navigation }) {
   ];
 
   return (
-    <View style={styles.modal}>
-      <View style={{ backgroundColor: "red" }}>
+    <>
+      <View style={styles.titleCard}>
         <AppText style={styles.sectionTitle}>Old Testament</AppText>
       </View>
       <FlatList
@@ -503,7 +503,7 @@ function BooksScreen({ navigation }) {
           />
         )}
       />
-      <View>
+      <View style={styles.titleCard}>
         <AppText style={styles.sectionTitle}>New Testament</AppText>
       </View>
       <FlatList
@@ -515,24 +515,22 @@ function BooksScreen({ navigation }) {
             item={item}
             label={item.label}
             onPress={() => {
-              navigation.navigate("Chapters");
+              navigation.navigate("Chapters", {
+                params: { title: item.label },
+              });
             }}
           />
         )}
       />
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: colors.light,
-    marginHorizontal: 15,
-  },
   sectionTitle: {
-    backgroundColor: "green",
-    padding: 15,
+    fontSize: 20,
   },
+  titleCard: { alignItems: "flex-end", height: 55, justifyContent: "center" },
 });
 
 export default BooksScreen;

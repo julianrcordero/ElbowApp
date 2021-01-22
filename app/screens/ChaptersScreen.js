@@ -17,7 +17,7 @@ import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import BiblePickerItem from "../components/BiblePickerItem";
 
-function ChaptersScreen({ navigation, onSelectItem, setModalVisible }) {
+function ChaptersScreen({ navigation, route, onSelectItem, setModalVisible }) {
   const DATA = [];
 
   for (let i = 0; i < 150; i++) {
@@ -29,44 +29,44 @@ function ChaptersScreen({ navigation, onSelectItem, setModalVisible }) {
     });
   }
 
+  // const [value, onChangeText] = React.useState(route.params.title);
+
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     title: value === "" ? "No title" : value,
+  //   });
+  // }, [navigation, value]);
+
   return (
-    <View style={styles.modal}>
-      {/* <Button
-        title="Close"
-        // style={{
-        //   marginBottom: 10,
-        // }}
-        onPress={() => setModalVisible(false)}
-      /> */}
-      <AppText>Old Testament</AppText>
-      <FlatList
-        data={DATA}
-        keyExtractor={(item) => item.id}
-        numColumns={7}
-        style={{
-          paddingTop: 10,
-          // marginHorizontal: 15
-        }}
-        renderItem={({ item }) => (
-          <BiblePickerItem
-            item={item}
-            label={item.label}
-            onPress={() => {
-              setModalVisible(false);
-              onSelectItem(item);
-            }}
-          />
-        )}
-      />
-    </View>
+    <FlatList
+      data={DATA}
+      keyExtractor={(item) => item.id}
+      numColumns={7}
+      renderItem={({ item }) => (
+        <BiblePickerItem
+          item={item}
+          label={item.label}
+          onPress={() => {
+            setModalVisible(false);
+            onSelectItem(item);
+          }}
+        />
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: "red",
-    // marginHorizontal: 15,
+    backgroundColor: colors.light,
+    flex: 1,
+    marginHorizontal: 15,
   },
+  sectionTitle: {
+    // backgroundColor: "green",
+    fontSize: 20,
+  },
+  titleCard: { alignItems: "flex-end", height: 55, justifyContent: "center" },
 });
 
 export default ChaptersScreen;
