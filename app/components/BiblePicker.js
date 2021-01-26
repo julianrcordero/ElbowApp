@@ -89,11 +89,23 @@ class BiblePicker extends PureComponent {
             screenOptions={{ headerShown: true }}
             style={{ elevation: 0 }}
           >
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Books"
               component={BooksListScreen}
               options={{ headerShown: false, title: "Books" }}
-            />
+            /> */}
+            <Stack.Screen
+              name="Books"
+              options={{ headerShown: false, title: "Books" }}
+            >
+              {(props) => (
+                <BooksListScreen
+                  changeBibleBook={this.props.changeBibleBook}
+                  close={() => this.setState({ collapsed: true })}
+                  width
+                />
+              )}
+            </Stack.Screen>
             <Stack.Screen
               name="Chapters"
               component={ChaptersGridScreen}

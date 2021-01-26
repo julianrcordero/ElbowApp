@@ -59,6 +59,7 @@ const AppNavigator = (props) =>
           children={() => (
             <BibleScreen
               carousel={props.carousel}
+              currentBook={props.currentBook}
               HEADER_HEIGHT={HEADER_HEIGHT}
               scrollY={scrollY}
               headerY={headerY}

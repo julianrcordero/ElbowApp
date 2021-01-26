@@ -33,7 +33,7 @@ class BooksListScreen extends PureComponent {
   }
 
   render() {
-    const { navigation, route } = this.props;
+    const { navigation, route, width } = this.props;
     const books = [
       ////
       {
@@ -566,8 +566,6 @@ class BooksListScreen extends PureComponent {
       },
     ];
 
-    // const [activeSections, setActiveSections] = useState([]);
-
     const _renderSectionTitle = (section) => {
       return (
         <View style={styles.content}>
@@ -578,17 +576,23 @@ class BooksListScreen extends PureComponent {
 
     const _renderHeader = (section) => {
       return (
-        //   <View style={{ height: 50 }}>
-        <BiblePickerItem item={section} label={section.label} aspectRatio={5} />
-        //   </View>
+        <View style={[styles.header, width]}>
+          <BiblePickerItem
+            item={section}
+            label={section.label}
+            // aspectRatio={5}
+            // width="50%"
+            // height={55}
+          />
+        </View>
       );
     };
 
     const _renderContent = (section) => {
       return (
-        // <View style={{ width: 300, zIndex: 300, elevation: 300 }}>
-        <ChaptersGridScreen chapters={section.chapters} />
-        // </View>
+        <View style={{ width: "100%" }}>
+          <ChaptersGridScreen chapters={section.chapters} />
+        </View>
       );
     };
 
@@ -599,13 +603,14 @@ class BooksListScreen extends PureComponent {
     return (
       <View
         style={{
+          // alignItems: "stretch",
           backgroundColor: colors.white,
           flexDirection: "row",
-          justifyContent: "space-around",
+          // justifyContent: "space-around",
           paddingBottom: 30,
         }}
       >
-        <View style={styles.column1}>
+        <View style={styles.column}>
           <View style={styles.titleCard}>
             <AppText style={styles.sectionTitle}>Old Testament</AppText>
           </View>
@@ -615,9 +620,10 @@ class BooksListScreen extends PureComponent {
             body={_renderContent}
             keyExtractor={(item) => `${item.value}`}
             showsVerticalScrollIndicator={false}
+            style={{ width: "100%" }}
           />
         </View>
-        <View style={styles.column2}>
+        <View style={styles.column}>
           <View style={styles.titleCard}>
             <AppText style={styles.sectionTitle}>New Testament</AppText>
           </View>
@@ -638,18 +644,17 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
   },
-  column1: {
-    alignItems: "stretch",
-    justifyContent: "center",
-    width: "45%",
+  header: {
+    // alignItems: "stretch",
+    // flex: 0.,
+    // justifyContent: "center",
+    // width: "100%",
+  },
+  column: {
     // flex: 1,
+    // width: "50%",
   },
-  column2: {
-    alignItems: "stretch",
-    justifyContent: "center",
-    width: "45%",
-    // flex: 0,
-  },
+
   titleCard: { alignItems: "center", height: 55, justifyContent: "center" },
 });
 

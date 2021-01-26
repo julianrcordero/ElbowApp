@@ -9,13 +9,13 @@ class BiblePickerItem extends PureComponent {
   }
 
   render() {
-    const { item, onPress, label, aspectRatio } = this.props;
+    const { item, height, onPress, label, aspectRatio, width } = this.props;
 
     return (
       <View
         style={[
           styles.container,
-          { backgroundColor: item.backgroundColor, aspectRatio },
+          { backgroundColor: item.backgroundColor, aspectRatio, height },
         ]}
       >
         <AppText style={styles.text}>{label}</AppText>
