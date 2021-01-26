@@ -17,14 +17,11 @@ export default function BibleScreenToolBar(props) {
   return (
     <Animated.View
       style={{
-        // alignItems: "center",
         borderBottomWidth: 0.2,
         justifyContent: "center",
         backgroundColor: colors.light,
         borderColor: colors.medium,
-        flex: 1,
         flexDirection: "row",
-        // elevation: 1,
         height: props.HEADER_HEIGHT,
         position: "absolute",
         transform: [{ translateY: props.headerY }],
@@ -36,11 +33,12 @@ export default function BibleScreenToolBar(props) {
         currentBook={props.currentBook}
         currentChapter={props.currentChapter}
         currentVerse={props.currentVerse}
-        onSelectItem={(item) => props.changeBibleBook(item)}
+        changeBibleBook={props.changeBibleBook}
+        // onSelectItem={(item) => props.changeBibleBook(item)}
         fontSize={props.fontSize}
         HEADER_HEIGHT={props.HEADER_HEIGHT}
         icon="magnify"
-        placeholder="Category"
+        // placeholder="Category"
         PickerItemComponent={BiblePickerItem}
         bottomSheetRef={props.bottomSheetRef}
         setSettingsMode={props.setSettingsMode}

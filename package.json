@@ -35,6 +35,7 @@
     "moment": "^2.29.1",
     "npm-check-updates": "^10.3.1",
     "react": "16.13.1",
+    "react-collapse": "^5.1.0",
     "react-collapsible": "^2.8.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",

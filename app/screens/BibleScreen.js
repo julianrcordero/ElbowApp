@@ -98,11 +98,7 @@ export default function BibleScreen({
   const [] = useState(true);
   const { height, width } = Dimensions.get("window");
   const top = height - Constants.statusBarHeight - getBottomSpace();
-  // const verseCardToolbarHeight = 50;
-  // const low = HEADER_HEIGHT + verseCardToolbarHeight + verseCardReferenceHeight;
-  // const sheetRef = React.useRef(null);
   const paragraphBibleRef = React.useRef();
-  // const carousel = React.useRef();
   // const [verseList, setVerseList] = useState([]);
   // const [focusedVerse, setFocusedVerse] = useState(null);
 
@@ -304,6 +300,7 @@ export default function BibleScreen({
         toggleParagraphMode={toggleParagraphMode}
         bottomSheetRef={bottomSheetRef}
         setSettingsMode={setSettingsMode}
+        style={styles.toolBar}
       />
 
       {/* <TextInput
@@ -317,65 +314,11 @@ export default function BibleScreen({
 }
 
 const styles = StyleSheet.create({
-  wordsContainer: {
-    alignItems: "center",
-    backgroundColor: "green",
-    flexDirection: "row",
-    height: 100,
-    justifyContent: "center",
-    padding: 20,
-  },
-  pilgrimsWordSwitch: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    backgroundColor: "white",
-    // marginTop: 22,
-  },
   bibleTextView: {
     backgroundColor: colors.white,
     paddingHorizontal: 25,
   },
-  openButton: {
-    backgroundColor: "#F194FF",
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+  toolBar: {
+    paddingHorizontal: 100,
   },
 });
-
-//SINGLE VERSE VIEW #3 (THIS WORKS)
-// let verseByVerse2 = (
-//   <Animated.ScrollView
-//     bounces={false}
-//     scrollEventThrottle={16}
-//     onScroll={Animated.event([
-//       {
-//         nativeEvent: { contentOffset: { y: scrollY } },
-//       },
-//     ])}
-//     style={{
-//       flex: 1,
-//       backgroundColor: colors.white,
-//       paddingTop: HEADER_HEIGHT,
-//       paddingHorizontal: 25,
-//     }}
-//   >
-//     {sections.map((section, i) => (
-//       <AccordionView
-//         key={i}
-//         verses={section.paragraphData}
-//         searchWords={searchWords}
-//       />
-//     ))}
-//   </Animated.ScrollView>
-// );
