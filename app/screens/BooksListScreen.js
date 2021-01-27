@@ -1,31 +1,10 @@
-import React, { useState, useEffect, PureComponent } from "react";
-import {
-  ActivityIndicator as Indicator,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { PureComponent } from "react";
+import { StyleSheet, View } from "react-native";
 
-import ActivityIndicator from "../components/ActivityIndicator";
-import Button from "../components/Button";
-import Card from "../components/Card";
-import colors from "../config/colors";
-import listingsApi from "../api/listings";
-import routes from "../navigation/routes";
-import Screen from "../components/Screen";
 import AppText from "../components/Text";
-import useApi from "../hooks/useApi";
 import BiblePickerItem from "../components/BiblePickerItem";
-import Accordion from "react-native-collapsible/Accordion";
 import ChaptersGridScreen from "./ChaptersGridScreen";
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody,
-  AccordionList,
-} from "accordion-collapse-react-native";
+import { AccordionList } from "accordion-collapse-react-native";
 
 class BooksListScreen extends PureComponent {
   constructor(props) {
@@ -33,7 +12,7 @@ class BooksListScreen extends PureComponent {
   }
 
   render() {
-    const { navigation, route, width } = this.props;
+    const { width } = this.props;
     const books = [
       ////
       {
@@ -566,96 +545,89 @@ class BooksListScreen extends PureComponent {
       },
     ];
 
-    const _renderSectionTitle = (section) => {
-      return (
-        <View style={styles.content}>
-          <Text>Chapter numbers</Text>
-        </View>
-      );
-    };
-
     const _renderHeader = (section) => {
       return (
-        <View style={[styles.header, width]}>
-          <BiblePickerItem
-            item={section}
-            label={section.label}
-            // aspectRatio={5}
-            // width="50%"
-            // height={55}
-          />
-        </View>
+        <BiblePickerItem
+          item={section}
+          label={section.label}
+          // aspectRatio={5}
+          height={45}
+          // width={width / 2}
+        />
       );
     };
 
     const _renderContent = (section) => {
       return (
-        <View style={{ width: "100%" }}>
+        <View style={{ width: width }}>
           <ChaptersGridScreen chapters={section.chapters} />
         </View>
       );
     };
 
-    const _updateSections = (openSections) => {
-      setActiveSections(openSections);
-    };
-
     return (
-      <View
-        style={{
-          // alignItems: "stretch",
-          backgroundColor: colors.white,
-          flexDirection: "row",
-          // justifyContent: "space-around",
-          paddingBottom: 30,
-        }}
-      >
-        <View style={styles.column}>
-          <View style={styles.titleCard}>
-            <AppText style={styles.sectionTitle}>Old Testament</AppText>
-          </View>
-          <AccordionList
-            list={books.slice(0, 39)}
-            header={_renderHeader}
-            body={_renderContent}
-            keyExtractor={(item) => `${item.value}`}
-            showsVerticalScrollIndicator={false}
-            style={{ width: "100%" }}
-          />
+      <>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
+        >
+          <AppText style={styles.sectionTitle}>Old Testament</AppText>
+          <AppText style={styles.sectionTitle}>New Testament</AppText>
         </View>
-        <View style={styles.column}>
-          <View style={styles.titleCard}>
-            <AppText style={styles.sectionTitle}>New Testament</AppText>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingBottom: 30,
+          }}
+        >
+          <View style={styles.column1}>
+            <AccordionList
+              list={books.slice(0, 39)}
+              header={_renderHeader}
+              body={_renderContent}
+              keyExtractor={(item) => `${item.value}`}
+              showsVerticalScrollIndicator={false}
+            />
           </View>
-          <AccordionList
-            list={books.slice(39, 66)}
-            header={_renderHeader}
-            body={_renderContent}
-            keyExtractor={(item) => `${item.value}`}
-            showsVerticalScrollIndicator={false}
-          />
+          <View style={styles.column2}>
+            <AccordionList
+              list={books.slice(39, 66)}
+              header={_renderHeader}
+              body={_renderContent}
+              keyExtractor={(item) => `${item.value}`}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
         </View>
-      </View>
+      </>
     );
   }
 }
 
 const styles = StyleSheet.create({
   sectionTitle: {
+    // flexGrow: 1,
+    // flexShrink: 1,
+    // textAlign: "center",
     fontSize: 20,
   },
-  header: {
+  header: {},
+  column1: {
+    // alignSelf: "stretch",
     // alignItems: "stretch",
-    // flex: 0.,
-    // justifyContent: "center",
-    // width: "100%",
+    flexGrow: 1,
+    // flex: 1 / 2,
+    justifyContent: "flex-start",
   },
-  column: {
-    // flex: 1,
-    // width: "50%",
+  column2: {
+    // alignSelf: "stretch",
+    // alignItems: "flex-end",
+    flexGrow: 1,
+    // flex: 1 / 2,
+    justifyContent: "flex-end",
   },
-
-  titleCard: { alignItems: "center", height: 55, justifyContent: "center" },
 });
 
 export default BooksListScreen;

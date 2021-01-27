@@ -29,6 +29,7 @@ class ChaptersGridScreen extends PureComponent {
       route,
       onSelectItem,
       setModalVisible,
+      width,
     } = this.props;
 
     const { gridChapters } = route ? route.params : 0;
@@ -59,13 +60,9 @@ class ChaptersGridScreen extends PureComponent {
               // onSelectItem(item);
             }}
             aspectRatio={1}
+            flex={1 / 7}
           />
         )}
-        columnWrapperStyle={{
-          // aspectRatio: 1,
-          justifyContent: "flex-start",
-          width: "14.2857%",
-        }}
         showsVerticalScrollIndicator={false}
       />
     );

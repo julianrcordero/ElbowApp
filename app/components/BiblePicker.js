@@ -66,6 +66,7 @@ class BiblePicker extends PureComponent {
                 <BooksGridScreen
                   changeBibleBook={this.props.changeBibleBook}
                   close={() => this.setState({ collapsed: true })}
+                  width={width}
                 />
               )}
             </Stack.Screen>
@@ -102,7 +103,7 @@ class BiblePicker extends PureComponent {
                 <BooksListScreen
                   changeBibleBook={this.props.changeBibleBook}
                   close={() => this.setState({ collapsed: true })}
-                  width
+                  width={width - 30}
                 />
               )}
             </Stack.Screen>

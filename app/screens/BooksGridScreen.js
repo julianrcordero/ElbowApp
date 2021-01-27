@@ -547,7 +547,12 @@ class BooksGridScreen extends PureComponent {
     ];
 
     return (
-      <View style={{ backgroundColor: colors.white, paddingBottom: 30 }}>
+      <View
+        style={{
+          backgroundColor: colors.white,
+          paddingBottom: 30,
+        }}
+      >
         <View style={styles.titleCard}>
           <AppText style={styles.sectionTitle}>Old Testament</AppText>
         </View>
@@ -580,7 +585,9 @@ class BooksGridScreen extends PureComponent {
             justifyContent: "flex-start",
             width: "14.2857%",
           }}
+          // style={{ width: "100%" }}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ width: "100%" }}
         />
         <View style={styles.titleCard}>
           <AppText style={styles.sectionTitle}>New Testament</AppText>
@@ -614,6 +621,7 @@ class BooksGridScreen extends PureComponent {
             justifyContent: "flex-start",
             width: "14.2857%",
           }}
+          contentContainerStyle={{ width: "100%" }}
           showsVerticalScrollIndicator={false}
         />
       </View>
