@@ -10,18 +10,34 @@ class BiblePickerItem extends PureComponent {
   }
 
   render() {
-    const { item, height, label, aspectRatio, flex, width } = this.props;
+    const {
+      borderWidth = 1,
+      item,
+      height,
+      label,
+      aspectRatio = 1,
+      flex,
+      onPress,
+      width = "100%",
+    } = this.props;
 
     return (
       <View
         style={[
           styles.container,
-          { backgroundColor: item.backgroundColor, aspectRatio, height, flex },
+          {
+            backgroundColor: item.backgroundColor,
+            borderWidth,
+            aspectRatio,
+            height,
+            flex,
+            width,
+          },
         ]}
       >
         <AppText style={styles.text}>
           {/* {"A"} */}
-          {/* {label} */}
+          {label}
         </AppText>
       </View>
     );
@@ -30,16 +46,13 @@ class BiblePickerItem extends PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    // alignItems: "center",
-    borderColor: colors.white,
-    borderWidth: 1,
-    // justifyContent: "center",
-    width: "100%",
-    // flexShrink: 1,
+    alignItems: "center",
+    borderColor: "red", //colors.white,
+    justifyContent: "center",
   },
   text: {
     // padding: 15,
-    flexShrink: 1,
+    // flexShrink: 1,
     // fontSize: RFPercentage(1),
     // fontSize: 20,
   },

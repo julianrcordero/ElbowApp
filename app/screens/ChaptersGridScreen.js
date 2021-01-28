@@ -4,6 +4,7 @@ import {
   FlatList,
   StyleSheet,
   View,
+  Pressable,
 } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
@@ -16,6 +17,7 @@ import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import BiblePickerItem from "../components/BiblePickerItem";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 class ChaptersGridScreen extends PureComponent {
   constructor(props) {
@@ -23,14 +25,7 @@ class ChaptersGridScreen extends PureComponent {
   }
 
   render() {
-    const {
-      chapters,
-      navigation,
-      route,
-      onSelectItem,
-      setModalVisible,
-      width,
-    } = this.props;
+    const { close, chapters, route } = this.props;
 
     const { gridChapters } = route ? route.params : 0;
 
@@ -52,17 +47,14 @@ class ChaptersGridScreen extends PureComponent {
         keyExtractor={(item) => item.id}
         numColumns={7}
         renderItem={({ item }) => (
-          <BiblePickerItem
-            item={item}
-            label={item.short}
-            onPress={() => {
-              // setModalVisible(false);
-              // onSelectItem(item);
-            }}
-            aspectRatio={1}
-            flex={1 / 7}
-          />
+          <TouchableOpacity onPress={close}>
+            <BiblePickerItem item={item} label={item.short} flex={1 / 7} />
+          </TouchableOpacity>
         )}
+        columnWrapperStyle={{
+          justifyContent: "flex-start",
+          width: "14.2857%",
+        }}
         showsVerticalScrollIndicator={false}
       />
     );

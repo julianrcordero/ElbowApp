@@ -563,31 +563,29 @@ class BooksGridScreen extends PureComponent {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
-                close();
-                const interactionPromise = InteractionManager.runAfterInteractions(
-                  () => {
-                    setTimeout(() => {
-                      changeBibleBook(item);
-                    });
-                  }
-                );
-                () => interactionPromise.cancel();
-                // navigation.navigate("Chapters", {
-                //   title: item.label,
-                //   gridChapters: item.chapters,
-                // });
+                // close();
+                // const interactionPromise = InteractionManager.runAfterInteractions(
+                //   () => {
+                //     setTimeout(() => {
+                //       changeBibleBook(item);
+                //     });
+                //   }
+                // );
+                // () => interactionPromise.cancel();
+                navigation.navigate("Chapters", {
+                  title: item.label,
+                  gridChapters: item.chapters,
+                });
               }}
             >
-              <BiblePickerItem item={item} label={item.short} aspectRatio={1} />
+              <BiblePickerItem item={item} label={item.short} />
             </TouchableOpacity>
           )}
           columnWrapperStyle={{
             justifyContent: "flex-start",
             width: "14.2857%",
           }}
-          // style={{ width: "100%" }}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ width: "100%" }}
         />
         <View style={styles.titleCard}>
           <AppText style={styles.sectionTitle}>New Testament</AppText>
@@ -599,29 +597,28 @@ class BooksGridScreen extends PureComponent {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
-                close();
-                const interactionPromise = InteractionManager.runAfterInteractions(
-                  () => {
-                    setTimeout(() => {
-                      changeBibleBook(item);
-                    });
-                  }
-                );
-                () => interactionPromise.cancel();
-                // navigation.navigate("Chapters", {
-                //   title: item.label,
-                //   gridChapters: item.chapters,
-                // });
+                // close();
+                // const interactionPromise = InteractionManager.runAfterInteractions(
+                //   () => {
+                //     setTimeout(() => {
+                //       changeBibleBook(item);
+                //     });
+                //   }
+                // );
+                // () => interactionPromise.cancel();
+                navigation.navigate("Chapters", {
+                  title: item.label,
+                  gridChapters: item.chapters,
+                });
               }}
             >
-              <BiblePickerItem item={item} label={item.short} aspectRatio={1} />
+              <BiblePickerItem item={item} label={item.short} />
             </TouchableOpacity>
           )}
           columnWrapperStyle={{
             justifyContent: "flex-start",
             width: "14.2857%",
           }}
-          contentContainerStyle={{ width: "100%" }}
           showsVerticalScrollIndicator={false}
         />
       </View>

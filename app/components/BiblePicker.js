@@ -27,6 +27,7 @@ const Stack = createStackNavigator();
 import SegmentedControl from "@react-native-community/segmented-control";
 import { PureComponent } from "react";
 import BooksListScreen from "../screens/BooksListScreen";
+import routes from "../navigation/routes";
 
 class BiblePicker extends PureComponent {
   constructor(props) {
@@ -57,7 +58,7 @@ class BiblePicker extends PureComponent {
             screenOptions={{ headerShown: true }}
             style={{ elevation: 0 }}
           >
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Books"
               // component={BooksGridScreen}
               options={{ headerShown: false, title: "Books" }}
@@ -66,20 +67,30 @@ class BiblePicker extends PureComponent {
                 <BooksGridScreen
                   changeBibleBook={this.props.changeBibleBook}
                   close={() => this.setState({ collapsed: true })}
-                  width={width}
                 />
               )}
-            </Stack.Screen>
+            </Stack.Screen> */}
+            <Stack.Screen
+              name="Books"
+              component={BooksGridScreen}
+              options={{ headerShown: false, title: "Books" }}
+            />
+
             <Stack.Screen
               name="Chapters"
               component={ChaptersGridScreen}
-              options={({}) => ({
-                headerTitle: (
-                  <AppText style={styles.sectionTitle}>II Hesitations</AppText>
+              options={({ route }) => ({
+                headerRight: () => (
+                  <AppText style={styles.sectionTitle}>
+                    {route.params.title}
+                  </AppText>
                 ),
-                headerStyle: styles.titleCard,
-                headerTitleStyle: { alignItems: "flex-end" },
-                headerTitleContainerStyle: { alignItems: "flex-end" },
+                headerStyle: {
+                  height: 55,
+                },
+                headerTitle: "",
+                // close: () => this.setState({ collapsed: true }),
+                // changeBibleBook: this.props.changeBibleBook,
               })}
             />
           </Stack.Navigator>
@@ -96,7 +107,7 @@ class BiblePicker extends PureComponent {
               options={{ headerShown: false, title: "Books" }}
             /> */}
             <Stack.Screen
-              name="Books"
+              name="BooksList"
               options={{ headerShown: false, title: "Books" }}
             >
               {(props) => (
@@ -107,7 +118,7 @@ class BiblePicker extends PureComponent {
                 />
               )}
             </Stack.Screen>
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Chapters"
               component={ChaptersGridScreen}
               options={({}) => ({
@@ -118,7 +129,7 @@ class BiblePicker extends PureComponent {
                 headerTitleStyle: { alignItems: "flex-end" },
                 headerTitleContainerStyle: { alignItems: "flex-end" },
               })}
-            />
+            /> */}
           </Stack.Navigator>
         );
       case 2:

@@ -5,24 +5,22 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 
 import Slider from "@react-native-community/slider";
-import Screen from "./app/components/Screen";
 
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthNavigator from "./app/navigation/AuthNavigator";
+import { navigationRef } from "./app/navigation/rootNavigation";
 import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
-import { navigationRef } from "./app/navigation/rootNavigation";
 import colors from "./app/config/colors";
 
+import Screen from "./app/components/Screen";
 import BottomSheetToolBar from "./app/components/BottomSheetToolBar";
 import VerseCard from "./app/components/VerseCard";
 
-// import StaticSafeAreaInsets from "react-native-static-safe-area-insets";
-import Animated from "react-native-reanimated";
 import BottomSheet from "reanimated-bottom-sheet";
-
+import { enableScreens } from "react-native-screens";
+enableScreens();
 import Constants from "expo-constants";
-import { getBottomSpace } from "react-native-iphone-x-helper";
 const { height, width } = Dimensions.get("window");
 
 //View -> UIView
@@ -506,8 +504,8 @@ export default function App() {
     },
   ];
   const [currentBook, setCurrentBook] = useState(books[0]);
-  const [currentChapter] = useState(1);
-  const [currentVerse] = useState(1);
+  const [] = useState(1);
+  const [] = useState(1);
 
   const bottomSheetRef = React.useRef(null);
 

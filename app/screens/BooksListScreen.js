@@ -5,11 +5,14 @@ import AppText from "../components/Text";
 import BiblePickerItem from "../components/BiblePickerItem";
 import ChaptersGridScreen from "./ChaptersGridScreen";
 import { AccordionList } from "accordion-collapse-react-native";
+import colors from "../config/colors";
 
 class BooksListScreen extends PureComponent {
   constructor(props) {
     super(props);
   }
+
+  state = { rightOpen: false };
 
   render() {
     const { width } = this.props;
@@ -545,15 +548,44 @@ class BooksListScreen extends PureComponent {
       },
     ];
 
-    const _renderHeader = (section) => {
+    const buttonWidth = (width - 15) / 2;
+
+    const _renderLeftHeader = (section) => {
       return (
-        <BiblePickerItem
-          item={section}
-          label={section.label}
-          // aspectRatio={5}
-          height={45}
-          // width={width / 2}
-        />
+        <View
+          style={{
+            marginVertical: 3,
+          }}
+        >
+          {this.state.rightOpen ? (
+            <View></View>
+          ) : (
+            <BiblePickerItem
+              item={section}
+              label={section.label}
+              aspectRatio={5.5}
+              width={buttonWidth}
+            />
+          )}
+        </View>
+      );
+    };
+
+    const _renderRightHeader = (section) => {
+      return (
+        <View
+          style={{
+            marginVertical: 3,
+            alignItems: "flex-end",
+          }}
+        >
+          <BiblePickerItem
+            item={section}
+            label={section.label}
+            aspectRatio={5.5}
+            width={buttonWidth}
+          />
+        </View>
       );
     };
 
@@ -569,35 +601,63 @@ class BooksListScreen extends PureComponent {
       <>
         <View
           style={{
+            alignItems: "center",
             flexDirection: "row",
             justifyContent: "space-around",
+            height: 55,
           }}
         >
-          <AppText style={styles.sectionTitle}>Old Testament</AppText>
-          <AppText style={styles.sectionTitle}>New Testament</AppText>
+          <AppText
+            style={[
+              styles.sectionTitle,
+              // { color: this.state.rightOpen ? colors.light : colors.medium },
+            ]}
+          >
+            Old Testament
+          </AppText>
+          <AppText
+            style={[
+              styles.sectionTitle,
+              // { color: this.state.leftOpen ? colors.light : colors.medium },
+            ]}
+          >
+            New Testament
+          </AppText>
         </View>
         <View
           style={{
             flexDirection: "row",
             paddingBottom: 30,
+            justifyContent: "space-between",
           }}
         >
           <View style={styles.column1}>
             <AccordionList
               list={books.slice(0, 39)}
-              header={_renderHeader}
+              header={_renderLeftHeader}
               body={_renderContent}
               keyExtractor={(item) => `${item.value}`}
               showsVerticalScrollIndicator={false}
+              // onToggle={
+              // (item, index, isExpanded) =>
+              // this.setState({ leftOpen: isExpanded })
+              // console.log(item, index, isExpanded)
+              // }
             />
           </View>
           <View style={styles.column2}>
             <AccordionList
               list={books.slice(39, 66)}
-              header={_renderHeader}
+              header={_renderRightHeader}
               body={_renderContent}
               keyExtractor={(item) => `${item.value}`}
               showsVerticalScrollIndicator={false}
+              onToggle={
+                (item, index, isExpanded) =>
+                  this.setState({ rightOpen: isExpanded })
+                // console.log(item, index, isExpanded)
+              }
+              // contentContainerStyle={{ alignSelf: "flex-end" }}
             />
           </View>
         </View>
@@ -608,25 +668,14 @@ class BooksListScreen extends PureComponent {
 
 const styles = StyleSheet.create({
   sectionTitle: {
-    // flexGrow: 1,
-    // flexShrink: 1,
-    // textAlign: "center",
     fontSize: 20,
   },
   header: {},
   column1: {
-    // alignSelf: "stretch",
-    // alignItems: "stretch",
     flexGrow: 1,
-    // flex: 1 / 2,
-    justifyContent: "flex-start",
   },
   column2: {
-    // alignSelf: "stretch",
-    // alignItems: "flex-end",
     flexGrow: 1,
-    // flex: 1 / 2,
-    justifyContent: "flex-end",
   },
 });
 
