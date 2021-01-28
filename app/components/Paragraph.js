@@ -1,9 +1,7 @@
 import React, { PureComponent } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text } from "react-native";
 import Verse from "./Verse";
 import defaultStyles from "../config/styles";
-import Highlighter from "react-native-highlight-words";
-// import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class Paragraph extends PureComponent {
   constructor(props) {
@@ -20,9 +18,6 @@ export default class Paragraph extends PureComponent {
       searchWords,
       onPress,
     } = this.props;
-
-    const ConditionalWrapper = ({ condition, wrapper, children }) =>
-      condition ? wrapper(children) : children;
 
     return (
       //   <ConditionalWrapper

@@ -1,23 +1,7 @@
-import React, { useState, useEffect, PureComponent } from "react";
-import {
-  ActivityIndicator as Indicator,
-  FlatList,
-  StyleSheet,
-  View,
-  Pressable,
-} from "react-native";
+import React, { PureComponent } from "react";
+import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 
-import ActivityIndicator from "../components/ActivityIndicator";
-import Button from "../components/Button";
-import Card from "../components/Card";
-import colors from "../config/colors";
-import listingsApi from "../api/listings";
-import routes from "../navigation/routes";
-import Screen from "../components/Screen";
-import AppText from "../components/Text";
-import useApi from "../hooks/useApi";
 import BiblePickerItem from "../components/BiblePickerItem";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 class ChaptersGridScreen extends PureComponent {
   constructor(props) {
@@ -60,7 +44,5 @@ class ChaptersGridScreen extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({});
 
 export default ChaptersGridScreen;

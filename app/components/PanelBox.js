@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import {
-  Button,
   Image,
   View,
   StyleSheet,
@@ -8,22 +7,10 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody,
-  AccordionList,
-} from "accordion-collapse-react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { useDeviceOrientation } from "@react-native-community/hooks";
 
 import colors from "../config/colors";
 import AppText from "../components/Text";
 import defaultStyles from "../config/styles";
-
-import ResourcesScreen from "../screens/ResourcesScreen";
-import { ScrollView, FlatList } from "react-native-gesture-handler";
-import ActivityIndicator from "./ActivityIndicator";
 
 export default class PanelBox extends PureComponent {
   constructor(props) {
@@ -38,7 +25,6 @@ export default class PanelBox extends PureComponent {
   render() {
     const {
       fontSize,
-      landscape,
       verseContent,
       johnsNote,
       crossrefs,
@@ -49,7 +35,7 @@ export default class PanelBox extends PureComponent {
     const macarthurText = fontSize * 0.85;
     const macarthurLineHeight = macarthurText * 2;
 
-    const navigateBible = (code) => {
+    const navigateBible = () => {
       bottomSheetRef.current.snapTo(1);
       // paragraphBibleRef.current.getNode().scrollToIndex({
       //   animated: true,

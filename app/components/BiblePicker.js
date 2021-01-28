@@ -101,11 +101,6 @@ class BiblePicker extends PureComponent {
             screenOptions={{ headerShown: true }}
             style={{ elevation: 0 }}
           >
-            {/* <Stack.Screen
-              name="Books"
-              component={BooksListScreen}
-              options={{ headerShown: false, title: "Books" }}
-            /> */}
             <Stack.Screen
               name="BooksList"
               options={{ headerShown: false, title: "Books" }}
@@ -118,18 +113,6 @@ class BiblePicker extends PureComponent {
                 />
               )}
             </Stack.Screen>
-            {/* <Stack.Screen
-              name="Chapters"
-              component={ChaptersGridScreen}
-              options={({}) => ({
-                headerTitle: (
-                  <AppText style={styles.sectionTitle}>II Hesitations</AppText>
-                ),
-                headerStyle: styles.titleCard,
-                headerTitleStyle: { alignItems: "flex-end" },
-                headerTitleContainerStyle: { alignItems: "flex-end" },
-              })}
-            /> */}
           </Stack.Navigator>
         );
       case 2:

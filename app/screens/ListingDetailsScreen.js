@@ -1,13 +1,11 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { Image } from "react-native-expo-image-cache";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
 import AppText from "../components/Text";
-import VerseCard from "../components/VerseCard";
-import { ScrollView } from "react-native-gesture-handler";
 
 function ListingDetailsScreen({ route }) {
   const listing = route.params;

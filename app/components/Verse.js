@@ -3,7 +3,6 @@ import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Highlighter from "react-native-highlight-words";
 import reactStringReplace from "react-string-replace";
 import verseFormatted from "./VerseFormatted";
-// import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class Verse extends PureComponent {
   constructor(props) {

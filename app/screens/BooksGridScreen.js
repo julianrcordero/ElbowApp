@@ -1,10 +1,16 @@
 import React, { PureComponent } from "react";
-import { FlatList, InteractionManager, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  InteractionManager,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import colors from "../config/colors";
 import AppText from "../components/Text";
 import BiblePickerItem from "../components/BiblePickerItem";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 class BooksGridScreen extends PureComponent {
   constructor(props) {
