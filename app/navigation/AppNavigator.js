@@ -37,15 +37,7 @@ const AppNavigator = (props) =>
         initialRouteName="Bible"
         swipeEnabled
         tabBar={(props) => <MyTabBar {...props} />}
-        tabBarOptions={
-          {
-            // activeTintColor: colors.medium, //"#e91e63",
-            // position: "absolute",
-            // zIndex: 0,
-          }
-        }
-        zIndex={1}
-        elevation={1}
+        tabBarOptions={{}}
       >
         <Tab.Screen
           name="Home"

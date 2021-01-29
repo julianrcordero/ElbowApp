@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     flex: 1,
     // margin: 10,
-    paddingTop: Constants.statusBarHeight,
+    // paddingTop: Constants.statusBarHeight,
   },
 });
 

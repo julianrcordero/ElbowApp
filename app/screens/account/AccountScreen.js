@@ -28,7 +28,7 @@ const menuItems = [
   },
 ];
 
-function AccountScreen({ props }) {
+function AccountScreen({ navigation }) {
   //navigation}){
   const { user, logOut } = useAuth();
 

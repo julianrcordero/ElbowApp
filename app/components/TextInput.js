@@ -18,7 +18,7 @@ function AppTextInput({ icon, width = "100%", ...otherProps }) {
         // multiline
         numberOfLines={4}
         placeholderTextColor={defaultStyles.colors.medium}
-        style={defaultStyles.bibleText}
+        style={[defaultStyles.bibleText, styles.textInput]}
         {...otherProps}
       />
     </View>
@@ -32,12 +32,20 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     // flex: 1,
     flexDirection: "row",
+    height: 50,
     // width: "100%",
-    padding: 15,
+    // padding: 15,
     marginVertical: 10,
   },
   icon: {
-    marginRight: 10,
+    // backgroundColor: "red",
+    alignSelf: "center",
+    // flex: 1,
+    marginHorizontal: 10,
+  },
+  textInput: {
+    // backgroundColor: "green",
+    flex: 1,
   },
 });
 

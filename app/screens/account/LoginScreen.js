@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, Button, Image, StyleSheet, View } from "react-native";
 import * as Yup from "yup";
 
+import TextInput from "../../components/TextInput";
 import {
   AppForm,
   AppFormField,

@@ -296,7 +296,6 @@ export default function BibleScreen({
         changeBibleBook={changeBibleBook}
         fontSize={fontSize}
         // setFontSize={setFontSize}
-        // books={books}
         toggleParagraphMode={toggleParagraphMode}
         bottomSheetRef={bottomSheetRef}
         setSettingsMode={setSettingsMode}
