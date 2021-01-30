@@ -708,7 +708,7 @@ export default function App() {
   return (
     <>
       <Screen style={{ position: "absolute", width: "100%", zIndex: 200 }}>
-        <TopSheetNavigation ref={topPanel} />
+        <TopSheetNavigation ref={topPanel} width={width} />
       </Screen>
       <Screen>
         <NavigationContainer ref={navigationRef}>

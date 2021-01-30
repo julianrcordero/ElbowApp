@@ -578,6 +578,7 @@ class BooksGridScreen extends PureComponent {
                 //   }
                 // );
                 // () => interactionPromise.cancel();
+                console.log(item);
                 navigation.navigate("Chapters", {
                   title: item.label,
                   gridChapters: item.chapters,
@@ -612,6 +613,7 @@ class BooksGridScreen extends PureComponent {
                 //   }
                 // );
                 // () => interactionPromise.cancel();
+                console.log(item);
                 navigation.navigate("Chapters", {
                   title: item.label,
                   gridChapters: item.chapters,

@@ -563,7 +563,7 @@ class BooksListScreen extends PureComponent {
             <BiblePickerItem
               item={section}
               label={section.label}
-              aspectRatio={5.5}
+              aspectRatio={5}
               width={buttonWidth}
             />
           )}
@@ -582,7 +582,7 @@ class BooksListScreen extends PureComponent {
           <BiblePickerItem
             item={section}
             label={section.label}
-            aspectRatio={5.5}
+            aspectRatio={5}
             width={buttonWidth}
           />
         </View>
@@ -607,22 +607,8 @@ class BooksListScreen extends PureComponent {
             height: 55,
           }}
         >
-          <AppText
-            style={[
-              styles.sectionTitle,
-              // { color: this.state.rightOpen ? colors.light : colors.medium },
-            ]}
-          >
-            Old Testament
-          </AppText>
-          <AppText
-            style={[
-              styles.sectionTitle,
-              // { color: this.state.leftOpen ? colors.light : colors.medium },
-            ]}
-          >
-            New Testament
-          </AppText>
+          <AppText style={[styles.sectionTitle]}>Old Testament</AppText>
+          <AppText style={[styles.sectionTitle]}>New Testament</AppText>
         </View>
         <View
           style={{

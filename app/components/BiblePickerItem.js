@@ -11,12 +11,12 @@ class BiblePickerItem extends PureComponent {
 
   render() {
     const {
-      borderWidth = 1,
-      item,
-      height,
-      label,
       aspectRatio = 1,
+      borderWidth = 1,
       flex,
+      height,
+      item,
+      label,
       onPress,
       width = "100%",
     } = this.props;
