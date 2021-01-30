@@ -41,7 +41,7 @@ export default function BibleScreenToolBar(props) {
         PickerItemComponent={BiblePickerItem}
         bottomSheetRef={props.bottomSheetRef}
         setSettingsMode={props.setSettingsMode}
-        setTopPanelClosed={props.setTopPanelClosed}
+        topPanel={props.topPanel}
       />
     </Animated.View>
   );

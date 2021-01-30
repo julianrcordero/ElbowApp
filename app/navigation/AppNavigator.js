@@ -33,84 +33,6 @@ const AppNavigator = (props) =>
   {
     useNotifications();
 
-    const [topPanelClosed, setTopPanelClosed] = useState(false);
-    const [pickerType, setPickerType] = useState(0);
-    const searchHistory = [
-      { id: 0, title: "monkey" },
-      { id: 1, title: "giraffe" },
-      { id: 2, title: "elephant" },
-    ];
-
-    const selectedPicker = () => {
-      switch (pickerType) {
-        case 0:
-          return (
-            <View
-              style={{ backgroundColor: "red", width: "100%", height: 500 }}
-            ></View>
-            // <Stack.Navigator
-            //   screenOptions={{ headerShown: true }}
-            //   style={{ elevation: 0 }}
-            // >
-            //   <Stack.Screen
-            //     name="Books"
-            //     component={BooksGridScreen}
-            //     options={{ headerShown: false, title: "Books" }}
-            //   />
-
-            //   <Stack.Screen
-            //     name="Chapters"
-            //     component={ChaptersGridScreen}
-            //     options={({ route }) => ({
-            //       headerRight: () => (
-            //         <AppText style={styles.sectionTitle}>
-            //           {route.params.title}
-            //         </AppText>
-            //       ),
-            //       headerStyle: {
-            //         height: 55,
-            //       },
-            //       headerTitle: "",
-            //     })}
-            //   />
-            // </Stack.Navigator>
-          );
-        case 1:
-          return (
-            <View
-              style={{ backgroundColor: "blue", width: "100%", height: 500 }}
-            ></View>
-            // <Stack.Navigator
-            //   screenOptions={{ headerShown: true }}
-            //   style={{ elevation: 0 }}
-            // >
-            //   <Stack.Screen
-            //     name="BooksList"
-            //     options={{ headerShown: false, title: "Books" }}
-            //   >
-            //     {(props) => (
-            //       <BooksListScreen
-            //         changeBibleBook={this.props.changeBibleBook}
-            //         close={() => this.setState({ collapsed: true })}
-            //         width={width - 30}
-            //       />
-            //     )}
-            //   </Stack.Screen>
-            // </Stack.Navigator>
-          );
-        case 2:
-          return (
-            <FlatList
-              data={searchHistory}
-              renderItem={renderSearchItem}
-              keyExtractor={(item) => item.id}
-            />
-          );
-        default:
-          break;
-      }
-    };
-
     return (
       <Tab.Navigator
         initialRouteName="Bible"
@@ -140,7 +62,7 @@ const AppNavigator = (props) =>
               bottomSheetRef={props.bottomSheetRef}
               setCurrentBook={props.setCurrentBook}
               setSettingsMode={props.setSettingsMode}
-              setTopPanelClosed={props.setTopPanelClosed}
+              topPanel={props.topPanel}
               setVerseList={props.setVerseList}
               verseList={props.verseList}
             />

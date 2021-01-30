@@ -86,14 +86,6 @@ class BiblePicker extends PureComponent {
             screenOptions={{ headerShown: true }}
             style={{ elevation: 0 }}
           >
-            {/* 
-              {(props) => (
-                <BooksGridScreen
-                  changeBibleBook={this.props.changeBibleBook}
-                  close={() => this.setState({ collapsed: true })}
-                />
-              )}
-            </Stack.Screen> */}
             <Stack.Screen
               name="Books"
               component={BooksGridScreen}
@@ -113,8 +105,6 @@ class BiblePicker extends PureComponent {
                   height: 55,
                 },
                 headerTitle: "",
-                // close: () => this.setState({ collapsed: true }),
-                // changeBibleBook: this.props.changeBibleBook,
               })}
             />
           </Stack.Navigator>
@@ -160,7 +150,7 @@ class BiblePicker extends PureComponent {
       fontSize,
       HEADER_HEIGHT,
       placeholder,
-      setTopPanelClosed,
+      topPanel,
     } = this.props;
 
     return (
@@ -246,7 +236,7 @@ class BiblePicker extends PureComponent {
               />
             ) : (
               <TouchableOpacity
-                onPress={() => setTopPanelClosed(false)}
+                onPress={() => topPanel.current.setState({ collapsed: false })}
                 style={styles.reference}
               >
                 <Text style={{ fontSize: fontSize }}>

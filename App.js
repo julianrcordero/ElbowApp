@@ -16,10 +16,6 @@ import colors from "./app/config/colors";
 import Screen from "./app/components/Screen";
 import BottomSheetToolBar from "./app/components/BottomSheetToolBar";
 import VerseCard from "./app/components/VerseCard";
-import BooksGridScreen from "./app/screens/BooksGridScreen";
-import ChaptersGridScreen from "./app/screens/ChaptersGridScreen";
-import ListItem from "./app/components/lists/ListItem";
-import ListItemDeleteAction from "./app/components/lists/ListItemDeleteAction";
 
 import BottomSheet from "reanimated-bottom-sheet";
 import { enableScreens } from "react-native-screens";
@@ -27,8 +23,9 @@ enableScreens();
 import Collapsible from "react-native-collapsible";
 import { getBottomSpace } from "react-native-iphone-x-helper";
 import Constants from "expo-constants";
-import SegmentedControl from "@react-native-community/segmented-control";
+
 import { createStackNavigator } from "@react-navigation/stack";
+import TopSheetNavigation from "./app/components/TopSheetNavigation";
 const Stack = createStackNavigator();
 const { height, width } = Dimensions.get("window");
 
@@ -43,13 +40,7 @@ export default function App() {
   const titleSize = fontSize * 1.5;
   const handleSlide = (value) => setFontSize(value);
 
-  const [topPanelClosed, setTopPanelClosed] = useState(false);
-  const [pickerType, setPickerType] = useState(0);
-  const searchHistory = [
-    { id: 0, title: "monkey" },
-    { id: 1, title: "giraffe" },
-    { id: 2, title: "elephant" },
-  ];
+  const topPanel = React.useRef();
 
   const [settingsMode, setSettingsMode] = useState(false);
   const [verseList, setVerseList] = useState([]);
@@ -534,86 +525,6 @@ export default function App() {
     if (user) setUser(user);
   };
 
-  const renderSearchItem = ({ item, index, separators }) => {
-    return (
-      <ListItem
-        title={item.title}
-        description={item.description}
-        image={item.image}
-        onPress={() => console.log("Message selected", item)}
-        renderRightActions={() => (
-          <ListItemDeleteAction onPress={() => handleDelete(item)} />
-        )}
-      />
-    );
-  };
-
-  const selectedPicker = () => {
-    switch (pickerType) {
-      case 0:
-        return (
-          <View style={{ backgroundColor: "red", width, height: 500 }}></View>
-          // <Stack.Navigator
-          //   screenOptions={{ headerShown: true }}
-          //   style={{ elevation: 0 }}
-          // >
-          //   <Stack.Screen
-          //     name="Books"
-          //     component={BooksGridScreen}
-          //     options={{ headerShown: false, title: "Books" }}
-          //   />
-
-          //   <Stack.Screen
-          //     name="Chapters"
-          //     component={ChaptersGridScreen}
-          //     options={({ route }) => ({
-          //       headerRight: () => (
-          //         <AppText style={styles.sectionTitle}>
-          //           {route.params.title}
-          //         </AppText>
-          //       ),
-          //       headerStyle: {
-          //         height: 55,
-          //       },
-          //       headerTitle: "",
-          //     })}
-          //   />
-          // </Stack.Navigator>
-        );
-      case 1:
-        return (
-          <View style={{ backgroundColor: "blue", width, height: 500 }}></View>
-          // <Stack.Navigator
-          //   screenOptions={{ headerShown: true }}
-          //   style={{ elevation: 0 }}
-          // >
-          //   <Stack.Screen
-          //     name="BooksList"
-          //     options={{ headerShown: false, title: "Books" }}
-          //   >
-          //     {(props) => (
-          //       <BooksListScreen
-          //         changeBibleBook={this.props.changeBibleBook}
-          //         close={() => this.setState({ collapsed: true })}
-          //         width={width - 30}
-          //       />
-          //     )}
-          //   </Stack.Screen>
-          // </Stack.Navigator>
-        );
-      case 2:
-        return (
-          <FlatList
-            data={searchHistory}
-            renderItem={renderSearchItem}
-            keyExtractor={(item) => item.id}
-          />
-        );
-      default:
-        break;
-    }
-  };
-
   const snapToHalf = () => {
     bottomSheetRef.current.snapTo(2);
   };
@@ -796,54 +707,8 @@ export default function App() {
 
   return (
     <>
-      <Screen style={{ position: "absolute", zIndex: 200 }}>
-        {/* <View style={{ position: "relative" }}> */}
-        <Collapsible
-          align={"center"}
-          collapsed={topPanelClosed}
-          // collapsedHeight={-70}
-          style={{ backgroundColor: "blue", width: width }}
-        >
-          <View
-            style={{
-              backgroundColor: colors.white,
-              height: height - top - 70 - getBottomSpace(),
-              paddingHorizontal: 15,
-              // marginHorizontal: 15,
-              // width: "100%",
-              // top: -70,
-            }}
-          >
-            <View
-              style={{
-                alignItems: "center",
-                backgroundColor: colors.white,
-                height: 70,
-                justifyContent: "space-between",
-                flexDirection: "row",
-                // width: width ,
-              }}
-            >
-              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                Select a Passage
-              </Text>
-              <Button
-                title={"Cancel"}
-                onPress={() => setTopPanelClosed(true)}
-              ></Button>
-            </View>
-            <SegmentedControl
-              values={["GRID", "LIST", "RECENT"]}
-              selectedIndex={pickerType}
-              onChange={(event) => {
-                setPickerType(event.nativeEvent.selectedSegmentIndex);
-              }}
-              style={{ backgroundColor: colors.light, height: 45 }}
-            />
-            {selectedPicker()}
-          </View>
-        </Collapsible>
-        {/* </View> */}
+      <Screen style={{ position: "absolute", width: "100%", zIndex: 200 }}>
+        <TopSheetNavigation ref={topPanel} />
       </Screen>
       <Screen>
         <NavigationContainer ref={navigationRef}>
@@ -857,9 +722,9 @@ export default function App() {
                 crossrefSize={crossrefSize}
                 titleSize={titleSize}
                 setSettingsMode={setSettingsMode}
-                setTopPanelClosed={setTopPanelClosed}
                 setVerseList={setVerseList}
                 setCurrentBook={setCurrentBook}
+                topPanel={topPanel}
                 verseList={verseList}
               />
             ) : (
