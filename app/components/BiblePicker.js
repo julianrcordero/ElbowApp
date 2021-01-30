@@ -160,11 +160,12 @@ class BiblePicker extends PureComponent {
       fontSize,
       HEADER_HEIGHT,
       placeholder,
+      setTopPanelClosed,
     } = this.props;
 
     return (
-      <View>
-        <Collapsible
+      <View style={{ width: "100%" }}>
+        {/* <Collapsible
           align={"center"}
           collapsed={this.state.collapsed}
           // collapsedHeight={-70}
@@ -214,7 +215,7 @@ class BiblePicker extends PureComponent {
             />
             {this.selectedPicker()}
           </View>
-        </Collapsible>
+        </Collapsible> */}
         <View
           style={{
             flexDirection: "row",
@@ -245,7 +246,7 @@ class BiblePicker extends PureComponent {
               />
             ) : (
               <TouchableOpacity
-                onPress={() => this.setState({ collapsed: false })}
+                onPress={() => setTopPanelClosed(false)}
                 style={styles.reference}
               >
                 <Text style={{ fontSize: fontSize }}>

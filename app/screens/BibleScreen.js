@@ -64,6 +64,7 @@ export default function BibleScreen({
   titleSize,
   bottomSheetRef,
   setSettingsMode,
+  setTopPanelClosed,
   setVerseList,
   setCurrentBook,
   verseList,
@@ -299,6 +300,7 @@ export default function BibleScreen({
         toggleParagraphMode={toggleParagraphMode}
         bottomSheetRef={bottomSheetRef}
         setSettingsMode={setSettingsMode}
+        setTopPanelClosed={setTopPanelClosed}
         style={styles.toolBar}
       />
 
