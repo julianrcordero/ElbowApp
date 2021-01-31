@@ -28,7 +28,7 @@ export default class PanelBox extends PureComponent {
       verseContent,
       johnsNote,
       crossrefs,
-      // paragraphBibleRef,
+      // _map,
       bottomSheetRef,
     } = this.props;
 
@@ -37,10 +37,6 @@ export default class PanelBox extends PureComponent {
 
     const navigateBible = () => {
       bottomSheetRef.current.snapTo(1);
-      // paragraphBibleRef.current.getNode().scrollToIndex({
-      //   animated: true,
-      //   index: Number(code.substr(2, 3)) - 1,
-      // });
     };
 
     function VerseHyperlink({ cr }) {
@@ -67,7 +63,7 @@ export default class PanelBox extends PureComponent {
         >
           {verseContent}
         </AppText>
-        {Array.isArray(crossrefs) ? (
+        {/* {Array.isArray(crossrefs) ? (
           crossrefs.map((crossref) => (
             <Text key={crossref["id"]}>
               {"\n" + crossref["title"] + "\t"}
@@ -97,8 +93,7 @@ export default class PanelBox extends PureComponent {
               />
             )}
           </Text>
-        )}
-        {/* <Text>{"\n"}</Text> */}
+        )} */}
         <TextInput
           style={{
             backgroundColor: colors.light,

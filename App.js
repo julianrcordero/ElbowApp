@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Button, Dimensions, FlatList, View, Switch, Text } from "react-native";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
@@ -41,6 +41,7 @@ export default function App() {
   const handleSlide = (value) => setFontSize(value);
 
   const topPanel = React.useRef();
+  const _map = useRef(null);
 
   const [settingsMode, setSettingsMode] = useState(false);
   const [verseList, setVerseList] = useState([]);
@@ -646,6 +647,12 @@ export default function App() {
           paddingHorizontal: 30,
         }}
       >
+        {/* <Text>{item.title}</Text> */}
+        {/* id: 1,
+      latitude: 34.3,
+      longitude: -118.5139665,
+      title: "Buenos Tacos",
+      description: "Where those tacos were really good", */}
         <VerseCard
           key={index}
           currentBook={currentBook}
@@ -653,13 +660,32 @@ export default function App() {
           crossrefSize={crossrefSize}
           fontSize={fontSize}
           height={top - 70 - bottomSheetHeaderHeight - verseCardReferenceHeight}
-          // paragraphBibleRef={paragraphBibleRef}
           bottomSheetRef={bottomSheetRef}
           verseCardReferenceHeight={verseCardReferenceHeight}
         />
       </View>
     );
   };
+
+  const goToMarker = (item) => {
+    if (_map.current) {
+      // console.log("Zoom: " + _map.current.description);
+      _map.current.animateCamera(
+        {
+          center: {
+            latitude: item.latitude,
+            longitude: item.longitude,
+          },
+          zoom: 10,
+        },
+        { duration: 500 }
+      );
+    }
+  };
+
+  const onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
+    if (viewableItems[0]) goToMarker(viewableItems[0].item);
+  }, []);
 
   const renderBibleContent = () => (
     <View
@@ -679,6 +705,7 @@ export default function App() {
         horizontal={true}
         initialNumToRender={5}
         keyExtractor={(item, index) => item + index}
+        // onScrollEndDrag={goToMarker}
         ref={carousel}
         renderItem={renderVerseCardItem}
         scrollEventThrottle={16}
@@ -688,10 +715,10 @@ export default function App() {
         style={{ backgroundColor: colors.white }}
         // onViewableItemsChanged={onViewRef.current}
         // viewabilityConfig={viewConfigRef.current}
-        // onViewableItemsChanged={onViewableItemsChanged}
-        // viewabilityConfig={{
-        //   itemVisiblePercentThreshold: 50,
-        // }}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 75,
+        }}
       />
     </View>
   );
@@ -726,6 +753,7 @@ export default function App() {
                 setCurrentBook={setCurrentBook}
                 topPanel={topPanel}
                 verseList={verseList}
+                _map={_map}
               />
             ) : (
               <AuthNavigator />
@@ -736,7 +764,7 @@ export default function App() {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={[top, "50%", "0%"]}
+        snapPoints={[top, "40%", "0%"]}
         initialSnap={2}
         renderHeader={settingsMode ? renderSettingsHeader : renderBibleHeader}
         renderContent={

@@ -23,7 +23,6 @@ export default class VerseCard extends PureComponent {
       fontSize,
       height,
       crossRefSize,
-      // paragraphBibleRef,
       bottomSheetRef,
     } = this.props;
 
@@ -45,7 +44,8 @@ export default class VerseCard extends PureComponent {
                 textAlign: "left",
               }}
             >
-              {currentBook.label + " " + item.chapter + " : " + item.title}
+              {/* {currentBook.label + " " + item.chapter + " : " + item.title} */}
+              {item.title}
             </AppText>
             {this.state.loved ? (
               <MaterialCommunityIcons name="heart" color="red" size={22} />
@@ -55,11 +55,10 @@ export default class VerseCard extends PureComponent {
         <View>
           <PanelBox
             fontSize={fontSize}
-            verseContent={item.content}
+            verseContent={item.description}
             johnsNote={item.johnsNote}
             crossrefs={item.crossrefs}
             crossRefSize={crossRefSize}
-            // paragraphBibleRef={paragraphBibleRef}
             bottomSheetRef={bottomSheetRef}
             // landscape={landscape}
           ></PanelBox>

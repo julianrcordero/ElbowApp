@@ -9,7 +9,7 @@ import Collapsible from "react-native-collapsible";
 import AccountNavigator from "./AccountNavigator";
 import FeedNavigator from "./FeedNavigator";
 import ListingEditScreen from "../screens/ListingEditScreen";
-import BibleScreen from "../screens/BibleScreen";
+import MapScreen from "../screens/MapScreen";
 
 import NewListingButton from "./NewListingButton";
 import useNotifications from "../hooks/useNotifications";
@@ -35,7 +35,7 @@ const AppNavigator = (props) =>
 
     return (
       <Tab.Navigator
-        initialRouteName="Bible"
+        initialRouteName="Map"
         swipeEnabled
         tabBar={(props) => <MyTabBar {...props} />}
         tabBarOptions={{}}
@@ -47,7 +47,7 @@ const AppNavigator = (props) =>
             tabBarIcon: "home",
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Bible"
           children={() => (
             <BibleScreen
@@ -70,6 +70,22 @@ const AppNavigator = (props) =>
           options={{
             tabBarIcon: "book-open-page-variant",
           }}
+        /> */}
+        <Tab.Screen
+          name="Map"
+          // component={MapScreen}
+          options={{
+            tabBarIcon: "map",
+          }}
+          children={() => (
+            <MapScreen
+              bottomSheetRef={props.bottomSheetRef}
+              carousel={props.carousel}
+              setVerseList={props.setVerseList}
+              verseList={props.verseList}
+              _map={props._map}
+            />
+          )}
         />
         <Tab.Screen
           name="John's Notes"
