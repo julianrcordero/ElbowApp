@@ -19,7 +19,7 @@ function ImageInput({ imageUri, onChangeImage }) {
   const requestPermission = async () => {
     // const result = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.LOCATION);
     // result.granted
-    const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
+    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!granted) alert("You need to enable permission to access the library.");
   };
 

@@ -16,21 +16,23 @@ function AppButton({ title, onPress, color = "primary", ...otherProps }) {
 
 const styles = StyleSheet.create({
   button: {
-    flexDirection: "row",
+    // flexDirection: "row",
     backgroundColor: colors.primary,
-    borderRadius: 25,
+    borderRadius: 15,
+    // flex: 1,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    padding: 15,
-    width: "100%",
-    marginVertical: 10,
+    paddingHorizontal: 20,
+    // width: "100%",
+    // marginVertical: 10,
   },
   text: {
     color: colors.white,
-    fontSize: 18,
+    fontSize: 16,
     textTransform: "uppercase",
     fontWeight: "bold",
-    flex: 0.8,
+    // flex: 0.8,
   },
 });
 

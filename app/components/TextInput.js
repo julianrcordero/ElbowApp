@@ -3,9 +3,9 @@ import { View, TextInput, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
 
-function AppTextInput({ icon, width = "100%", ...otherProps }) {
+function AppTextInput({ icon, height = 50, width = "100%", ...otherProps }) {
   return (
-    <View style={[styles.container, { width }]}>
+    <View style={[styles.container, { height, width }]}>
       {icon && (
         <MaterialCommunityIcons
           name={icon}
@@ -15,8 +15,7 @@ function AppTextInput({ icon, width = "100%", ...otherProps }) {
         />
       )}
       <TextInput
-        // multiline
-        numberOfLines={4}
+        // numberOfLines={4}
         placeholderTextColor={defaultStyles.colors.medium}
         style={[defaultStyles.bibleText, styles.textInput]}
         {...otherProps}
@@ -29,12 +28,12 @@ const styles = StyleSheet.create({
   container: {
     // alignItems: "center",
     backgroundColor: defaultStyles.colors.light,
-    borderRadius: 25,
+    borderRadius: 15,
     // flex: 1,
     flexDirection: "row",
-    height: 50,
+    // height: 50,
     // width: "100%",
-    // padding: 15,
+    paddingVertical: 10,
     marginVertical: 10,
   },
   icon: {

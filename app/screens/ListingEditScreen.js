@@ -17,8 +17,7 @@ import UploadScreen from "./UploadScreen";
 const validationSchema = Yup.object().shape({
   title: Yup.string().required().min(1).label("Title"),
   // price: Yup.number().required().min(1).max(10000).label("Price"),
-  scripture: Yup.string().label("Scripture"),
-  description: Yup.string().label("Description"),
+  description: Yup.string().required().label("Description"),
   category: Yup.object().required().nullable().label("Category"),
   images: Yup.array().min(1, "Please select at least one image."),
 });
@@ -29,7 +28,13 @@ const categories = [
   { label: "Camera", value: 3, backgroundColor: "blue", icon: "lock" },
 ];
 
-function ListingEditScreen() {
+function ListingEditScreen({
+  description,
+  markerList,
+  setMarkerList,
+  title,
+  verseCard,
+}) {
   const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -38,17 +43,49 @@ function ListingEditScreen() {
     setProgress(0);
 
     setUploadVisible(true);
-    const result = await listingsApi.addListing(
-      { ...listing, location },
-      (progress) => setProgress(progress)
-    );
 
-    if (!result.ok) {
-      setUploadVisible(false);
-      return alert("Could not save the listing.");
-    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        let region = {
+          latitude: parseFloat(position.coords.latitude),
+          longitude: parseFloat(position.coords.longitude),
+          latitudeDelta: 5,
+          longitudeDelta: 5,
+        };
+
+        const newMarkerList = [
+          ...markerList,
+          {
+            id: markerList.length,
+            latitude: parseFloat(position.coords.latitude),
+            longitude: parseFloat(position.coords.longitude),
+            title: listing.title,
+            description: listing.description,
+            images: [listing.images],
+          },
+        ];
+        setMarkerList(newMarkerList);
+      },
+      (error) => console.log(error),
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 1000,
+      }
+    );
+    // const result = await listingsApi.addListing(
+    //   { ...listing, location },
+    //   (progress) => setProgress(progress)
+    // );
+
+    // if (!result.ok) {
+    //   setUploadVisible(false);
+    //   return alert("Could not save the listing.");
+    // }
 
     resetForm();
+
+    verseCard.setState({ editing: false });
   };
 
   return (
@@ -60,24 +97,32 @@ function ListingEditScreen() {
       />
       <Form
         initialValues={{
-          title: "",
-          scripture: "",
-          description: "",
+          title: title,
+          description: description,
           category: null,
           images: [],
         }}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        <FormImagePicker name="images" />
-        <FormField maxLength={255} name="title" placeholder="Title" />
         <FormField
-          keyboardType="numeric"
-          maxLength={8}
-          name="scripture"
-          placeholder="Scripture"
-          width={120}
+          maxLength={45}
+          name="title"
+          placeholder="Title"
+          icon="rename-box"
         />
+
+        <FormField
+          icon="newspaper-variant-outline"
+          maxLength={255}
+          multiline
+          name="description"
+          height={100}
+          // numberOfLines={3}
+          placeholder="Description"
+        />
+
+        <FormImagePicker name="images" />
         <Picker
           items={categories}
           name="category"
@@ -85,13 +130,6 @@ function ListingEditScreen() {
           PickerItemComponent={CategoryPickerItem}
           placeholder="Category"
           width="50%"
-        />
-        <FormField
-          maxLength={255}
-          multiline
-          name="description"
-          numberOfLines={3}
-          placeholder="Description"
         />
         <SubmitButton title="Post" />
       </Form>

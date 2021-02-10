@@ -1,3 +1,8 @@
+import Amplify, { Auth } from "aws-amplify";
+// import awsconfig from "./aws-exports";
+import { amplifyConfig } from "./amplifyconfig";
+Amplify.configure(amplifyConfig);
+
 import React, { useCallback, useRef, useState } from "react";
 import { Button, Dimensions, FlatList, View, Switch, Text } from "react-native";
 import "react-native-gesture-handler";
@@ -44,7 +49,7 @@ export default function App() {
   const _map = useRef(null);
 
   const [settingsMode, setSettingsMode] = useState(false);
-  const [verseList, setVerseList] = useState([]);
+  const [markerList, setMarkerList] = useState([]);
   const carousel = React.useRef();
 
   const books = [
@@ -659,15 +664,17 @@ export default function App() {
           item={item}
           crossrefSize={crossrefSize}
           fontSize={fontSize}
-          height={top - 70 - bottomSheetHeaderHeight - verseCardReferenceHeight}
+          height={top - bottomSheetHeaderHeight - getBottomSpace()}
           bottomSheetRef={bottomSheetRef}
+          markerList={markerList}
+          setMarkerList={setMarkerList}
           verseCardReferenceHeight={verseCardReferenceHeight}
         />
       </View>
     );
   };
 
-  const goToMarker = (item) => {
+  const slideToMarker = (item) => {
     if (_map.current) {
       // console.log("Zoom: " + _map.current.description);
       _map.current.animateCamera(
@@ -684,42 +691,45 @@ export default function App() {
   };
 
   const onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
-    if (viewableItems[0]) goToMarker(viewableItems[0].item);
+    if (viewableItems[0]) slideToMarker(viewableItems[0].item);
   }, []);
 
-  const renderBibleContent = () => (
+  const renderMarkerData = () => (
     <View
       style={{
         height: top - 50,
       }}
     >
-      <FlatList
-        bounces={false}
-        data={verseList}
-        decelerationRate={"fast"}
-        getItemLayout={(data, index) => ({
-          length: width,
-          offset: width * index,
-          index,
-        })}
-        horizontal={true}
-        initialNumToRender={5}
-        keyExtractor={(item, index) => item + index}
-        // onScrollEndDrag={goToMarker}
-        ref={carousel}
-        renderItem={renderVerseCardItem}
-        scrollEventThrottle={16}
-        showsHorizontalScrollIndicator={false}
-        snapToAlignment={"start"}
-        snapToInterval={width}
-        style={{ backgroundColor: colors.white }}
-        // onViewableItemsChanged={onViewRef.current}
-        // viewabilityConfig={viewConfigRef.current}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 75,
-        }}
-      />
+      {_map.current ? (
+        <FlatList
+          bounces={false}
+          data={markerList}
+          decelerationRate={"fast"}
+          extraData={_map.current.state.markers}
+          getItemLayout={(data, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+          horizontal={true}
+          initialNumToRender={5}
+          keyExtractor={(item, index) => item + index}
+          // onScrollEndDrag={slideToMarker}
+          ref={carousel}
+          renderItem={renderVerseCardItem}
+          scrollEventThrottle={16}
+          showsHorizontalScrollIndicator={false}
+          snapToAlignment={"start"}
+          snapToInterval={width}
+          style={{ backgroundColor: colors.white }}
+          // onViewableItemsChanged={onViewRef.current}
+          // viewabilityConfig={viewConfigRef.current}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 75,
+          }}
+        />
+      ) : null}
     </View>
   );
 
@@ -749,10 +759,10 @@ export default function App() {
                 crossrefSize={crossrefSize}
                 titleSize={titleSize}
                 setSettingsMode={setSettingsMode}
-                setVerseList={setVerseList}
                 setCurrentBook={setCurrentBook}
+                setMarkerList={setMarkerList}
                 topPanel={topPanel}
-                verseList={verseList}
+                markerList={markerList}
                 _map={_map}
               />
             ) : (
@@ -767,9 +777,7 @@ export default function App() {
         snapPoints={[top, "40%", "0%"]}
         initialSnap={2}
         renderHeader={settingsMode ? renderSettingsHeader : renderBibleHeader}
-        renderContent={
-          settingsMode ? renderSettingsContent : renderBibleContent
-        }
+        renderContent={settingsMode ? renderSettingsContent : renderMarkerData}
         // onCloseEnd={() => setFocusedVerse(null)}
       />
     </>

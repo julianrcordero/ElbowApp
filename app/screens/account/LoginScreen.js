@@ -14,6 +14,7 @@ import authApi from "../../api/auth";
 import colors from "../../config/colors";
 import { Formik } from "formik";
 import useAuth from "../../auth/useAuth";
+import { Auth } from "aws-amplify";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -25,26 +26,33 @@ function LoginScreen({ navigation }) {
   const [loginFailed, setLoginFailed] = useState(false);
 
   const handleSubmit = async ({ email, password }) => {
-    const result = await authApi.signin(email, password);
-
-    if (!result.ok) {
-      if (result.data) setLoginFailed(result.data.message);
-      else {
-        setLoginFailed("An unexpected error occurred.");
-      }
-      return;
-    } else if (result.data.statusCode !== 200) {
-      return setLoginFailed(result.data.body.message);
-    } else {
+    try {
+      const user = await Auth.signIn(email, password);
+      console.log(user);
       setLoginFailed(false);
-      auth.logIn(
-        result.data.body.data.AuthenticationResult.IdToken,
-        result.data.body.data.AuthenticationResult.AccessToken
-      );
+    } catch (error) {
+      console.log("error signing in:", error);
+      setLoginFailed(true);
     }
+    // const result = await authApi.signin(email, password);
+    // console.log(result);
 
-    // return setLoginFailed(true);
+    // if (!result.ok) {
+    //   if (result.data) setLoginFailed(result.data.message);
+    //   else {
+    //     setLoginFailed("An unexpected error occurred.");
+    //   }
+    //   return;
+    // } else if (result.data.statusCode !== 200) {
+    //   return setLoginFailed(result.data.body.message);
+    // } else {
+    //   setLoginFailed(false);
 
+    //   console.log(result);
+    //   auth.logIn(
+    //     result.data.body.data.AuthenticationResult.IdToken,
+    //     result.data.body.data.AuthenticationResult.AccessToken
+    //   );
     // }
   };
 
@@ -94,7 +102,7 @@ function LoginScreen({ navigation }) {
           icon="lock"
           name="password"
           placeholder="Password"
-          secureTextEntry={true}
+          secureTextEntry={false}
           textContentType="password"
         />
         <SubmitButton

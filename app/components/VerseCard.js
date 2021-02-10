@@ -6,6 +6,8 @@ import PanelBox from "../components/PanelBox";
 import AppText from "../components/Text";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import ListingEditScreen from "../screens/ListingEditScreen";
+import AppButton from "./Button";
 
 export default class VerseCard extends PureComponent {
   constructor(props) {
@@ -13,6 +15,7 @@ export default class VerseCard extends PureComponent {
 
     this.state = {
       loved: false,
+      editing: false,
     };
   }
 
@@ -24,45 +27,67 @@ export default class VerseCard extends PureComponent {
       height,
       crossRefSize,
       bottomSheetRef,
+      markerList,
+      setMarkerList,
     } = this.props;
 
     return (
-      <View>
-        <View
-          style={{
-            alignItems: "center",
-            height: 50,
-            flexDirection: "row",
-            justifyContent: "flex-start",
-          }}
-        >
-          <View style={{ alignContent: "flex-start", flexDirection: "column" }}>
-            <AppText
+      <View style={{ height: height }}>
+        {this.state.editing ? (
+          <ListingEditScreen
+            verseCard={this}
+            markerList={markerList}
+            setMarkerList={setMarkerList}
+            title={item.title}
+            description={item.description}
+          />
+        ) : (
+          <>
+            <View
               style={{
-                fontSize: fontSize,
-                fontWeight: "bold",
-                textAlign: "left",
+                alignItems: "center",
+                height: 50,
+                flexDirection: "row",
+                justifyContent: "flex-start",
               }}
             >
-              {/* {currentBook.label + " " + item.chapter + " : " + item.title} */}
-              {item.title}
-            </AppText>
-            {this.state.loved ? (
-              <MaterialCommunityIcons name="heart" color="red" size={22} />
-            ) : null}
-          </View>
-        </View>
-        <View>
-          <PanelBox
-            fontSize={fontSize}
-            verseContent={item.description}
-            johnsNote={item.johnsNote}
-            crossrefs={item.crossrefs}
-            crossRefSize={crossRefSize}
-            bottomSheetRef={bottomSheetRef}
-            // landscape={landscape}
-          ></PanelBox>
-        </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  flex: 1,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                }}
+              >
+                <AppText
+                  style={{
+                    fontSize: fontSize,
+                    fontWeight: "bold",
+                    textAlign: "left",
+                  }}
+                >
+                  {/* {currentBook.label + " " + item.chapter + " : " + item.title} */}
+                  {item.title}
+                </AppText>
+                <AppButton
+                  title={"Edit"}
+                  onPress={() => {
+                    console.log("Edit clicked");
+                    this.setState({ editing: true });
+                  }}
+                />
+              </View>
+            </View>
+            <PanelBox
+              fontSize={fontSize}
+              verseContent={item.description}
+              johnsNote={item.johnsNote}
+              crossrefs={item.crossrefs}
+              crossRefSize={crossRefSize}
+              bottomSheetRef={bottomSheetRef}
+            ></PanelBox>
+          </>
+        )}
       </View>
     );
   }

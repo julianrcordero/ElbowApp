@@ -63,8 +63,8 @@ const AppNavigator = (props) =>
               setCurrentBook={props.setCurrentBook}
               setSettingsMode={props.setSettingsMode}
               topPanel={props.topPanel}
-              setVerseList={props.setVerseList}
-              verseList={props.verseList}
+              setMarkerList={props.setMarkerList}
+              markerList={props.markerList}
             />
           )}
           options={{
@@ -79,11 +79,12 @@ const AppNavigator = (props) =>
           }}
           children={() => (
             <MapScreen
+              // ref={props._map}
               bottomSheetRef={props.bottomSheetRef}
               carousel={props.carousel}
-              setVerseList={props.setVerseList}
-              verseList={props.verseList}
               _map={props._map}
+              setMarkerList={props.setMarkerList}
+              markerList={props.markerList}
             />
           )}
         />

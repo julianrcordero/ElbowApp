@@ -7,26 +7,24 @@ function ImageInputList({ imageUris = [], onRemoveImage, onAddImage }) {
   //   scrollView.current.scrollToEnd()
 
   return (
-    <View>
-      <ScrollView
-        ref={scrollView}
-        horizontal
-        onContentSizeChange={() => scrollView.current.scrollToEnd()}
-      >
-        <View style={styles.container}>
-          {imageUris.map((uri) => (
-            <View key={uri} style={styles.image}>
-              <ImageInput
-                imageUri={uri}
-                key={uri} //basic React
-                onChangeImage={() => onRemoveImage(uri)}
-              />
-            </View>
-          ))}
-          <ImageInput onChangeImage={(uri) => onAddImage(uri)} />
-        </View>
-      </ScrollView>
-    </View>
+    <ScrollView
+      ref={scrollView}
+      horizontal
+      onContentSizeChange={() => scrollView.current.scrollToEnd()}
+    >
+      <View style={styles.container}>
+        {imageUris.map((uri) => (
+          <View key={uri} style={styles.image}>
+            <ImageInput
+              imageUri={uri}
+              key={uri} //basic React
+              onChangeImage={() => onRemoveImage(uri)}
+            />
+          </View>
+        ))}
+        <ImageInput onChangeImage={(uri) => onAddImage(uri)} />
+      </View>
+    </ScrollView>
   );
 }
 

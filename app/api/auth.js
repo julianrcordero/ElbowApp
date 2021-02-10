@@ -1,7 +1,7 @@
 import cognitoClient from "./cognito";
 
-const signin = (email, password) =>
-  cognitoClient.post("/signin", { email, password });
+const signin = (user, password) =>
+  cognitoClient.post("/signin", { user, password });
 const signout = (AccessToken) =>
   cognitoClient.post("/signout", { AccessToken });
 const signup = (name, email, password, phone_number) =>

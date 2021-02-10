@@ -3,11 +3,12 @@ import cache from "../utility/cache";
 import authStorage from "../auth/storage";
 
 const cognitoClient = create({
-  baseURL: "https://1scvbw6i67.execute-api.us-east-1.amazonaws.com/dev",
+  baseURL: "https://rfpfs7fbe7.execute-api.us-west-2.amazonaws.com/dev",
 });
 
 cognitoClient.addAsyncRequestTransform(async (request) => {
   const authToken = await authStorage.getAccessToken();
+  console.log("authToken: " + authToken);
   if (!authToken) return;
   request.headers["x-auth-token"] = authToken;
 });
