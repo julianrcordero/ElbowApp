@@ -5,22 +5,30 @@ import AuthContext from "./context";
 import authStorage from "./storage";
 import authApi from "../api/auth";
 
+import { Auth } from "aws-amplify";
+
 export default useAuth = () => {
   const { user, setUser } = useContext(AuthContext);
 
   const logIn = (idToken, accessToken) => {
     const user = jwtDecode(idToken);
     setUser(user);
+
+    console.log("idToken: " + idToken);
+    console.log("accessToken: " + accessToken);
     authStorage.storeAccessToken(accessToken);
     authStorage.storeIdToken(idToken);
   };
 
   const logOut = async () => {
     const accessToken = await authStorage.getAccessToken();
-    const result = await authApi.signout(accessToken);
-    result.ok
-      ? console.log("Successfully signed out via Cognito")
-      : console.log("Couldn't sign out via Cognito");
+    // const result = await authApi.signout(accessToken);
+
+    try {
+      await Auth.signOut();
+    } catch (error) {
+      console.log("error signing out: ", error);
+    }
 
     setUser(null);
     authStorage.removeIdToken();

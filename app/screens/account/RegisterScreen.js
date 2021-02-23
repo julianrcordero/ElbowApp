@@ -7,6 +7,7 @@ import authApi from "../../api/auth";
 import useAuth from "../../auth/useAuth";
 import useApi from "../../hooks/useApi";
 import ActivityIndicator from "../../components/ActivityIndicator";
+import { Auth } from "aws-amplify";
 
 import {
   AppForm as Form,
@@ -36,6 +37,10 @@ function RegisterScreen({ navigation }) {
       password,
       phone_number
     );
+    // const result = await Auth.signUp({
+    //   email,
+    //   password
+    // })
 
     if (!result.ok) {
       if (result.data) setError(result.data.message);

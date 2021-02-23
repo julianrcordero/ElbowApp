@@ -5,22 +5,36 @@ import { Image } from "react-native-expo-image-cache";
 import Text from "./Text";
 import colors from "../config/colors";
 
-function Card({ title, subTitle, imageUrl, onPress, thumbnailUrl }) {
+function Card({
+  category,
+  dataType,
+  thumbnailUrl,
+  hint,
+  location,
+  mimeType,
+  onPress,
+}) {
   return (
+    // category={item.category}
+    //       dataType={item.dataType}
+    //       thumbnailUrl={item.fileURL}
+    //       hint={item.hint}
+    //       location={item.location}
+    //       mimeType={item.mimeType}
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.card}>
         <Image
           style={styles.image}
           tint="light"
           preview={{ uri: thumbnailUrl }}
-          uri={imageUrl}
+          uri={thumbnailUrl} //imageUrl}
         />
         <View style={styles.detailsContainer}>
           <Text style={styles.title} numberOfLines={1}>
-            {title}
+            {category}
           </Text>
           <Text style={styles.subTitle} numberOfLines={2}>
-            {subTitle}
+            {hint}
           </Text>
         </View>
       </View>

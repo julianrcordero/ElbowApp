@@ -63,7 +63,7 @@ export default {
   getAccessToken,
   removeAccessToken,
   storeIdToken,
-  //   getIdToken,
+  getIdToken,
   removeIdToken,
   getUser,
 };

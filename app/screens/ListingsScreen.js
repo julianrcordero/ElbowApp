@@ -33,15 +33,21 @@ function ListingsScreen({ navigation }) {
       <ActivityIndicator visible={getListingsApi.loading} />
       <Indicator animating={getListingsApi.loading} size={"large"} />
       <FlatList
-        data={getListingsApi.data}
+        data={getListingsApi.data.posts}
         keyExtractor={(listing) => listing.id.toString()}
         renderItem={({ item }) => (
           <Card
-            title={item.title}
-            subTitle={item.scripture}
-            imageUrl={item.images[0].url}
-            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-            thumbnailUrl={item.imageUrl}
+            category={item.category}
+            dataType={item.dataType}
+            thumbnailUrl={item.fileURL}
+            hint={item.hint}
+            location={item.location}
+            mimeType={item.mimeType}
+            // title={item.title}
+            // subTitle={item.scripture}
+            // imageUrl={item.images[0].url}
+            // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+            // thumbnailUrl={item.imageUrl}
           />
         )}
       />

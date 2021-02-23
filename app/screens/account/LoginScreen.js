@@ -28,8 +28,13 @@ function LoginScreen({ navigation }) {
   const handleSubmit = async ({ email, password }) => {
     try {
       const user = await Auth.signIn(email, password);
-      console.log(user);
+      // console.log(user);
       setLoginFailed(false);
+
+      auth.logIn(
+        user.signInUserSession.idToken.jwtToken,
+        user.signInUserSession.accessToken.jwtToken
+      );
     } catch (error) {
       console.log("error signing in:", error);
       setLoginFailed(true);

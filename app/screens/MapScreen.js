@@ -9,6 +9,8 @@ import {
   View,
 } from "react-native";
 
+import listingsApi from "../api/listings";
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import MapView, {
@@ -64,14 +66,14 @@ export default class MapScreen extends PureComponent {
   };
 
   componentDidMount() {
-    console.log("componentDidMount");
+    // console.log("componentDidMount");
     this.getCurrentLocation();
     this.moveCamera(this.state.region.latitude, this.state.region.longitude);
     this.props.setMarkerList(this.state.initialMarkers);
   }
 
   async getCurrentLocation() {
-    console.log("getCurrentLocation");
+    // console.log("getCurrentLocation");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         let region = {
@@ -80,7 +82,7 @@ export default class MapScreen extends PureComponent {
           latitudeDelta: 0.2,
           longitudeDelta: 0.0421,
         };
-        console.log("Initial region: ", region);
+        // console.log("Initial region: ", region);
         this.setState({
           region: region,
         });
@@ -102,7 +104,7 @@ export default class MapScreen extends PureComponent {
   // }
 
   moveCamera = (latitude, longitude, zoom) => {
-    console.log("moveCamera");
+    // console.log("moveCamera");
     if (this.props._map.current) {
       this.props._map.current.animateCamera(
         {
@@ -139,7 +141,7 @@ export default class MapScreen extends PureComponent {
 
   addMarker = () => {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         let region = {
           latitude: parseFloat(position.coords.latitude),
           longitude: parseFloat(position.coords.longitude),
@@ -147,17 +149,38 @@ export default class MapScreen extends PureComponent {
           longitudeDelta: 5,
         };
 
-        const newMarkerList = [
-          ...this.props.markerList,
-          {
-            id: this.props.markerList.length,
-            latitude: parseFloat(position.coords.latitude),
-            longitude: parseFloat(position.coords.longitude),
-            title: "Location #" + (this.props.markerList.length + 1),
-            description: "Where I dropped a pin",
-          },
-        ];
-        this.props.setMarkerList(newMarkerList);
+        const listing = {
+          dataType: "photo",
+          mimeType: "image/jpeg",
+          hint: "Post from app",
+          category: "A category",
+          lat: parseFloat(position.coords.latitude),
+          long: parseFloat(position.coords.longitude),
+        };
+
+        const result = await listingsApi.addListing(
+          { ...listing },
+          (progress) => setProgress(progress)
+        );
+
+        console.log("RESULT: ", result);
+
+        if (!result.ok) {
+          // setUploadVisible(false);
+          return alert("Could not save the listing.");
+        }
+
+        // const newMarkerList = [
+        //   ...this.props.markerList,
+        //   {
+        //     id: this.props.markerList.length,
+        //     latitude: parseFloat(position.coords.latitude),
+        //     longitude: parseFloat(position.coords.longitude),
+        //     title: "Location #" + (this.props.markerList.length + 1),
+        //     description: "Where I dropped a pin",
+        //   },
+        // ];
+        // this.props.setMarkerList(newMarkerList);
       },
       (error) => console.log(error),
       {
