@@ -26,7 +26,7 @@ function DashboardScreen({ navigation }) {
     <Screen style={styles.screen}>
       {getDashboardApi.error && (
         <>
-          <AppText>Couldn't retrieve the listings.</AppText>
+          <AppText>Couldn't retrieve the posts.</AppText>
           <Button title="Retry" onPress={getDashboardApi.request} />
         </>
       )}

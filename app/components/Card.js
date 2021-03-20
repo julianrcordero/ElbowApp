@@ -31,7 +31,7 @@ function Card({
         />
         <View style={styles.detailsContainer}>
           <Text style={styles.title} numberOfLines={1}>
-            {category}
+            {location.lat + ", " + location.lon}
           </Text>
           <Text style={styles.subTitle} numberOfLines={2}>
             {hint}

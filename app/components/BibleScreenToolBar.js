@@ -40,7 +40,7 @@ export default function BibleScreenToolBar(props) {
         // placeholder="Category"
         PickerItemComponent={BiblePickerItem}
         bottomSheetRef={props.bottomSheetRef}
-        setSettingsMode={props.setSettingsMode}
+        setAddPostMode={props.setAddPostMode}
         topPanel={props.topPanel}
       />
     </Animated.View>

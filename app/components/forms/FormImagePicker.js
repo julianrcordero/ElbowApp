@@ -21,7 +21,7 @@ function FormImagePicker({ name }) {
   };
 
   return (
-    <View>
+    <View style={{ height: 100 }}>
       <ImageInputList
         imageUris={imageUris}
         onAddImage={handleAdd}

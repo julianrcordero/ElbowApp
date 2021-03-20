@@ -9,31 +9,31 @@ import ActivityIndicator from "../components/ActivityIndicator";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import colors from "../config/colors";
-import listingsApi from "../api/listings";
+import postsApi from "../api/posts";
+import useApi from "../hooks/useApi";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
-import useApi from "../hooks/useApi";
 
-function ListingsScreen({ navigation }) {
-  const getListingsApi = useApi(listingsApi.getListings);
+function PostsScreen({ navigation }) {
+  const getPostsApi = useApi(postsApi.getPosts);
 
   useEffect(() => {
-    getListingsApi.request();
+    getPostsApi.request();
   }, []);
 
   return (
     <Screen style={styles.screen}>
-      {getListingsApi.error && (
+      {/* {getPostsApi.error && (
         <>
-          <AppText>Couldn't retrieve the listings.</AppText>
-          <Button title="Retry" onPress={getListingsApi.request} />
-        </>
-      )}
-      <ActivityIndicator visible={getListingsApi.loading} />
-      <Indicator animating={getListingsApi.loading} size={"large"} />
+          <AppText>Couldn't retrieve the posts.</AppText> */}
+      <Button title="Retry" onPress={getPostsApi.request} />
+      {/* </>
+      )} */}
+      <ActivityIndicator visible={getPostsApi.loading} />
+      {/* <Indicator animating={getPostsApi.loading} size={"large"} /> */}
       <FlatList
-        data={getListingsApi.data.posts}
+        data={getPostsApi.data.posts}
         keyExtractor={(listing) => listing.id.toString()}
         renderItem={({ item }) => (
           <Card
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListingsScreen;
+export default PostsScreen;

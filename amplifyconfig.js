@@ -1,5 +1,33 @@
 import Amplify, { Auth } from "aws-amplify";
 
+function refreshToken() {
+  // refresh the token here and get the new token info
+  // ......
+  try {
+    console.log("refreshing token");
+    const cognitoUser = Auth.currentAuthenticatedUser();
+    const currentSession = Auth.currentSession();
+
+    cognitoUser.refreshSession(currentSession.refreshToken, (err, session) => {
+      // console.log("REFRESHING TOKEN", err, session);
+      const { idToken, refreshToken, accessToken } = session;
+      // do whatever you want to do now :)
+      return new Promise(res, (rej) => {
+        const expires_at = 900 * 1000 + new Date().getTime();
+
+        const data = {
+          refreshToken, //token, // the token from the provider
+          expires_at, //expires_at, // the timestamp for the expiration
+          identity_id, // optional, the identityId for the credentials
+        };
+        res(data);
+      });
+    });
+  } catch (e) {
+    console.log("Unable to refresh Token", e);
+  }
+}
+
 Amplify.configure({
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
@@ -64,4 +92,8 @@ Amplify.configure({
 });
 
 // You can get the current config object
-export const amplifyConfig = Auth.configure();
+export const amplifyConfig = Auth.configure({
+  refreshHandlers: {
+    developer: refreshToken,
+  },
+});

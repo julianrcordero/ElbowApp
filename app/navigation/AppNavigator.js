@@ -1,21 +1,19 @@
-import React, { useState } from "react";
-import { Button, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import SegmentedControl from "@react-native-community/segmented-control";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useSafeArea } from "react-native-safe-area-context";
-import Collapsible from "react-native-collapsible";
 
+import LockerNavigator from "./LockerNavigator";
 import AccountNavigator from "./AccountNavigator";
 import FeedNavigator from "./FeedNavigator";
-import ListingEditScreen from "../screens/ListingEditScreen";
+import PostContentScreen from "../screens/PostContentScreen";
 import MapScreen from "../screens/MapScreen";
 
-import NewListingButton from "./NewListingButton";
 import useNotifications from "../hooks/useNotifications";
 import Animated from "react-native-reanimated";
 import MenuButton from "../components/MenuButton";
 import colors from "../config/colors";
+import useLocation from "../hooks/useLocation";
+import postsApi from "../api/posts";
+import useApi from "../hooks/useApi";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +31,9 @@ const AppNavigator = (props) =>
   {
     useNotifications();
 
+    const getPostsApi = useApi(postsApi.getPosts);
+    const searchPostsApi = useApi(postsApi.searchPosts);
+
     return (
       <Tab.Navigator
         initialRouteName="Map"
@@ -41,36 +42,12 @@ const AppNavigator = (props) =>
         tabBarOptions={{}}
       >
         <Tab.Screen
-          name="Home"
-          component={FeedNavigator}
+          name="Locker"
+          component={LockerNavigator}
           options={{
-            tabBarIcon: "home",
+            tabBarIcon: "locker",
           }}
         />
-        {/* <Tab.Screen
-          name="Bible"
-          children={() => (
-            <BibleScreen
-              carousel={props.carousel}
-              currentBook={props.currentBook}
-              HEADER_HEIGHT={HEADER_HEIGHT}
-              scrollY={scrollY}
-              headerY={headerY}
-              fontSize={props.fontSize}
-              crossrefSize={props.crossrefSize}
-              titleSize={props.titleSize}
-              bottomSheetRef={props.bottomSheetRef}
-              setCurrentBook={props.setCurrentBook}
-              setSettingsMode={props.setSettingsMode}
-              topPanel={props.topPanel}
-              setMarkerList={props.setMarkerList}
-              markerList={props.markerList}
-            />
-          )}
-          options={{
-            tabBarIcon: "book-open-page-variant",
-          }}
-        /> */}
         <Tab.Screen
           name="Map"
           // component={MapScreen}
@@ -82,17 +59,20 @@ const AppNavigator = (props) =>
               // ref={props._map}
               bottomSheetRef={props.bottomSheetRef}
               carousel={props.carousel}
+              getPostsApi={getPostsApi}
               _map={props._map}
+              searchPostsApi={searchPostsApi}
               setMarkerList={props.setMarkerList}
               markerList={props.markerList}
+              setAddPostMode={props.setAddPostMode}
             />
           )}
         />
         <Tab.Screen
-          name="John's Notes"
-          component={ListingEditScreen}
+          name="My Posts"
+          component={FeedNavigator}
           options={{
-            tabBarIcon: "library-books",
+            tabBarIcon: "newspaper-variant-multiple-outline",
           }}
         />
         <Tab.Screen
@@ -146,13 +126,6 @@ function MyTabBar({ state, descriptors, navigation }) {
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name);
           }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
         };
 
         return (

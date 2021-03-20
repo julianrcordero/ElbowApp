@@ -8,7 +8,7 @@ import ListItemSeparatorComponent from "../../components/lists/ListItemSeparator
 
 const menuItems = [
   {
-    title: "My listings",
+    title: "My posts",
     icon: {
       name: "format-list-bulleted",
       backgroundColor: colors.primary,

@@ -107,7 +107,7 @@ function LoginScreen({ navigation }) {
           icon="lock"
           name="password"
           placeholder="Password"
-          secureTextEntry={false}
+          secureTextEntry={true}
           textContentType="password"
         />
         <SubmitButton

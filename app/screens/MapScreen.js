@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { PureComponent } from "react";
-import { render } from "react-dom";
+import React from "react";
+import { Component } from "react";
 import {
   InteractionManager,
   StyleSheet,
@@ -8,8 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import listingsApi from "../api/listings";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -20,8 +17,9 @@ import MapView, {
   PROVIDER_GOOGLE,
 } from "react-native-maps";
 import colors from "../config/colors";
+import ActivityIndicator from "../components/ActivityIndicator";
 
-export default class MapScreen extends PureComponent {
+export default class MapScreen extends Component {
   constructor(props) {
     super(props);
   }
@@ -33,47 +31,16 @@ export default class MapScreen extends PureComponent {
       latitudeDelta: 0.2,
       longitudeDelta: 0.0421,
     },
-    initialMarkers: [
-      {
-        id: 0,
-        latitude: 34.22122713684184,
-        longitude: -118.42242144048214,
-        title: "Grace Community Church Worship Center",
-        description: "Where I first asked her out",
-      },
-      {
-        id: 1,
-        latitude: 34.2413,
-        longitude: -119.265,
-        title: "Ventura Harbor Village",
-        description: "Where I almost drowned",
-      },
-      {
-        id: 2,
-        latitude: 34.0759,
-        longitude: -118.441,
-        title: "UCLA Broad Art Center",
-        description: "Where we met",
-      },
-      {
-        id: 3,
-        latitude: 34.31,
-        longitude: -118.5139665,
-        title: "O'Melveny Field",
-        description: "Where I proposed",
-      },
-    ],
+    initialMarkers: [],
+    currentMarkers: "blue",
   };
 
   componentDidMount() {
-    // console.log("componentDidMount");
     this.getCurrentLocation();
     this.moveCamera(this.state.region.latitude, this.state.region.longitude);
-    this.props.setMarkerList(this.state.initialMarkers);
   }
 
   async getCurrentLocation() {
-    // console.log("getCurrentLocation");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         let region = {
@@ -82,7 +49,6 @@ export default class MapScreen extends PureComponent {
           latitudeDelta: 0.2,
           longitudeDelta: 0.0421,
         };
-        // console.log("Initial region: ", region);
         this.setState({
           region: region,
         });
@@ -96,15 +62,7 @@ export default class MapScreen extends PureComponent {
     );
   }
 
-  // goToInitialLocation() {
-  //   let initialRegion = Object.assign({}, this.state.initialRegion);
-  //   initialRegion["latitudeDelta"] = 0.005;
-  //   initialRegion["longitudeDelta"] = 0.005;
-  //   this.mapView.animateToRegion(initialRegion, 2000);
-  // }
-
   moveCamera = (latitude, longitude, zoom) => {
-    // console.log("moveCamera");
     if (this.props._map.current) {
       this.props._map.current.animateCamera(
         {
@@ -120,79 +78,81 @@ export default class MapScreen extends PureComponent {
   };
 
   clickToMarker = (marker) => {
-    console.log("clickToMarker");
     this.props.bottomSheetRef.current.snapTo(1);
 
     this.moveCamera(marker.latitude, marker.longitude);
+
+    this.openBottomSheet(false);
+  };
+
+  openBottomSheet = (postMode) => {
+    this.props.bottomSheetRef.current.snapTo(1);
 
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       // let myIndex = markerList.findIndex(
       //   (obj) => obj.chapter === chapter && obj.title === verse
       // );
+      this.props.setAddPostMode(postMode);
       setTimeout(() => {
-        this.props.carousel.current.scrollToIndex({
-          animated: false,
-          index: marker.id,
-        });
+        //     this.props.carousel.current.scrollToIndex({
+        //       animated: false,
+        //       index: marker.id,
+        //     });
       });
     });
     () => interactionPromise.cancel();
   };
 
-  addMarker = () => {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        let region = {
-          latitude: parseFloat(position.coords.latitude),
-          longitude: parseFloat(position.coords.longitude),
-          latitudeDelta: 5,
-          longitudeDelta: 5,
-        };
+  showMyMarkers = () => {
+    this.props.getPostsApi.request();
+    this.setMarkers(this.props.getPostsApi);
+    this.setState({ currentMarkers: "blue" });
+  };
 
-        const listing = {
-          dataType: "photo",
-          mimeType: "image/jpeg",
-          hint: "Post from app",
-          category: "A category",
-          lat: parseFloat(position.coords.latitude),
-          long: parseFloat(position.coords.longitude),
-        };
+  searchMarkers = () => {
+    this.props.searchPostsApi.request();
+    this.setMarkers(this.props.searchPostsApi);
+    this.setState({ currentMarkers: "red" });
+  };
 
-        const result = await listingsApi.addListing(
-          { ...listing },
-          (progress) => setProgress(progress)
+  setMarkers = (myApi) => {
+    if (!myApi.error) {
+      let initialMarkers = [];
+
+      if (myApi.data.posts) {
+        console.log(myApi.data.posts);
+        myApi.data.posts.map(
+          (post) =>
+            (initialMarkers = [
+              ...initialMarkers,
+              {
+                id: post.id,
+                latitude: post.location.lat,
+                longitude: post.location.lon,
+                title: post.category,
+                description: post.hint,
+                url: post.fileURL,
+              },
+            ])
         );
-
-        console.log("RESULT: ", result);
-
-        if (!result.ok) {
-          // setUploadVisible(false);
-          return alert("Could not save the listing.");
-        }
-
-        // const newMarkerList = [
-        //   ...this.props.markerList,
-        //   {
-        //     id: this.props.markerList.length,
-        //     latitude: parseFloat(position.coords.latitude),
-        //     longitude: parseFloat(position.coords.longitude),
-        //     title: "Location #" + (this.props.markerList.length + 1),
-        //     description: "Where I dropped a pin",
-        //   },
-        // ];
-        // this.props.setMarkerList(newMarkerList);
-      },
-      (error) => console.log(error),
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
+      } else {
+        console.log(myApi.data);
       }
-    );
+
+      this.props.setMarkerList(initialMarkers);
+    } else {
+      console.log("getPostsApi.error: ", myApi.error);
+    }
   };
 
   render() {
-    const { bottomSheetRef, carousel, _map, markerList } = this.props;
+    const {
+      bottomSheetRef,
+      carousel,
+      getPostsApi,
+      _map,
+      markerList,
+    } = this.props;
 
     return (
       <View style={styles.container}>
@@ -215,7 +175,7 @@ export default class MapScreen extends PureComponent {
             <Marker
               // draggable
               key={marker.id}
-              pinColor={colors.primary}
+              pinColor={this.state.currentMarkers}
               coordinate={{
                 latitude: marker.latitude,
                 longitude: marker.longitude,
@@ -227,14 +187,42 @@ export default class MapScreen extends PureComponent {
             />
           ))}
         </MapView>
-        <TouchableOpacity style={styles.overlay} onPress={this.addMarker}>
-          <MaterialCommunityIcons
-            name="map-marker-plus"
-            color={colors.black}
-            size={28}
-          />
-          {/* <Text style={styles.text}>Add a marker</Text> */}
-        </TouchableOpacity>
+        <ActivityIndicator visible={getPostsApi.loading} />
+        <View style={styles.overlay}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "green" }]}
+            onPress={() => this.openBottomSheet(true)}
+          >
+            <MaterialCommunityIcons
+              name="map-marker-plus"
+              color={colors.black}
+              size={28}
+            />
+            {/* <Text style={styles.text}>Add a marker</Text> */}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "blue" }]}
+            onPress={this.showMyMarkers}
+          >
+            <MaterialCommunityIcons
+              name="map-marker-multiple"
+              color={colors.black}
+              size={28}
+            />
+            {/* <Text style={styles.text}>Show my markers</Text> */}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "red" }]}
+            onPress={this.searchMarkers}
+          >
+            <MaterialCommunityIcons
+              name="map-marker-question"
+              color={colors.black}
+              size={28}
+            />
+            {/* <Text style={styles.text}>Show my markers</Text> */}
+          </TouchableOpacity>
+        </View>
       </View>
       //  34.2709266,-118.5139665,3a,90y,9.06h,70.3t
     );
@@ -242,6 +230,14 @@ export default class MapScreen extends PureComponent {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    aspectRatio: 1,
+    // backgroundColor: "green",
+    borderRadius: 30,
+    justifyContent: "center",
+    width: 60,
+  },
   container: {
     flex: 1,
     alignItems: "center",
@@ -250,13 +246,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   overlay: {
-    alignItems: "center",
-    aspectRatio: 1,
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-around",
     position: "absolute",
     bottom: 100,
-    backgroundColor: "cornflowerblue",
-    borderRadius: 30,
-    width: 60,
+    // backgroundColor: "cornflowerblue",
+    width: "100%",
   },
 });

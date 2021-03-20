@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import BibleCard from "../components/BibleCard";
 import colors from "../config/colors";
 
-const listings = [
+const posts = [
   {
     id: 1,
     title: "Matthew Study Guide",
@@ -19,12 +19,12 @@ const listings = [
   },
 ];
 
-function BibleListingsScreen({ navigation }) {
+function BiblePostsScreen({ navigation }) {
   return (
     <View style={styles.screen}>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={listings}
+        data={posts}
         keyExtractor={(listing) => listing.id.toString()}
         renderItem={({ item }) => (
           <BibleCard
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BibleListingsScreen;
+export default BiblePostsScreen;
