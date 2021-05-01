@@ -26,6 +26,14 @@ const menuItems = [
     },
     targetScreen: routes.MESSAGES,
   },
+  {
+    title: "Add a Tour",
+    icon: {
+      name: "map-marker-path",
+      backgroundColor: colors.primary,
+    },
+    targetScreen: routes.POST_TOUR,
+  },
 ];
 
 function AccountScreen({ navigation }) {

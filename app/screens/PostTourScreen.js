@@ -17,11 +17,11 @@ import UploadScreen from "./UploadScreen";
 import colors from "../config/colors";
 
 const validationSchema = Yup.object().shape({
-  // title: Yup.string().required().min(1).label("Title"),
+  title: Yup.string().required().min(1).label("Title"),
   // price: Yup.number().required().min(1).max(10000).label("Price"),
-  description: Yup.string().required().label("Description"),
+  //   description: Yup.string().required().label("Description"),
   category: Yup.object().required().nullable().label("Category"),
-  images: Yup.array().min(1, "Please select at least one image."),
+  //   images: Yup.array().min(1, "Please select at least one image."),
 });
 
 const categories = [
@@ -35,9 +35,7 @@ const categories = [
   // { label: "Camera", value: 3, backgroundColor: "blue", icon: "lock" },
 ];
 
-const tours = [];
-
-function PostContentScreen({
+export default function PostTourScreen({
   bottomSheetRef,
   description,
   markerList,
@@ -54,7 +52,7 @@ function PostContentScreen({
 
     console.log("location: ", location);
 
-    const result = await postsApi.addPost({ ...post, location }, (progress) =>
+    const result = await postsApi.addTour({ ...post, location }, (progress) =>
       setProgress(progress)
     );
 
@@ -63,61 +61,28 @@ function PostContentScreen({
       return alert("You are not authorized to upload");
     } else {
       const resultData = result.data;
+      console.log(resultData);
+      //   const postLink = resultData.fileURL;
+      //   uploadPhoto(postLink, post);
 
-      const postLink = resultData.fileURL;
-      uploadPhoto(postLink, post);
-
-      setMarkerList([
-        ...markerList,
-        {
-          id: resultData.id,
-          latitude: resultData.location.lat,
-          longitude: resultData.location.lon,
-          title: resultData.category,
-          description: resultData.hint,
-          url: resultData.fileURL,
-        },
-      ]);
+      //   setMarkerList([
+      //     ...markerList,
+      //     {
+      //       id: resultData.id,
+      //       latitude: resultData.location.lat,
+      //       longitude: resultData.location.lon,
+      //       title: resultData.category,
+      //       description: resultData.hint,
+      //       url: resultData.fileURL,
+      //     },
+      //   ]);
     }
 
     resetForm();
 
-    bottomSheetRef.current.snapTo(2);
+    // bottomSheetRef.current.snapTo(2);
 
     // verseCard.setState({ editing: false });
-  };
-
-  const uploadPhoto = async (postLink, post) => {
-    const path = post.images[0];
-    const image = "";
-
-    let headers = {
-      "content-type": "image/jpeg",
-      "x-amz-acl": "public-read",
-      // Authorization: token
-    };
-
-    let options = {
-      headers: headers,
-      httpMethod: "PUT",
-    };
-
-    let upload = await FileSystem.uploadAsync(postLink, path, options);
-
-    // console.log("result: ", upload);
-    if (upload.status !== 200) {
-      setUploadVisible(false);
-      return alert("Could not save the post.");
-    } else {
-    }
-  };
-
-  const loadTours = async () => {
-    // setProgress(0);
-    // setUploadVisible(true);
-
-    const result = await postsApi.getTours();
-    console.log(result.data);
   };
 
   return (
@@ -137,12 +102,12 @@ function PostContentScreen({
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        {/* <FormField
+        <FormField
           maxLength={45}
           name="title"
           placeholder="Title"
           icon="rename-box"
-        /> */}
+        />
         <Picker
           items={categories}
           name="category"
@@ -151,16 +116,8 @@ function PostContentScreen({
           placeholder="Category"
           width="50%"
         />
-        <Picker
-          items={tours}
-          name="tour"
-          loadData={loadTours}
-          numberOfColumns={3}
-          PickerItemComponent={CategoryPickerItem}
-          placeholder="Tour"
-          width="50%"
-        />
-        <FormField
+
+        {/* <FormField
           icon="newspaper-variant-outline"
           maxLength={255}
           multiline
@@ -168,9 +125,9 @@ function PostContentScreen({
           height={100}
           numberOfLines={3}
           placeholder="Description"
-        />
+        /> */}
 
-        <FormImagePicker name="images" />
+        {/* <FormImagePicker name="images" /> */}
 
         <SubmitButton title="Post" />
       </Form>
@@ -185,4 +142,3 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-export default PostContentScreen;

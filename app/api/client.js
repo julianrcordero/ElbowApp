@@ -8,6 +8,7 @@ const apiClient = create({
 
 apiClient.addAsyncRequestTransform(async (request) => {
   const idToken = await authStorage.getIdToken();
+  // console.log(idToken);
 
   if (!idToken) return;
   request.headers["Authorization"] = "Bearer " + idToken;
@@ -19,7 +20,7 @@ apiClient.get = async (url, params, axiosConfig) => {
   const response = await get(url, params, axiosConfig);
   // After
 
-  console.log(response);
+  // console.log("response:", response);
 
   if (response.ok) {
     cache.store(url, response.data);

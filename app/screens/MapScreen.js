@@ -1,6 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import {
+  Alert,
   InteractionManager,
   StyleSheet,
   Text,
@@ -18,6 +19,7 @@ import MapView, {
 } from "react-native-maps";
 import colors from "../config/colors";
 import ActivityIndicator from "../components/ActivityIndicator";
+import postsApi from "../api/posts"; //"../api/posts";
 
 export default class MapScreen extends Component {
   constructor(props) {
@@ -32,7 +34,8 @@ export default class MapScreen extends Component {
       longitudeDelta: 0.0421,
     },
     initialMarkers: [],
-    currentMarkers: "blue",
+    currentMarkers: "dodgerblue",
+    progress: 0,
   };
 
   componentDidMount() {
@@ -103,17 +106,72 @@ export default class MapScreen extends Component {
     () => interactionPromise.cancel();
   };
 
-  showMyMarkers = () => {
-    this.props.getPostsApi.request();
-    this.setMarkers(this.props.getPostsApi);
-    this.setState({ currentMarkers: "blue" });
+  showLockerPosts = async () => {
+    const result = await postsApi.getLocker();
+
+    if (!result.ok) {
+      // setUploadVisible(false);
+      console.log(result);
+      return Alert.alert(result.data.message, result.data.reason, [
+        { text: "OK", onPress: () => console.log("") },
+      ]);
+    } else {
+      if (result.data.total === 0) {
+        return Alert.alert("Sorry!", "You have not unlocked any posts yet", [
+          { text: "OK", onPress: () => console.log("") },
+        ]);
+      }
+      this.setMarkers(result); //this.props.searchPostsApi);
+      this.setState({ currentMarkers: "limegreen" });
+    }
   };
 
-  searchMarkers = () => {
-    this.props.searchPostsApi.request();
-    this.setMarkers(this.props.searchPostsApi);
-    this.setState({ currentMarkers: "red" });
+  showMyPosts = async () => {
+    const result = await postsApi.getPosts();
+
+    if (!result.ok) {
+      // setUploadVisible(false);
+      console.log(result);
+      return Alert.alert(result.data.message, result.data.reason, [
+        { text: "OK", onPress: () => console.log("") },
+      ]);
+    } else {
+      this.setMarkers(result); //this.props.searchPostsApi);
+      this.setState({ currentMarkers: "dodgerblue" });
+    }
   };
+
+  searchMarkers = async () => {
+    const result = await postsApi.searchPosts(this.state.region, (progress) =>
+      // setProgress(progress)
+      this.setState({ progress: progress })
+    );
+
+    if (!result.ok) {
+      console.log(result);
+      // setUploadVisible(false);
+      return Alert.alert(result.data.message, result.data.reason, [
+        { text: "OK", onPress: () => console.log("") },
+        // { text: "No", onPress: () => console.log("No") },
+      ]);
+    } else {
+      this.setMarkers(result);
+      this.setState({ currentMarkers: "crimson" });
+    }
+  };
+
+  //  OLD ONE
+  // showMyPosts = async () => {
+  //   await this.props.getPostsApi.request();
+  //   this.setMarkers(this.props.getPostsApi);
+  //   this.setState({ currentMarkers: "dodgerblue" });
+  // };
+
+  // searchMarkers = async () => {
+  //   await this.props.searchPostsApi.request();
+  //   this.setMarkers(this.props.searchPostsApi);
+  //   this.setState({ currentMarkers: "red" });
+  // };
 
   setMarkers = (myApi) => {
     if (!myApi.error) {
@@ -152,6 +210,7 @@ export default class MapScreen extends Component {
       getPostsApi,
       _map,
       markerList,
+      searchPostsApi,
     } = this.props;
 
     return (
@@ -187,32 +246,32 @@ export default class MapScreen extends Component {
             />
           ))}
         </MapView>
-        <ActivityIndicator visible={getPostsApi.loading} />
+        <ActivityIndicator
+          visible={getPostsApi.loading} // || searchPostsApi.loading}
+        />
         <View style={styles.overlay}>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "green" }]}
-            onPress={() => this.openBottomSheet(true)}
+            style={[styles.button, { backgroundColor: "limegreen" }]}
+            onPress={this.showLockerPosts}
           >
             <MaterialCommunityIcons
-              name="map-marker-plus"
+              name="locker"
               color={colors.black}
               size={28}
             />
-            {/* <Text style={styles.text}>Add a marker</Text> */}
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "blue" }]}
-            onPress={this.showMyMarkers}
+            style={[styles.button, { backgroundColor: "dodgerblue" }]}
+            onPress={this.showMyPosts}
           >
             <MaterialCommunityIcons
               name="map-marker-multiple"
               color={colors.black}
               size={28}
             />
-            {/* <Text style={styles.text}>Show my markers</Text> */}
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "red" }]}
+            style={[styles.button, { backgroundColor: "crimson" }]}
             onPress={this.searchMarkers}
           >
             <MaterialCommunityIcons
@@ -220,9 +279,21 @@ export default class MapScreen extends Component {
               color={colors.black}
               size={28}
             />
-            {/* <Text style={styles.text}>Show my markers</Text> */}
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: "limegreen", bottom: 100, position: "absolute" },
+          ]}
+          onPress={() => this.openBottomSheet(true)}
+        >
+          <MaterialCommunityIcons
+            name="map-marker-plus"
+            color={colors.black}
+            size={28}
+          />
+        </TouchableOpacity>
       </View>
       //  34.2709266,-118.5139665,3a,90y,9.06h,70.3t
     );
@@ -249,7 +320,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     position: "absolute",
-    bottom: 100,
+    top: 25,
     // backgroundColor: "cornflowerblue",
     width: "100%",
   },

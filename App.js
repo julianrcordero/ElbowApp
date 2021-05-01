@@ -94,7 +94,8 @@ export default function App() {
 
   const postViewHeader = () => (
     <View style={[styles.header, { backgroundColor: colors.white }]}>
-      <BottomSheetToolBar />
+      {/* <BottomSheetToolBar /> */}
+      <View></View>
       <Button
         title="Done"
         onPress={snapToHalf}
@@ -146,9 +147,18 @@ export default function App() {
     }
   };
 
-  const onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
-    if (viewableItems[0]) slideToMarker(viewableItems[0].item);
-  }, []);
+  const onViewRef = useRef((viewableItems) => {
+    if (viewableItems.viewableItems[0]) {
+      slideToMarker(viewableItems.viewableItems[0].item);
+    }
+    // Use viewable items in state or as intended
+  });
+  const viewConfigRef = useRef({
+    waitForInteraction: true,
+    // At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
+    // viewAreaCoveragePercentThreshold: 95,
+    itemVisiblePercentThreshold: 75,
+  });
 
   const postViewData = () => (
     <View
@@ -178,9 +188,8 @@ export default function App() {
           snapToAlignment={"start"}
           snapToInterval={width}
           style={{ backgroundColor: colors.white }}
-          // onViewableItemsChanged={onViewRef.current}
-          // viewabilityConfig={viewConfigRef.current}
-          // onViewableItemsChanged={onViewableItemsChanged}
+          onViewableItemsChanged={onViewRef.current}
+          viewabilityConfig={viewConfigRef.current}
           viewabilityConfig={{
             itemVisiblePercentThreshold: 75,
           }}

@@ -14,6 +14,8 @@ import colors from "../config/colors";
 import useLocation from "../hooks/useLocation";
 import postsApi from "../api/posts";
 import useApi from "../hooks/useApi";
+import NewListingButton from "./NewListingButton";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -68,6 +70,18 @@ const AppNavigator = (props) =>
             />
           )}
         />
+        {/* <Tab.Screen
+          name="New Post"
+          component={PostContentScreen}
+          options={({ navigation }) => ({
+            // tabBarButton: () => (
+            //   <NewListingButton
+            //     onPress={() => console.log("Let's create a new post")}
+            //   />
+            // ),
+            tabBarIcon: "plus-circle",
+          })}
+        /> */}
         <Tab.Screen
           name="My Posts"
           component={FeedNavigator}

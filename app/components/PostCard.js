@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { Image } from "react-native-expo-image-cache";
 
 import colors from "../config/colors";
@@ -11,7 +11,7 @@ import PostContentScreen from "../screens/PostContentScreen";
 import AppButton from "./Button";
 import useLocation from "../hooks/useLocation";
 import { useState } from "react";
-import postsApi from "../api/posts"; //"../api/posts";
+import postsApi from "../api/posts";
 
 export default function PostCard({
   currentBook,
@@ -39,14 +39,18 @@ export default function PostCard({
     const result = await postsApi.unlockListing(item, location, (progress) =>
       setProgress(progress)
     );
+    console.log(result);
 
     if (!result.ok) {
       // setUploadVisible(false);
-      console.log(result);
-      return alert(result.data.reason);
+      // console.log(result);
+      return Alert.alert(result.data.message, result.data.reason, [
+        { text: "OK", onPress: () => console.log("") },
+        // { text: "No", onPress: () => console.log("No") },
+      ]);
     } else {
       const resultData = result.data;
-      console.log(resultData);
+      // console.log(resultData);
 
       // const postLink = resultData.fileURL;
       // uploadPhoto(postLink, post);

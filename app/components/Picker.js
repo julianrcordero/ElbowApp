@@ -16,6 +16,7 @@ import PickerItem from "./PickerItem";
 function AppPicker({
   icon,
   items,
+  loadData,
   numberOfColumns = 1,
   onSelectItem,
   PickerItemComponent = PickerItem,
@@ -25,9 +26,16 @@ function AppPicker({
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const openModal = () => {
+    if (loadData) {
+      loadData();
+    }
+    setModalVisible(true);
+  };
+
   return (
     <>
-      <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+      <TouchableWithoutFeedback onPress={openModal}>
         <View style={[styles.container, { width }]}>
           {icon && (
             <MaterialCommunityIcons
