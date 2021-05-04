@@ -22,6 +22,8 @@ const validationSchema = Yup.object().shape({
   description: Yup.string().required().label("Description"),
   category: Yup.object().required().nullable().label("Category"),
   images: Yup.array().min(1, "Please select at least one image."),
+  latitude: Yup.number().label("Latitude"),
+  longitude: Yup.number().label("Longitude"),
 });
 
 const categories = [
@@ -39,12 +41,11 @@ const tours = [];
 
 function PostContentScreen({
   bottomSheetRef,
-  description,
   markerList,
   setMarkerList,
-  title,
+  tourList,
 }) {
-  const location = useLocation();
+  // const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -52,6 +53,10 @@ function PostContentScreen({
     setProgress(0);
     setUploadVisible(true);
 
+    const location = {
+      latitude: Number(post.latitude),
+      longitude: Number(post.longitude),
+    };
     console.log("location: ", location);
 
     const result = await postsApi.addPost({ ...post, location }, (progress) =>
@@ -129,8 +134,8 @@ function PostContentScreen({
       />
       <Form
         initialValues={{
-          title: title,
-          description: description,
+          title: "",
+          description: "",
           category: null,
           images: [],
         }}
@@ -152,7 +157,7 @@ function PostContentScreen({
           width="50%"
         />
         <Picker
-          items={tours}
+          items={tourList}
           name="tour"
           loadData={loadTours}
           numberOfColumns={3}
@@ -169,7 +174,18 @@ function PostContentScreen({
           numberOfLines={3}
           placeholder="Description"
         />
-
+        <FormField
+          name="latitude"
+          placeholder="Latitude"
+          icon="latitude"
+          keyboardType="phone-pad"
+        />
+        <FormField
+          name="longitude"
+          placeholder="Longitude"
+          icon="longitude"
+          keyboardType="phone-pad"
+        />
         <FormImagePicker name="images" />
 
         <SubmitButton title="Post" />

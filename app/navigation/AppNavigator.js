@@ -6,6 +6,7 @@ import AccountNavigator from "./AccountNavigator";
 import FeedNavigator from "./FeedNavigator";
 import PostContentScreen from "../screens/PostContentScreen";
 import MapScreen from "../screens/MapScreen";
+import SubscribeTourScreen from "../screens/SubscribeTourScreen";
 
 import useNotifications from "../hooks/useNotifications";
 import Animated from "react-native-reanimated";
@@ -16,6 +17,8 @@ import postsApi from "../api/posts";
 import useApi from "../hooks/useApi";
 import NewListingButton from "./NewListingButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import ToursScreen from "../screens/ToursScreen";
+import ToursNavigator from "./ToursNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -51,6 +54,13 @@ const AppNavigator = (props) =>
           }}
         />
         <Tab.Screen
+          name="My Posts"
+          component={FeedNavigator}
+          options={{
+            tabBarIcon: "newspaper-variant-multiple-outline",
+          }}
+        />
+        <Tab.Screen
           name="Map"
           // component={MapScreen}
           options={{
@@ -83,18 +93,24 @@ const AppNavigator = (props) =>
           })}
         /> */}
         <Tab.Screen
-          name="My Posts"
-          component={FeedNavigator}
+          name="Tours"
+          component={ToursNavigator}
           options={{
             tabBarIcon: "newspaper-variant-multiple-outline",
           }}
         />
         <Tab.Screen
           name="More"
-          component={AccountNavigator}
+          // component={AccountNavigator}
           options={{
             tabBarIcon: "menu",
           }}
+          children={() => (
+            <AccountNavigator
+              setTourList={props.setTourList}
+              tourList={props.tourList}
+            />
+          )}
         />
       </Tab.Navigator>
     );

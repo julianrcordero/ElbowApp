@@ -7,10 +7,30 @@ const searchPosts = (region, onUploadProgress) => {
   let lat = region.latitude;
   let lon = region.longitude;
   console.log("my location:", lat, lon);
-  return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=20", {
+  return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=20000", {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
   });
+};
+
+// region: {
+//   latitude: 34.2709266,
+//   longitude: -118.5139665,
+//   latitudeDelta: 0.2,
+//   longitudeDelta: 0.0421,
+// }
+const searchTourPoints = (tour, onUploadProgress) => {
+  return client.get(
+    "/search?lat=" +
+      tour.location.lat +
+      "&lon=" +
+      tour.location.lon +
+      "&distance=20000",
+    {
+      onUploadProgress: (progress) =>
+        onUploadProgress(progress.loaded / progress.total),
+    }
+  );
 };
 
 const unlockListing = (post, location, onUploadProgress) => {
@@ -42,6 +62,10 @@ const addPost = (post, onUploadProgress) => {
     category: post.category.label,
     lat: post.location.latitude,
     long: post.location.longitude,
+    completed: true,
+    public: true,
+    userIDs: [],
+    tourID: post.tour.ID,
   };
 
   console.log(newPost);
@@ -55,20 +79,14 @@ const addPost = (post, onUploadProgress) => {
 };
 
 const addTour = (post, onUploadProgress) => {
+  console.log("addTour");
   if (!post.location) {
     return alert("You must enable location to post");
   }
 
-  const newPost = {
-    // dataType: "photo",
-    // mimeType: post.category.value,
-    // hint: post.description,
-    // category: post.category.label,
-    // lat: post.location.latitude,
-    // long: post.location.longitude,
-
+  const newTour = {
     title: post.title,
-    categories: [post.category.label],
+    categories: ["Category 1"],
     active: true,
     location: {
       lat: post.location.latitude,
@@ -76,11 +94,22 @@ const addTour = (post, onUploadProgress) => {
     },
   };
 
-  console.log(newPost);
+  //Parent > Child
+
+  return client.post("tour", newTour, {
+    onUploadProgress: (progress) =>
+      onUploadProgress(progress.loaded / progress.total),
+  });
+};
+
+const subscribeTour = (tour, onUploadProgress) => {
+  const newPost = {
+    tourID: tour.id,
+  };
 
   //Parent > Child
 
-  return client.post("tour", newPost, {
+  return client.post("subscription", newPost, {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
   });
@@ -99,5 +128,7 @@ export default {
   getPosts,
   getTours,
   searchPosts,
+  searchTourPoints,
+  subscribeTour,
   unlockListing,
 };

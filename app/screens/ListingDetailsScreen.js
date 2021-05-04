@@ -1,9 +1,12 @@
-import React from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, View, ScrollView, StyleSheet } from "react-native";
 import { Image } from "react-native-expo-image-cache";
 
 import colors from "../config/colors";
+import postsApi from "../api/posts";
+import useApi from "../hooks/useApi";
 import ListItem from "../components/lists/ListItem";
+import Card from "../components/Card";
 import Text from "../components/Text";
 import AppText from "../components/Text";
 
@@ -11,22 +14,38 @@ function ListingDetailsScreen({ route }) {
   const listing = route.params;
   const fontSize = 16;
 
+  const [progress, setProgress] = useState(0);
+  const [tourPoints, setTourPoints] = useState([]);
+
+  // const getPostsApi = useApi(postsApi.getPosts);
+
+  useEffect(async () => {
+    // getPostsApi.request();
+    const result = await postsApi.searchTourPoints(listing, (progress) =>
+      setProgress(progress)
+    );
+
+    if (result.ok) setTourPoints(result.data.posts);
+  }, []);
+
   return (
     <View>
-      <Image
-        style={styles.image}
-        preview={{ uri: listing.images[0].thumbnailUrl }}
-        tint="light"
-        uri={listing.images[0].url}
-      />
+      {listing.images && (
+        <Image
+          style={styles.image}
+          preview={{ uri: listing.images[0].thumbnailUrl }}
+          tint="light"
+          uri={listing.images[0].url}
+        />
+      )}
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{listing.title}</Text>
-        <Text style={styles.scripture}>${listing.scripture}</Text>
+        {/* <Text style={styles.scripture}>{listing.ID}</Text> */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.userContainer}>
             <ListItem
               image={require("../assets/gtylogo.jpg")}
-              title="Mosh Hamedani"
+              title={listing.userID}
               subTitle="5 Listings"
             />
           </View>
@@ -37,8 +56,17 @@ function ListingDetailsScreen({ route }) {
               marginVertical: 15,
             }}
           >
-            {listing.content}
+            {listing.categories[0]}
           </AppText>
+          {tourPoints
+            .filter((tourPost) => tourPost.tourID === listing.ID)
+            .map((tourPost) => (
+              <Card
+                hint={tourPost.hint}
+                title={tourPost.dataType}
+                // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+              />
+            ))}
           <View
             style={{
               height: 800,

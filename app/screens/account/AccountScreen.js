@@ -34,6 +34,14 @@ const menuItems = [
     },
     targetScreen: routes.POST_TOUR,
   },
+  {
+    title: "Subscribe to a Tour",
+    icon: {
+      name: "map-marker-check-outline",
+      backgroundColor: colors.primary,
+    },
+    targetScreen: routes.SUBSCRIBE_TOUR,
+  },
 ];
 
 function AccountScreen({ navigation }) {

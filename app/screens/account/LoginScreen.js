@@ -28,7 +28,7 @@ function LoginScreen({ navigation }) {
   const handleSubmit = async ({ email, password }) => {
     try {
       const user = await Auth.signIn(email, password);
-      // console.log(user);
+      console.log(user.signInUserSession.idToken.jwtToken);
       setLoginFailed(false);
 
       auth.logIn(

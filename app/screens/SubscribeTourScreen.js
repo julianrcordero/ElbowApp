@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, InteractionManager, StyleSheet, View } from "react-native";
+import { InteractionManager, StyleSheet, View } from "react-native";
 import * as Yup from "yup";
 import * as FileSystem from "expo-file-system";
 
@@ -17,10 +17,10 @@ import UploadScreen from "./UploadScreen";
 import colors from "../config/colors";
 
 const validationSchema = Yup.object().shape({
-  title: Yup.string().required().min(1).label("Title"),
+  id: Yup.string().required().min(1).label("Tour ID"),
   // price: Yup.number().required().min(1).max(10000).label("Price"),
   //   description: Yup.string().required().label("Description"),
-  // category: Yup.object().required().nullable().label("Category"),
+  //   category: Yup.object().required().nullable().label("Category"),
   //   images: Yup.array().min(1, "Please select at least one image."),
 });
 
@@ -35,36 +35,32 @@ const categories = [
   // { label: "Camera", value: 3, backgroundColor: "blue", icon: "lock" },
 ];
 
-export default function PostTourScreen({
+export default function SubscribeTourScreen({
   bottomSheetRef,
   description,
   markerList,
   setMarkerList,
-  setTourList,
-  tourList,
   title,
 }) {
   const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const handleSubmit = async (post, { resetForm }) => {
+  const handleSubmit = async (tour, { resetForm }) => {
     setProgress(0);
     setUploadVisible(true);
 
-    console.log("location: ", location);
-
-    const result = await postsApi.addTour({ ...post, location }, (progress) =>
-      setProgress(progress)
+    const result = await postsApi.subscribeTour(
+      { ...tour, location },
+      (progress) => setProgress(progress)
     );
 
     if (!result.ok) {
       // setUploadVisible(false);
-      return alert("You are not authorized to upload");
+      return alert(result.data);
     } else {
       const resultData = result.data;
-      console.log(resultData.ID);
-      setTourList([...tourList, resultData]);
+      console.log(resultData);
       //   const postLink = resultData.fileURL;
       //   uploadPhoto(postLink, post);
 
@@ -107,12 +103,11 @@ export default function PostTourScreen({
       >
         <FormField
           maxLength={45}
-          name="title"
-          placeholder="Title"
+          name="id"
+          placeholder="Tour ID"
           icon="rename-box"
         />
-        {/* 
-        <Picker
+        {/* <Picker
           items={categories}
           name="category"
           numberOfColumns={3}
@@ -120,6 +115,7 @@ export default function PostTourScreen({
           placeholder="Category"
           width="50%"
         />
+
         <FormField
           icon="newspaper-variant-outline"
           maxLength={255}

@@ -13,6 +13,7 @@ function Card({
   location,
   mimeType,
   onPress,
+  title,
 }) {
   return (
     // category={item.category}
@@ -23,15 +24,17 @@ function Card({
     //       mimeType={item.mimeType}
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.card}>
-        <Image
-          style={styles.image}
-          tint="light"
-          preview={{ uri: thumbnailUrl }}
-          uri={thumbnailUrl} //imageUrl}
-        />
+        {thumbnailUrl && (
+          <Image
+            style={styles.image}
+            tint="light"
+            preview={{ uri: thumbnailUrl }}
+            uri={thumbnailUrl} //imageUrl}
+          />
+        )}
         <View style={styles.detailsContainer}>
           <Text style={styles.title} numberOfLines={1}>
-            {location.lat + ", " + location.lon}
+            {location ? location.lat + ", " + location.lon : title}
           </Text>
           <Text style={styles.subTitle} numberOfLines={2}>
             {hint}

@@ -51,6 +51,7 @@ export default function App() {
 
   const [addPostMode, setAddPostMode] = useState(true);
   const [markerList, setMarkerList] = useState([]);
+  const [tourList, setTourList] = useState([]); //change to API endpoint
   const carousel = React.useRef();
 
   const [] = useState(1);
@@ -88,6 +89,7 @@ export default function App() {
         bottomSheetRef={bottomSheetRef}
         markerList={markerList}
         setMarkerList={setMarkerList}
+        tourList={tourList}
       />
     </View>
   );
@@ -225,6 +227,8 @@ export default function App() {
                 titleSize={titleSize}
                 setAddPostMode={setAddPostMode}
                 setMarkerList={setMarkerList}
+                setTourList={setTourList}
+                tourList={tourList}
                 topPanel={topPanel}
                 markerList={markerList}
                 _map={_map}
