@@ -72,65 +72,53 @@ export default function PostCard({
   };
 
   return (
-    <View style={{ height: height }}>
-      <>
+    <View style={{ backgroundColor: "cyan", height: height }}>
+      <View
+        style={{
+          alignItems: "center",
+          height: 50,
+          flexDirection: "row",
+          justifyContent: "flex-start",
+        }}
+      >
         <View
           style={{
             alignItems: "center",
-            height: 50,
+            flex: 1,
+            justifyContent: "space-between",
             flexDirection: "row",
-            justifyContent: "flex-start",
           }}
         >
-          <View
+          <AppText
             style={{
-              alignItems: "center",
-              flex: 1,
-              justifyContent: "space-between",
-              flexDirection: "row",
+              fontSize: fontSize,
+              fontWeight: "bold",
+              textAlign: "left",
             }}
           >
-            <AppText
-              style={{
-                fontSize: fontSize,
-                fontWeight: "bold",
-                textAlign: "left",
-              }}
-            >
-              {/* {currentBook.label + " " + item.chapter + " : " + item.title} */}
-              {item.title}
-            </AppText>
-            {/* <AppButton
+            {item.description + " (" + item.title + ")"}
+          </AppText>
+          {/* <AppButton
                   title={"Edit"}
                   onPress={() => {
                     console.log("Edit clicked");
                     this.setState({ editing: true });
                   }}
                 /> */}
-          </View>
+          <MaterialCommunityIcons name="lock" color={colors.black} size={28} />
         </View>
-        <AppText>
-          {item.description}
-          {/* id: post.id,
-                latitude: post.location.lat,
-                longitude: post.location.lon,
-                title: post.hint,
-                description: post.hint, */}
-        </AppText>
-        {item.url ? (
-          <Image
-            style={styles.image}
-            tint="light"
-            preview={{ uri: item.url }}
-            uri={item.url} //imageUrl}
-          />
-        ) : (
-          <>
-            <AppText>{"This post is locked"}</AppText>
-            <AppButton title={"Unlock"} onPress={handleUnlock} />
-          </>
-        )}
-        {/* <PanelBox
+      </View>
+      {item.url ? (
+        <Image
+          style={styles.image}
+          tint="light"
+          preview={{ uri: item.url }}
+          uri={item.url} //imageUrl}
+        />
+      ) : (
+        <AppButton title={"Unlock"} onPress={handleUnlock} />
+      )}
+      {/* <PanelBox
               fontSize={fontSize}
               verseContent={item.description}
               johnsNote={item.johnsNote}
@@ -138,7 +126,6 @@ export default function PostCard({
               crossRefSize={crossRefSize}
               bottomSheetRef={bottomSheetRef}
             ></PanelBox> */}
-      </>
     </View>
   );
 }

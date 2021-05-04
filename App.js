@@ -159,8 +159,16 @@ export default function App() {
     waitForInteraction: true,
     // At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
     // viewAreaCoveragePercentThreshold: 95,
-    itemVisiblePercentThreshold: 75,
+    itemVisiblePercentThreshold: 90,
   });
+
+  const getItemLayout = (data, index) => ({
+    length: width,
+    offset: width * index,
+    index,
+  });
+
+  const keyExtractor = (item, index) => item + index;
 
   const postViewData = () => (
     <View
@@ -174,14 +182,10 @@ export default function App() {
           data={markerList}
           decelerationRate={"fast"}
           extraData={_map.current.state.markers}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
+          getItemLayout={getItemLayout}
           horizontal={true}
           initialNumToRender={5}
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={keyExtractor}
           // onScrollEndDrag={slideToMarker}
           ref={carousel}
           renderItem={renderPostCardItem}
@@ -189,12 +193,9 @@ export default function App() {
           showsHorizontalScrollIndicator={false}
           snapToAlignment={"start"}
           snapToInterval={width}
-          style={{ backgroundColor: colors.white }}
+          // style={{ backgroundColor: colors.white }}
           onViewableItemsChanged={onViewRef.current}
           viewabilityConfig={viewConfigRef.current}
-          viewabilityConfig={{
-            itemVisiblePercentThreshold: 75,
-          }}
         />
       ) : null}
     </View>

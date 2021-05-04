@@ -19,13 +19,16 @@ function ListingDetailsScreen({ route }) {
 
   // const getPostsApi = useApi(postsApi.getPosts);
 
-  useEffect(async () => {
-    // getPostsApi.request();
-    const result = await postsApi.searchTourPoints(listing, (progress) =>
-      setProgress(progress)
-    );
-
-    if (result.ok) setTourPoints(result.data.posts);
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await postsApi.searchTourPoints(listing, (progress) =>
+        setProgress(progress)
+      );
+      if (response.ok) setTourPoints(response.data.posts);
+      // ...
+    }
+    fetchData();
   }, []);
 
   return (
@@ -62,6 +65,7 @@ function ListingDetailsScreen({ route }) {
             .filter((tourPost) => tourPost.tourID === listing.ID)
             .map((tourPost) => (
               <Card
+                key={tourPost.id}
                 hint={tourPost.hint}
                 title={tourPost.dataType}
                 // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
