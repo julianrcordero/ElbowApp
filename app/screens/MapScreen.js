@@ -34,6 +34,7 @@ export default class MapScreen extends Component {
       longitudeDelta: 0.0421,
     },
     initialMarkers: [],
+    markerList: [],
     currentMarkers: "dodgerblue",
     progress: 0,
   };
@@ -66,9 +67,8 @@ export default class MapScreen extends Component {
   }
 
   moveCamera = (latitude, longitude, zoom) => {
-    if (this.props._map.current) {
-      console.log("moveCamera");
-      this.props._map.current.animateCamera(
+    if (this.props.mapView.current) {
+      this.props.mapView.current.animateCamera(
         {
           center: {
             latitude: latitude,
@@ -91,18 +91,25 @@ export default class MapScreen extends Component {
     });
     () => interactionPromise.cancel();
     this.openBottomSheet(false);
+    this.scrollToPost(marker);
   };
 
   openBottomSheet = (postMode) => {
     this.props.bottomSheetRef.current.snapTo(1);
+    this.props.bottomSheetContent.current.setState({ addPostMode: postMode });
+  };
 
+  scrollToPost = (marker) => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      this.props.setAddPostMode(postMode);
+      let myIndex = this.props.map.current.state.markerList.findIndex(
+        (m) => m.id === marker.id
+      );
+
       setTimeout(() => {
-        //     this.props.carousel.current.scrollToIndex({
-        //       animated: false,
-        //       index: marker.id,
-        //     });
+        this.props.carousel.current.scrollToIndex({
+          animated: false,
+          index: myIndex,
+        });
       });
     });
     () => interactionPromise.cancel();
@@ -162,25 +169,11 @@ export default class MapScreen extends Component {
     }
   };
 
-  //  OLD ONE
-  // showMyPosts = async () => {
-  //   await this.props.getPostsApi.request();
-  //   this.setMarkers(this.props.getPostsApi);
-  //   this.setState({ currentMarkers: "dodgerblue" });
-  // };
-
-  // searchMarkers = async () => {
-  //   await this.props.searchPostsApi.request();
-  //   this.setMarkers(this.props.searchPostsApi);
-  //   this.setState({ currentMarkers: "red" });
-  // };
-
   setMarkers = (myApi) => {
     if (!myApi.error) {
       let initialMarkers = [];
 
       if (myApi.data.posts) {
-        console.log(myApi.data.posts);
         myApi.data.posts.map(
           (post) =>
             (initialMarkers = [
@@ -199,7 +192,7 @@ export default class MapScreen extends Component {
         console.log(myApi.data);
       }
 
-      this.props.setMarkerList(initialMarkers);
+      this.props.map.current.setState({ markerList: initialMarkers });
     } else {
       console.log("getPostsApi.error: ", myApi.error);
     }
@@ -214,11 +207,11 @@ export default class MapScreen extends Component {
 
   render() {
     const {
+      bottomSheetContent,
       bottomSheetRef,
       carousel,
       getPostsApi,
-      _map,
-      markerList,
+      mapView,
       searchPostsApi,
     } = this.props;
 
@@ -227,7 +220,7 @@ export default class MapScreen extends Component {
         <MapView
           followsUserLocation
           mapPadding={this.mapPadding}
-          ref={_map}
+          ref={mapView}
           style={this.mapStyle}
           region={this.state.region}
           // onMapReady={this.goToInitialLocation}
@@ -237,7 +230,7 @@ export default class MapScreen extends Component {
           showsUserLocation
           zoomEnabled
         >
-          {markerList.map((marker) => (
+          {this.state.markerList.map((marker) => (
             <Marker
               // draggable
               key={marker.id}

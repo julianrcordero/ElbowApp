@@ -20,8 +20,7 @@ export default function PostCard({
   height,
   crossRefSize,
   bottomSheetRef,
-  markerList,
-  setMarkerList,
+  width,
 }) {
   // this.state = {
   //   loved: false,
@@ -69,7 +68,15 @@ export default function PostCard({
   };
 
   return (
-    <View style={{ backgroundColor: "cyan", height: height }}>
+    <View
+      style={{
+        // backgroundColor: "cyan",
+        height: height,
+        marginVertical: 15,
+        paddingHorizontal: 30,
+        width: width,
+      }}
+    >
       <View
         style={{
           alignItems: "center",

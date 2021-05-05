@@ -48,12 +48,12 @@ export default function App() {
   const handleSlide = (value) => setFontSize(value);
 
   const topPanel = React.useRef();
-  const _map = useRef(null);
-
-  const [addPostMode, setAddPostMode] = useState(true);
-  const [markerList, setMarkerList] = useState([]);
-  const [tourList, setTourList] = useState([]); //change to API endpoint
+  const mapView = useRef(null);
+  const map = useRef(null);
   const carousel = React.useRef();
+  const bottomSheetContent = useRef();
+
+  const [tourList, setTourList] = useState([]); //change to API endpoint
 
   const [] = useState(1);
   const [] = useState(1);
@@ -72,28 +72,17 @@ export default function App() {
     bottomSheetRef.current.snapTo(2);
   };
 
-  const renderAddPostHeader = () => (
-    <View style={[styles.header, { backgroundColor: colors.light }]}>
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>Post content</Text>
+  // const renderAddPostHeader = () => (
+  //   <View style={[styles.header, { backgroundColor: colors.light }]}>
+  //     <Text style={{ fontSize: 20, fontWeight: "bold" }}>Post content</Text>
 
-      <Button
-        title="Done"
-        onPress={snapToHalf}
-        style={{ textAlign: "center" }}
-      />
-    </View>
-  );
-
-  const renderAddPostMode = () => (
-    <View style={{ backgroundColor: colors.white, width: width }}>
-      <PostContentScreen
-        bottomSheetRef={bottomSheetRef}
-        markerList={markerList}
-        setMarkerList={setMarkerList}
-        tourList={tourList}
-      />
-    </View>
-  );
+  //     <Button
+  //       title="Done"
+  //       onPress={snapToHalf}
+  //       style={{ textAlign: "center" }}
+  //     />
+  //   </View>
+  // );
 
   const postViewHeader = () => (
     <View style={[styles.header, { backgroundColor: colors.white }]}>
@@ -109,52 +98,20 @@ export default function App() {
 
   const renderCarousel = () => (
     <Carousel
-      width={width}
-      crossrefSize={crossrefSize}
-      fontSize={fontSize}
-      top={top}
       bottomSheetHeaderHeight={bottomSheetHeaderHeight}
       bottomSheetRef={bottomSheetRef}
-      markerList={markerList}
-      setMarkerList={setMarkerList}
+      carousel={carousel}
+      crossrefSize={crossrefSize}
+      fontSize={fontSize}
+      map={map}
+      ref={bottomSheetContent}
+      top={top}
+      tourList={tourList}
       verseCardReferenceHeight={verseCardReferenceHeight}
-      _map={_map}
+      width={width}
+      mapView={mapView}
     />
   );
-
-  // const renderCarousel = () => (
-  //   <View
-  //     style={{
-  //       height: top - 50,
-  //     }}
-  //   >
-  //     {_map.current ? (
-  //       <FlatList
-  //         bounces={false}
-  //         data={markerList}
-  //         decelerationRate={"fast"}
-  //         extraData={_map.current.state.markers}
-  //         getItemLayout={getItemLayout}
-  //         horizontal={true}
-  //         initialNumToRender={5}
-  //         keyExtractor={keyExtractor}
-  //         // onScrollEndDrag={slideToMarker}
-  //         ref={carousel}
-  //         renderItem={renderPostCardItem}
-  //         scrollEventThrottle={16}
-  //         showsHorizontalScrollIndicator={false}
-  //         snapToAlignment={"start"}
-  //         snapToInterval={width}
-  //         style={{ backgroundColor: colors.white }}
-  //         onViewableItemsChanged={onViewRef.current}
-  //         viewabilityConfig={viewConfigRef.current}
-  //         // viewabilityConfig={{
-  //         //   itemVisiblePercentThreshold: 75,
-  //         // }}
-  //       />
-  //     ) : null}
-  //   </View>
-  // );
 
   if (!isReady)
     return (
@@ -176,18 +133,17 @@ export default function App() {
             {user ? (
               <AppNavigator
                 bottomSheetRef={bottomSheetRef}
+                bottomSheetContent={bottomSheetContent}
                 carousel={carousel}
                 // currentBook={currentBook}
                 fontSize={fontSize}
                 crossrefSize={crossrefSize}
                 titleSize={titleSize}
-                setAddPostMode={setAddPostMode}
-                setMarkerList={setMarkerList}
                 setTourList={setTourList}
                 tourList={tourList}
                 topPanel={topPanel}
-                markerList={markerList}
-                _map={_map}
+                map={map}
+                mapView={mapView}
               />
             ) : (
               <AuthNavigator />
@@ -198,10 +154,10 @@ export default function App() {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={[top, "50%", "0%"]}
+        snapPoints={[top, "35%", "0%"]}
         initialSnap={2}
-        renderHeader={addPostMode ? renderAddPostHeader : postViewHeader}
-        renderContent={addPostMode ? renderAddPostMode : renderCarousel}
+        renderHeader={postViewHeader} // : postViewHeader}
+        renderContent={renderCarousel}
         style={{ backgroundColor: colors.white }}
         // onCloseEnd={() => setFocusedVerse(null)}
       />

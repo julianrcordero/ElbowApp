@@ -38,8 +38,7 @@ const categories = [
 export default function SubscribeTourScreen({
   bottomSheetRef,
   description,
-  markerList,
-  setMarkerList,
+  map,
   title,
 }) {
   const location = useLocation();

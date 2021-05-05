@@ -30,6 +30,7 @@ export default function BibleScreenToolBar(props) {
       }}
     >
       <BiblePicker
+        bottomSheetContent={props.bottomSheetContent}
         currentBook={props.currentBook}
         currentChapter={props.currentChapter}
         currentVerse={props.currentVerse}
@@ -40,7 +41,6 @@ export default function BibleScreenToolBar(props) {
         // placeholder="Category"
         PickerItemComponent={BiblePickerItem}
         bottomSheetRef={props.bottomSheetRef}
-        setAddPostMode={props.setAddPostMode}
         topPanel={props.topPanel}
       />
     </Animated.View>

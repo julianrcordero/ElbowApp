@@ -38,8 +38,7 @@ const categories = [
 export default function PostTourScreen({
   bottomSheetRef,
   description,
-  markerList,
-  setMarkerList,
+  map,
   setTourList,
   tourList,
   title,

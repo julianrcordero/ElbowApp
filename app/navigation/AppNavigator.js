@@ -68,15 +68,15 @@ const AppNavigator = (props) =>
           }}
           children={() => (
             <MapScreen
-              // ref={props._map}
+              // ref={props.mapView}
               bottomSheetRef={props.bottomSheetRef}
+              bottomSheetContent={props.bottomSheetContent}
               carousel={props.carousel}
               getPostsApi={getPostsApi}
-              _map={props._map}
+              map={props.map}
+              mapView={props.mapView}
+              ref={props.map}
               searchPostsApi={searchPostsApi}
-              setMarkerList={props.setMarkerList}
-              markerList={props.markerList}
-              setAddPostMode={props.setAddPostMode}
             />
           )}
         />

@@ -39,12 +39,7 @@ const categories = [
 
 const tours = [];
 
-function PostContentScreen({
-  bottomSheetRef,
-  markerList,
-  setMarkerList,
-  tourList,
-}) {
+function PostContentScreen({ bottomSheetRef, map, tourList }) {
   // const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -71,17 +66,19 @@ function PostContentScreen({
       const postLink = resultData.fileURL;
       uploadPhoto(postLink, post);
 
-      setMarkerList([
-        ...markerList,
-        {
-          id: resultData.id,
-          latitude: resultData.location.lat,
-          longitude: resultData.location.lon,
-          title: resultData.category,
-          description: resultData.hint,
-          url: resultData.fileURL,
-        },
-      ]);
+      map.current.setState({
+        markerList: [
+          ...map.current.state.markerList,
+          {
+            id: resultData.id,
+            latitude: resultData.location.lat,
+            longitude: resultData.location.lon,
+            title: resultData.category,
+            description: resultData.hint,
+            url: resultData.fileURL,
+          },
+        ],
+      });
     }
 
     resetForm();

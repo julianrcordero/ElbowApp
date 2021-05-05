@@ -34,10 +34,10 @@ function Card({
         )}
         <View style={styles.detailsContainer}>
           <Text style={styles.title} numberOfLines={1}>
-            {location ? location.lat + ", " + location.lon : title}
+            {location ? location.lat + ", " + location.lon : hint}
           </Text>
           <Text style={styles.subTitle} numberOfLines={2}>
-            {hint}
+            {title}
           </Text>
         </View>
       </View>
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   title: {
+    fontSize: 18,
     marginBottom: 7,
   },
 });

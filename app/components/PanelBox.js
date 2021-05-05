@@ -28,7 +28,7 @@ export default class PanelBox extends PureComponent {
       verseContent,
       johnsNote,
       crossrefs,
-      // _map,
+      // mapView,
       bottomSheetRef,
     } = this.props;
 
