@@ -52,8 +52,6 @@ export default function PostTourScreen({
     setProgress(0);
     setUploadVisible(true);
 
-    console.log("location: ", location);
-
     const result = await postsApi.addTour({ ...post, location }, (progress) =>
       setProgress(progress)
     );
@@ -63,7 +61,6 @@ export default function PostTourScreen({
       return alert("You are not authorized to upload");
     } else {
       const resultData = result.data;
-      console.log(resultData.ID);
       setTourList([...tourList, resultData]);
       //   const postLink = resultData.fileURL;
       //   uploadPhoto(postLink, post);

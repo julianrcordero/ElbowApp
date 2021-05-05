@@ -86,7 +86,7 @@ const AppNavigator = (props) =>
           options={({ navigation }) => ({
             // tabBarButton: () => (
             //   <NewListingButton
-            //     onPress={() => console.log("Let's create a new post")}
+            //     onPress={}
             //   />
             // ),
             tabBarIcon: "plus-circle",

@@ -57,7 +57,6 @@ function PostContentScreen({
       latitude: Number(post.latitude),
       longitude: Number(post.longitude),
     };
-    console.log("location: ", location);
 
     const result = await postsApi.addPost({ ...post, location }, (progress) =>
       setProgress(progress)
@@ -109,7 +108,6 @@ function PostContentScreen({
 
     let upload = await FileSystem.uploadAsync(postLink, path, options);
 
-    // console.log("result: ", upload);
     if (upload.status !== 200) {
       setUploadVisible(false);
       return alert("Could not save the post.");
@@ -122,7 +120,6 @@ function PostContentScreen({
     // setUploadVisible(true);
 
     const result = await postsApi.getTours();
-    console.log(result.data);
   };
 
   return (

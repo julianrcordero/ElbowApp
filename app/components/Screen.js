@@ -5,7 +5,6 @@ import colors from "../config/colors";
 
 function Screen({ children, style }) {
   // const insets = useSafeArea();
-  // console.log(insets);
 
   return <SafeAreaView style={[styles.screen, style]}>{children}</SafeAreaView>;
 }

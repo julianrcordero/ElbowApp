@@ -67,11 +67,6 @@ function ListingDetailsScreen({ route }) {
                 // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
               />
             ))}
-          <View
-            style={{
-              height: 800,
-            }}
-          ></View>
         </ScrollView>
       </View>
     </View>

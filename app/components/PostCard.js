@@ -39,18 +39,15 @@ export default function PostCard({
     const result = await postsApi.unlockListing(item, location, (progress) =>
       setProgress(progress)
     );
-    console.log(result);
 
     if (!result.ok) {
       // setUploadVisible(false);
-      // console.log(result);
       return Alert.alert(result.data.message, result.data.reason, [
         { text: "OK", onPress: () => console.log("") },
         // { text: "No", onPress: () => console.log("No") },
       ]);
     } else {
       const resultData = result.data;
-      // console.log(resultData);
 
       // const postLink = resultData.fileURL;
       // uploadPhoto(postLink, post);

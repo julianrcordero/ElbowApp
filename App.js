@@ -32,6 +32,7 @@ import Constants from "expo-constants";
 import { createStackNavigator } from "@react-navigation/stack";
 import TopSheetNavigation from "./app/components/TopSheetNavigation";
 import PostContentScreen from "./app/screens/PostContentScreen";
+import Carousel from "./app/components/Carousel";
 const Stack = createStackNavigator();
 const { height, width } = Dimensions.get("window");
 
@@ -106,99 +107,54 @@ export default function App() {
     </View>
   );
 
-  const renderPostCardItem = ({ item, index }) => {
-    return (
-      <View
-        key={index}
-        style={{
-          backgroundColor: "white",
-          // flex: 1,
-          width: width,
-          paddingHorizontal: 30,
-        }}
-      >
-        <PostCard
-          key={index}
-          // currentBook={currentBook}
-          item={item}
-          crossrefSize={crossrefSize}
-          fontSize={fontSize}
-          height={top - bottomSheetHeaderHeight - getBottomSpace()}
-          bottomSheetRef={bottomSheetRef}
-          markerList={markerList}
-          setMarkerList={setMarkerList}
-          verseCardReferenceHeight={verseCardReferenceHeight}
-        />
-      </View>
-    );
-  };
-
-  const slideToMarker = (item) => {
-    if (_map.current) {
-      // console.log("Zoom: " + _map.current.description);
-      _map.current.animateCamera(
-        {
-          center: {
-            latitude: item.latitude,
-            longitude: item.longitude,
-          },
-          zoom: 10,
-        },
-        { duration: 500 }
-      );
-    }
-  };
-
-  const onViewRef = useRef((viewableItems) => {
-    if (viewableItems.viewableItems[0]) {
-      slideToMarker(viewableItems.viewableItems[0].item);
-    }
-    // Use viewable items in state or as intended
-  });
-  const viewConfigRef = useRef({
-    waitForInteraction: true,
-    // At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
-    // viewAreaCoveragePercentThreshold: 95,
-    itemVisiblePercentThreshold: 75,
-  });
-
-  const postViewData = () => (
-    <View
-      style={{
-        height: top - 50,
-      }}
-    >
-      {_map.current ? (
-        <FlatList
-          bounces={false}
-          data={markerList}
-          decelerationRate={"fast"}
-          extraData={_map.current.state.markers}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
-          horizontal={true}
-          initialNumToRender={5}
-          keyExtractor={(item, index) => item + index}
-          // onScrollEndDrag={slideToMarker}
-          ref={carousel}
-          renderItem={renderPostCardItem}
-          scrollEventThrottle={16}
-          showsHorizontalScrollIndicator={false}
-          snapToAlignment={"start"}
-          snapToInterval={width}
-          style={{ backgroundColor: colors.white }}
-          onViewableItemsChanged={onViewRef.current}
-          viewabilityConfig={viewConfigRef.current}
-          viewabilityConfig={{
-            itemVisiblePercentThreshold: 75,
-          }}
-        />
-      ) : null}
-    </View>
+  const renderCarousel = () => (
+    <Carousel
+      width={width}
+      crossrefSize={crossrefSize}
+      fontSize={fontSize}
+      top={top}
+      bottomSheetHeaderHeight={bottomSheetHeaderHeight}
+      bottomSheetRef={bottomSheetRef}
+      markerList={markerList}
+      setMarkerList={setMarkerList}
+      verseCardReferenceHeight={verseCardReferenceHeight}
+      _map={_map}
+    />
   );
+
+  // const renderCarousel = () => (
+  //   <View
+  //     style={{
+  //       height: top - 50,
+  //     }}
+  //   >
+  //     {_map.current ? (
+  //       <FlatList
+  //         bounces={false}
+  //         data={markerList}
+  //         decelerationRate={"fast"}
+  //         extraData={_map.current.state.markers}
+  //         getItemLayout={getItemLayout}
+  //         horizontal={true}
+  //         initialNumToRender={5}
+  //         keyExtractor={keyExtractor}
+  //         // onScrollEndDrag={slideToMarker}
+  //         ref={carousel}
+  //         renderItem={renderPostCardItem}
+  //         scrollEventThrottle={16}
+  //         showsHorizontalScrollIndicator={false}
+  //         snapToAlignment={"start"}
+  //         snapToInterval={width}
+  //         style={{ backgroundColor: colors.white }}
+  //         onViewableItemsChanged={onViewRef.current}
+  //         viewabilityConfig={viewConfigRef.current}
+  //         // viewabilityConfig={{
+  //         //   itemVisiblePercentThreshold: 75,
+  //         // }}
+  //       />
+  //     ) : null}
+  //   </View>
+  // );
 
   if (!isReady)
     return (
@@ -245,7 +201,7 @@ export default function App() {
         snapPoints={[top, "50%", "0%"]}
         initialSnap={2}
         renderHeader={addPostMode ? renderAddPostHeader : postViewHeader}
-        renderContent={addPostMode ? renderAddPostMode : postViewData}
+        renderContent={addPostMode ? renderAddPostMode : renderCarousel}
         style={{ backgroundColor: colors.white }}
         // onCloseEnd={() => setFocusedVerse(null)}
       />

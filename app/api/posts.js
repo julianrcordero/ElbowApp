@@ -6,7 +6,6 @@ const getLocker = () => client.get("locker");
 const searchPosts = (region, onUploadProgress) => {
   let lat = region.latitude;
   let lon = region.longitude;
-  console.log("my location:", lat, lon);
   return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=20000", {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
@@ -34,9 +33,6 @@ const searchTourPoints = (tour, onUploadProgress) => {
 };
 
 const unlockListing = (post, location, onUploadProgress) => {
-  console.log("trying to unlock this:", post);
-  console.log("My location:", location);
-
   const requestBody = {
     postID: post.id,
     lat: 34.271270751953125, //location.lat,
@@ -68,8 +64,6 @@ const addPost = (post, onUploadProgress) => {
     tourID: post.tour.ID,
   };
 
-  console.log(newPost);
-
   //Parent > Child
 
   return client.post("post", newPost, {
@@ -79,7 +73,6 @@ const addPost = (post, onUploadProgress) => {
 };
 
 const addTour = (post, onUploadProgress) => {
-  console.log("addTour");
   if (!post.location) {
     return alert("You must enable location to post");
   }

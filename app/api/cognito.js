@@ -8,7 +8,6 @@ const cognitoClient = create({
 
 cognitoClient.addAsyncRequestTransform(async (request) => {
   const authToken = await authStorage.getAccessToken();
-  console.log("authToken: " + authToken);
   if (!authToken) return;
   request.headers["x-auth-token"] = authToken;
 });
