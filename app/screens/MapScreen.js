@@ -67,6 +67,7 @@ export default class MapScreen extends Component {
 
   moveCamera = (latitude, longitude, zoom) => {
     if (this.props._map.current) {
+      console.log("moveCamera");
       this.props._map.current.animateCamera(
         {
           center: {
@@ -75,16 +76,20 @@ export default class MapScreen extends Component {
           },
           zoom: zoom,
         },
-        5000
+        2000
       );
     }
   };
 
   clickToMarker = (marker) => {
-    this.props.bottomSheetRef.current.snapTo(1);
+    // this.props.bottomSheetRef.current.snapTo(1);
 
-    this.moveCamera(marker.latitude, marker.longitude);
-
+    const interactionPromise = InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        this.moveCamera(marker.latitude, marker.longitude);
+      });
+    });
+    () => interactionPromise.cancel();
     this.openBottomSheet(false);
   };
 
@@ -92,9 +97,6 @@ export default class MapScreen extends Component {
     this.props.bottomSheetRef.current.snapTo(1);
 
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      // let myIndex = markerList.findIndex(
-      //   (obj) => obj.chapter === chapter && obj.title === verse
-      // );
       this.props.setAddPostMode(postMode);
       setTimeout(() => {
         //     this.props.carousel.current.scrollToIndex({
@@ -203,6 +205,13 @@ export default class MapScreen extends Component {
     }
   };
 
+  mapPadding = { bottom: 70 };
+  mapStyle = { flex: 1 };
+
+  onRegionChangeComplete = (region) => {
+    this.setState({ region: region });
+  };
+
   render() {
     const {
       bottomSheetRef,
@@ -217,14 +226,12 @@ export default class MapScreen extends Component {
       <View style={styles.container}>
         <MapView
           followsUserLocation
-          mapPadding={{ bottom: 70 }}
+          mapPadding={this.mapPadding}
           ref={_map}
-          style={{ flex: 1 }}
+          style={this.mapStyle}
           region={this.state.region}
           // onMapReady={this.goToInitialLocation}
-          onRegionChangeComplete={(region) => {
-            this.setState({ region: region });
-          }}
+          onRegionChangeComplete={this.onRegionChangeComplete}
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={styles.map}
           showsUserLocation
@@ -239,8 +246,8 @@ export default class MapScreen extends Component {
                 latitude: marker.latitude,
                 longitude: marker.longitude,
               }}
-              title={marker.title}
-              description={marker.description}
+              title={marker.description}
+              description={marker.title}
               onPress={() => this.clickToMarker(marker)}
               // onDragEnd={(e) => console.log(e.nativeEvent.coordinate)}
             />
