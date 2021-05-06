@@ -37,7 +37,7 @@ function Card({
             {hint}
             {/* {location ? location.lat + ", " + location.lon : hint} */}
           </Text>
-          <Text style={styles.subTitle} numberOfLines={2}>
+          <Text style={styles.subTitle} numberOfLines={1}>
             {title}
           </Text>
         </View>

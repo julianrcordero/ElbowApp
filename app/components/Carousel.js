@@ -24,9 +24,40 @@ export default class Carousel extends Component {
     // console.log("tours:", this.state.tours);
   }
 
+  async loadTour(tourID) {
+    const tour = await postsApi.getTourPoints(tourID, (progress) =>
+      // setProgress(progress)
+      this.setState({ progress: progress })
+    );
+
+    const myMap = this.props.map.current;
+
+    if (myMap) {
+      if (!tour.ok) {
+      } else {
+        myMap.setMarkers(tour);
+      }
+
+      // myMap.setState({
+      //   tourFilteredList: tourID
+      //     ? //tour.data.posts
+      //       myMap.state.markerList.filter(
+      //         (marker) =>
+      //           marker.tourID === tourID &&
+      //           !this.state.locker.some(
+      //             (lockerPost) => lockerPost.id === marker.id
+      //           )
+      //       )
+      //     : myMap.state.markerList,
+      // });
+    }
+  }
+
   state = {
     addPostMode: true,
     locker: [],
+    progress: 0,
+    tour: null,
     tours: this.props.tourList,
     filter: 0,
   };
@@ -95,21 +126,8 @@ export default class Carousel extends Component {
     // this.setState({
     //   tours: this.state.tours.filter((item) => item.tourID === itemValue),
     // });
-    const myMap = this.props.map.current;
 
-    if (myMap) {
-      myMap.setState({
-        tourFilteredList: itemValue
-          ? myMap.state.markerList.filter(
-              (marker) =>
-                marker.tourID === itemValue &&
-                !this.state.locker.some(
-                  (lockerPost) => lockerPost.id === marker.id
-                )
-            )
-          : myMap.state.markerList,
-      });
-    }
+    this.loadTour(itemValue);
   };
 
   render() {

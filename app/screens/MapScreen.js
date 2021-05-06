@@ -171,6 +171,7 @@ export default class MapScreen extends Component {
         // { text: "No", onPress: () => console.log("No") },
       ]);
     } else {
+      console.log(result);
       this.setMarkers(result);
       this.setState({ markersColor: "crimson" });
     }
