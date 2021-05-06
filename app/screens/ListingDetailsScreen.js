@@ -17,7 +17,7 @@ function ListingDetailsScreen({ route }) {
   const [progress, setProgress] = useState(0);
   const [tourPoints, setTourPoints] = useState([]);
 
-  // const getPostsApi = useApi(postsApi.getPosts);
+  const getPostsApi = useApi(postsApi.getLocker);
 
   useEffect(() => {
     async function fetchData() {
@@ -25,11 +25,31 @@ function ListingDetailsScreen({ route }) {
       const response = await postsApi.searchTourPoints(listing, (progress) =>
         setProgress(progress)
       );
+
       if (response.ok) setTourPoints(response.data.posts);
       // ...
     }
+    getPostsApi.request();
     fetchData();
   }, []);
+
+  // const locker = await postsApi.getLocker();
+
+  // if (!locker.ok) {
+  //   // setUploadVisible(false);
+  //   console.log(locker);
+  //   return Alert.alert(locker.data.message, locker.data.reason, [
+  //     { text: "OK", onPress: () => console.log("") },
+  //   ]);
+  // } else {
+  //   if (locker.data.total === 0) {
+  //     return Alert.alert("Sorry!", "You have not unlocked any posts yet", [
+  //       { text: "OK", onPress: () => console.log("") },
+  //     ]);
+  //   }
+  //   this.setMarkers(locker); //this.props.searchPostsApi);
+  //   this.setState({ markersColor: "limegreen" });
+  // }
 
   return (
     <View>
@@ -61,7 +81,7 @@ function ListingDetailsScreen({ route }) {
           >
             {listing.categories[0]}
           </AppText>
-          {tourPoints
+          {/* {tourPoints
             .filter((tourPost) => tourPost.tourID === listing.ID)
             .map((tourPost) => (
               <Card
@@ -70,7 +90,31 @@ function ListingDetailsScreen({ route }) {
                 title={tourPost.dataType}
                 // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
               />
-            ))}
+            ))} */}
+          <FlatList
+            data={tourPoints}
+            keyExtractor={(listing) => listing.id.toString()}
+            renderItem={({ item }) => (
+              <Card
+                category={item.category}
+                dataType={item.dataType}
+                thumbnailUrl={
+                  getPostsApi.data.posts.find((post) => post.id === item.id)
+                    ? getPostsApi.data.posts.find((post) => post.id === item.id)
+                        .fileURL
+                    : null
+                }
+                hint={item.hint}
+                location={item.location}
+                mimeType={item.mimeType}
+                // title={item.title}
+                // subTitle={item.scripture}
+                // imageUrl={item.images[0].url}
+                // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+                // thumbnailUrl={item.imageUrl}
+              />
+            )}
+          />
         </ScrollView>
       </View>
     </View>

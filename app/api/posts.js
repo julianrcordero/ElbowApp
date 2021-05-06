@@ -35,8 +35,10 @@ const searchTourPoints = (tour, onUploadProgress) => {
 const unlockListing = (post, location, onUploadProgress) => {
   const requestBody = {
     postID: post.id,
-    lat: 34.271270751953125, //location.lat,
-    lon: -118.51387839775394, //location.lon,
+    lat: location.lat,
+    lon: location.lon,
+    // lat: 34.21104026741129,
+    // lon: -118.43643534472797,
     distance: 20,
   };
 

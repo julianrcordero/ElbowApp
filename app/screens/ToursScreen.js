@@ -44,10 +44,10 @@ export default function ToursScreen({ navigation }) {
             // category={item.categories[0]}
             // dataType={item.dataType}
             // thumbnailUrl={item.fileURL}
-            hint={item.categories[0]}
+            hint={item.title}
             // location={item.location}
             // mimeType={item.ID}
-            title={item.title}
+            title={item.categories[0]}
             // subTitle={item.scripture}
             // imageUrl={item.images[0].url}
             onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}

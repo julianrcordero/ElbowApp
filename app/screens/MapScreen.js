@@ -34,14 +34,21 @@ export default class MapScreen extends Component {
       longitudeDelta: 0.0421,
     },
     initialMarkers: [],
+    tourFilteredList: [],
     markerList: [],
-    currentMarkers: "dodgerblue",
+    markersColor: "dodgerblue",
     progress: 0,
   };
 
   componentDidMount() {
     this.getCurrentLocation();
     this.moveCamera(this.state.region.latitude, this.state.region.longitude);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.tourFilteredList !== this.state.tourFilteredList) {
+      console.log("updated tourFilteredList");
+    }
   }
 
   async getCurrentLocation() {
@@ -101,7 +108,7 @@ export default class MapScreen extends Component {
 
   scrollToPost = (marker) => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      let myIndex = this.props.map.current.state.markerList.findIndex(
+      let myIndex = this.props.map.current.state.tourFilteredList.findIndex(
         (m) => m.id === marker.id
       );
 
@@ -131,12 +138,12 @@ export default class MapScreen extends Component {
         ]);
       }
       this.setMarkers(result); //this.props.searchPostsApi);
-      this.setState({ currentMarkers: "limegreen" });
+      this.setState({ markersColor: "limegreen" });
     }
   };
 
   showMyPosts = async () => {
-    const result = await postsApi.getPosts();
+    const result = await postsApi.getPosts(); //posts from self
 
     if (!result.ok) {
       // setUploadVisible(false);
@@ -146,7 +153,7 @@ export default class MapScreen extends Component {
       ]);
     } else {
       this.setMarkers(result); //this.props.searchPostsApi);
-      this.setState({ currentMarkers: "dodgerblue" });
+      this.setState({ markersColor: "dodgerblue" });
     }
   };
 
@@ -165,7 +172,7 @@ export default class MapScreen extends Component {
       ]);
     } else {
       this.setMarkers(result);
-      this.setState({ currentMarkers: "crimson" });
+      this.setState({ markersColor: "crimson" });
     }
   };
 
@@ -185,14 +192,24 @@ export default class MapScreen extends Component {
                 title: post.category,
                 description: post.hint,
                 url: post.fileURL,
+                tourID: post.tourID,
               },
             ])
+          // .filter(
+          //   (marker) =>
+          //     !this.props.bottomSheetContent.current.state.locker.some(
+          //       (lockerPost) => lockerPost.id === marker.id
+          //     )
+          // )
         );
       } else {
         console.log(myApi.data);
       }
 
-      this.props.map.current.setState({ markerList: initialMarkers });
+      this.props.map.current.setState({
+        markerList: initialMarkers,
+        tourFilteredList: initialMarkers,
+      });
     } else {
       console.log("getPostsApi.error: ", myApi.error);
     }
@@ -230,11 +247,11 @@ export default class MapScreen extends Component {
           showsUserLocation
           zoomEnabled
         >
-          {this.state.markerList.map((marker) => (
+          {this.state.tourFilteredList.map((marker) => (
             <Marker
               // draggable
               key={marker.id}
-              pinColor={this.state.currentMarkers}
+              pinColor={this.state.markersColor}
               coordinate={{
                 latitude: marker.latitude,
                 longitude: marker.longitude,

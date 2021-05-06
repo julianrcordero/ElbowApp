@@ -40,7 +40,7 @@ const categories = [
 const tours = [];
 
 function PostContentScreen({ bottomSheetRef, map, tourList }) {
-  // const location = useLocation();
+  const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -48,10 +48,10 @@ function PostContentScreen({ bottomSheetRef, map, tourList }) {
     setProgress(0);
     setUploadVisible(true);
 
-    const location = {
-      latitude: Number(post.latitude),
-      longitude: Number(post.longitude),
-    };
+    // const location = {
+    //   latitude: Number(post.latitude),
+    //   longitude: Number(post.longitude),
+    // };
 
     const result = await postsApi.addPost({ ...post, location }, (progress) =>
       setProgress(progress)
@@ -76,6 +76,19 @@ function PostContentScreen({ bottomSheetRef, map, tourList }) {
             title: resultData.category,
             description: resultData.hint,
             url: resultData.fileURL,
+            tourID: resultData.tourID,
+          },
+        ],
+        tourFilteredList: [
+          ...map.current.state.markerList,
+          {
+            id: resultData.id,
+            latitude: resultData.location.lat,
+            longitude: resultData.location.lon,
+            title: resultData.category,
+            description: resultData.hint,
+            url: resultData.fileURL,
+            tourID: resultData.tourID,
           },
         ],
       });

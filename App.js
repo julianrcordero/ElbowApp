@@ -20,7 +20,7 @@ import colors from "./app/config/colors";
 
 import Screen from "./app/components/Screen";
 import BottomSheetToolBar from "./app/components/BottomSheetToolBar";
-import PostCard from "./app/components/PostCard";
+import CarouselCard from "./app/components/CarouselCard";
 
 import BottomSheet from "reanimated-bottom-sheet";
 import { enableScreens } from "react-native-screens";
