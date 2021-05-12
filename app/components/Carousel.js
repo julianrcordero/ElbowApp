@@ -1,7 +1,8 @@
 import React, { Component, useRef } from "react";
 import { FlatList, View } from "react-native";
-import PostCard from "./PostCard";
-import DropDownPicker from "react-native-dropdown-picker";
+import CarouselCard from "./CarouselCard";
+// import DropDownPicker from "react-native-dropdown-picker";
+import { Picker } from "@react-native-picker/picker";
 
 import { getBottomSpace } from "react-native-iphone-x-helper";
 import PostContentScreen from "../screens/PostContentScreen";
@@ -17,26 +18,48 @@ export default class Carousel extends Component {
   }
 
   async loadTours() {
-    const result = await postsApi.getTours();
-    console.log(result.data.tours);
+    const tours = await postsApi.getTours();
+    const locker = await postsApi.getLocker();
+    this.setState({ tours: tours.data.tours, locker: locker.data.posts });
+    // console.log("tours:", this.state.tours);
+  }
 
-    const items = [];
+  async loadTour(tourID) {
+    const tour = await postsApi.getTourPoints(tourID, (progress) =>
+      // setProgress(progress)
+      this.setState({ progress: progress })
+    );
 
-    result.data.tours.forEach((tour) => {
-      items.push({ label: tour.title, value: tour.title });
-    });
-    this.setState({ items: items });
+    const myMap = this.props.map.current;
+
+    if (myMap) {
+      if (!tour.ok) {
+      } else {
+        myMap.setMarkers(tour);
+      }
+
+      // myMap.setState({
+      //   tourFilteredList: tourID
+      //     ? //tour.data.posts
+      //       myMap.state.markerList.filter(
+      //         (marker) =>
+      //           marker.tourID === tourID &&
+      //           !this.state.locker.some(
+      //             (lockerPost) => lockerPost.id === marker.id
+      //           )
+      //       )
+      //     : myMap.state.markerList,
+      // });
+    }
   }
 
   state = {
     addPostMode: true,
-    items: this.props.tourList,
-    // [
-    //   { label: "Apple", value: "apple" },
-    //   { label: "Banana", value: "banana" },
-    // ],
-    open: false,
-    value: null,
+    locker: [],
+    progress: 0,
+    tour: null,
+    tours: this.props.tourList,
+    filter: 0,
   };
 
   slideToMarker = (item) => {
@@ -78,7 +101,8 @@ export default class Carousel extends Component {
 
   renderCarouselItem = ({ item, index }) => {
     return (
-      <PostCard
+      <CarouselCard
+        carousel={this.props.carousel}
         key={index}
         // currentBook={currentBook}
         item={item}
@@ -96,13 +120,15 @@ export default class Carousel extends Component {
     );
   };
 
-  setValue = (value) => this.setState({ value: value });
+  onValueChange = (itemValue, itemPosition) => {
+    console.log("changed to", itemValue);
+    this.setState({ filter: itemValue });
+    // this.setState({
+    //   tours: this.state.tours.filter((item) => item.tourID === itemValue),
+    // });
 
-  setItems = (items) => {
-    this.setState({ items: items });
+    this.loadTour(itemValue);
   };
-
-  setOpen = (open) => this.setState({ open: open });
 
   render() {
     const {
@@ -130,26 +156,29 @@ export default class Carousel extends Component {
           height: top - 50,
         }}
       >
-        <DropDownPicker
-          containerStyle={{ marginVertical: 15, paddingHorizontal: 30 }}
-          dropDownContainerStyle={{ paddingHorizontal: 30 }}
-          dropDownDirection={"BOTTOM"}
-          open={this.state.open}
-          value={this.state.value}
-          items={this.state.items}
-          setValue={this.setValue}
-          setItems={this.setItems}
-          setOpen={this.setOpen}
-          searchable={false}
-          placeholder={"Filter by..."}
-        />
+        <Picker
+          selectedValue={this.state.filter}
+          onValueChange={this.onValueChange}
+          style={{
+            // alignItems: "center",
+            backgroundColor: "green",
+            height: 60,
+            justifyContent: "center",
+            paddingHorizontal: 30,
+          }}
+        >
+          <Picker.Item key={"key"} label={"All posts"} value={0} />
+          {this.state.tours.map((item) => (
+            <Picker.Item key={item.id} label={item.title} value={item.ID} />
+          ))}
+        </Picker>
 
         {mapView.current ? (
           <FlatList
             bounces={false}
-            data={map.current.state.markerList}
+            data={map.current.state.tourFilteredList}
             decelerationRate={"fast"}
-            extraData={mapView.current.state.markers}
+            extraData={map.current}
             getItemLayout={this.getItemLayout}
             horizontal={true}
             initialNumToRender={5}

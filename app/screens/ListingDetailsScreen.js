@@ -15,21 +15,60 @@ function ListingDetailsScreen({ route }) {
   const fontSize = 16;
 
   const [progress, setProgress] = useState(0);
+  const [user, setUser] = useState();
+  const [lockerPoints, setLockerPoints] = useState([]);
   const [tourPoints, setTourPoints] = useState([]);
 
-  // const getPostsApi = useApi(postsApi.getPosts);
-
   useEffect(() => {
-    async function fetchData() {
-      // You can await here
-      const response = await postsApi.searchTourPoints(listing, (progress) =>
-        setProgress(progress)
-      );
-      if (response.ok) setTourPoints(response.data.posts);
-      // ...
-    }
-    fetchData();
+    fetchUser();
+    fetchLockerPoints();
+    fetchTourPoints(); //tourpoints
   }, []);
+
+  const fetchUser = async () => {
+    // You can await here
+    const response = await postsApi.getUser(listing.userID, (progress) =>
+      setProgress(progress)
+    );
+    console.log(response.data);
+
+    if (response.ok) setUser(response.data.email);
+    // ...
+  };
+
+  const fetchLockerPoints = async () => {
+    // You can await here
+    const response = await postsApi.getLocker();
+
+    if (response.ok) setLockerPoints(response.data.posts);
+    // ...
+  };
+
+  const fetchTourPoints = async () => {
+    // You can await here
+    const response = await postsApi.getTourPoints(listing.ID, (progress) =>
+      setProgress(progress)
+    );
+
+    if (response.ok) setTourPoints(response.data.posts);
+    // ...
+  };
+
+  const renderItem = ({ item }) =>
+    lockerPoints.find((post) => post.id === item.id) ? (
+      <Card
+        thumbnailUrl={lockerPoints.find((post) => post.id === item.id).fileURL}
+        hint={item.hint}
+        title={`${item.location.lat},\t${item.location.lon}`}
+      />
+    ) : (
+      <Card
+        hint={item.hint}
+        title={`${item.location.lat},\t${item.location.lon}`}
+      />
+    );
+
+  const keyExtractor = (listing) => listing.id.toString();
 
   return (
     <View>
@@ -43,35 +82,28 @@ function ListingDetailsScreen({ route }) {
       )}
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{listing.title}</Text>
-        {/* <Text style={styles.scripture}>{listing.ID}</Text> */}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.userContainer}>
-            <ListItem
-              image={require("../assets/gtylogo.jpg")}
-              title={listing.userID}
-              subTitle="5 Listings"
-            />
-          </View>
-          <AppText
-            style={{
-              fontSize: fontSize,
-              lineHeight: fontSize * 2,
-              marginVertical: 15,
-            }}
-          >
-            {listing.categories[0]}
-          </AppText>
-          {tourPoints
-            .filter((tourPost) => tourPost.tourID === listing.ID)
-            .map((tourPost) => (
-              <Card
-                key={tourPost.id}
-                hint={tourPost.hint}
-                title={tourPost.dataType}
-                // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-              />
-            ))}
-        </ScrollView>
+        <AppText
+          style={{
+            fontSize: fontSize,
+            lineHeight: fontSize * 2,
+            // marginVertical: 10,
+          }}
+        >
+          {listing.categories[0]}
+        </AppText>
+        <View style={styles.userContainer}>
+          <ListItem
+            image={require("../assets/gtylogo.jpg")}
+            title={user}
+            subTitle="5 Listings"
+          />
+        </View>
+        <FlatList
+          data={tourPoints}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          style={{ flexGrow: 1, height: 450 }}
+        />
       </View>
     </View>
   );
@@ -79,7 +111,7 @@ function ListingDetailsScreen({ route }) {
 
 const styles = StyleSheet.create({
   detailsContainer: {
-    padding: 30,
+    paddingHorizontal: 30,
   },
   image: {
     width: "100%",
@@ -92,11 +124,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   title: {
+    // backgroundColor: "navy",
     fontSize: 24,
     fontWeight: "500",
+    paddingVertical: 15,
+    textAlign: "center",
   },
   userContainer: {
-    // marginVertical: 40,
+    marginVertical: 25,
   },
 });
 

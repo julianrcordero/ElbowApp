@@ -26,6 +26,22 @@ export default function ToursScreen({ navigation }) {
     getToursApi.request();
   };
 
+  const renderItem = ({ item }) => (
+    <Card
+      // category={item.categories[0]}
+      // dataType={item.dataType}
+      // thumbnailUrl={item.fileURL}
+      hint={item.title}
+      // location={item.location}
+      // mimeType={item.ID}
+      title={item.categories[0]}
+      // subTitle={item.scripture}
+      // imageUrl={item.images[0].url}
+      onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+      // thumbnailUrl={item.imageUrl}
+    />
+  );
+
   return (
     <Screen style={styles.screen}>
       {/* {getToursApi.error && (
@@ -39,21 +55,7 @@ export default function ToursScreen({ navigation }) {
       <FlatList
         data={getToursApi.data.tours}
         keyExtractor={(listing) => listing.ID.toString()}
-        renderItem={({ item }) => (
-          <Card
-            // category={item.categories[0]}
-            // dataType={item.dataType}
-            // thumbnailUrl={item.fileURL}
-            hint={item.categories[0]}
-            // location={item.location}
-            // mimeType={item.ID}
-            title={item.title}
-            // subTitle={item.scripture}
-            // imageUrl={item.images[0].url}
-            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-            // thumbnailUrl={item.imageUrl}
-          />
-        )}
+        renderItem={renderItem}
       />
     </Screen>
   );

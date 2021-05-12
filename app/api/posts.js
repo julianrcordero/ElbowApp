@@ -6,37 +6,25 @@ const getLocker = () => client.get("locker");
 const searchPosts = (region, onUploadProgress) => {
   let lat = region.latitude;
   let lon = region.longitude;
-  return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=20000", {
+  return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=50000", {
+    onUploadProgress: (progress) =>
+      onUploadProgress(progress.loaded / progress.total),
+  });
+};
+const getTourPoints = (tourID, onUploadProgress) => {
+  return client.get("/search?tourID=" + tourID, {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
   });
 };
 
-// region: {
-//   latitude: 34.2709266,
-//   longitude: -118.5139665,
-//   latitudeDelta: 0.2,
-//   longitudeDelta: 0.0421,
-// }
-const searchTourPoints = (tour, onUploadProgress) => {
-  return client.get(
-    "/search?lat=" +
-      tour.location.lat +
-      "&lon=" +
-      tour.location.lon +
-      "&distance=20000",
-    {
-      onUploadProgress: (progress) =>
-        onUploadProgress(progress.loaded / progress.total),
-    }
-  );
-};
-
 const unlockListing = (post, location, onUploadProgress) => {
   const requestBody = {
     postID: post.id,
-    lat: 34.271270751953125, //location.lat,
-    lon: -118.51387839775394, //location.lon,
+    lat: location.lat,
+    lon: location.lon,
+    // lat: 34.21104026741129,
+    // lon: -118.43643534472797,
     distance: 20,
   };
 
@@ -110,6 +98,12 @@ const subscribeTour = (tour, onUploadProgress) => {
 
 const getTours = () => client.get("/my-tours");
 
+const getUser = (userID, onUploadProgress) => {
+  return client.get("/user/" + userID, {
+    onUploadProgress: (progress) =>
+      onUploadProgress(progress.loaded / progress.total),
+  });
+};
 // content-type
 // application/json
 // multipart/form-data
@@ -120,8 +114,9 @@ export default {
   getLocker,
   getPosts,
   getTours,
+  getUser,
   searchPosts,
-  searchTourPoints,
+  getTourPoints,
   subscribeTour,
   unlockListing,
 };

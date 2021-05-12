@@ -51,7 +51,7 @@ class BiblePicker extends PureComponent {
   _toggleSettings = () => {
     this.props.bottomSheetRef.current.snapTo(1);
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      // let myIndex = markerList.findIndex(
+      // let myIndex = .findIndex(
       //   (obj) => obj.chapter === chapter && obj.title === verse
       // );
       setTimeout(() => {

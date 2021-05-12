@@ -34,9 +34,10 @@ function Card({
         )}
         <View style={styles.detailsContainer}>
           <Text style={styles.title} numberOfLines={1}>
-            {location ? location.lat + ", " + location.lon : hint}
+            {hint}
+            {/* {location ? location.lat + ", " + location.lon : hint} */}
           </Text>
-          <Text style={styles.subTitle} numberOfLines={2}>
+          <Text style={styles.subTitle} numberOfLines={1}>
             {title}
           </Text>
         </View>

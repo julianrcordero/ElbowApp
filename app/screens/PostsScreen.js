@@ -20,6 +20,7 @@ function PostsScreen({ navigation }) {
 
   useEffect(() => {
     getPostsApi.request();
+    console.log(getPostsApi.data.posts);
   }, []);
 
   return (
@@ -43,6 +44,7 @@ function PostsScreen({ navigation }) {
             hint={item.hint}
             location={item.location}
             mimeType={item.mimeType}
+            title={`${item.location.lat},\t${item.location.lon}`}
             // title={item.title}
             // subTitle={item.scripture}
             // imageUrl={item.images[0].url}
