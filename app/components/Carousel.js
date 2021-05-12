@@ -25,17 +25,26 @@ export default class Carousel extends Component {
   }
 
   async loadTour(tourID) {
-    const tour = await postsApi.getTourPoints(tourID, (progress) =>
-      // setProgress(progress)
-      this.setState({ progress: progress })
-    );
+    console.log(tourID);
+
+    if (tourID !== 0) {
+    } else {
+    }
+
+    const result =
+      tourID === 0
+        ? await postsApi.getLocker()
+        : await postsApi.getTourPoints(tourID, (progress) =>
+            // setProgress(progress)
+            this.setState({ progress: progress })
+          );
 
     const myMap = this.props.map.current;
 
     if (myMap) {
-      if (!tour.ok) {
+      if (!result.ok) {
       } else {
-        myMap.setMarkers(tour);
+        myMap.setMarkers(result);
       }
 
       // myMap.setState({
