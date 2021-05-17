@@ -79,7 +79,7 @@ export default function PostTourScreen({
 
     resetForm();
 
-    // bottomSheetRef.current.snapTo(2);
+    // bottomSheetRef.current?.snapTo(2);
 
     // verseCard.setState({ editing: false });
   };

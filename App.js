@@ -69,7 +69,7 @@ export default function App() {
   };
 
   const snapToHalf = () => {
-    bottomSheetRef.current.snapTo(2);
+    bottomSheetRef.current?.snapTo(2);
   };
 
   // const renderAddPostHeader = () => (

@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import {
   Alert,
   InteractionManager,
@@ -18,19 +18,27 @@ import AppButton from "./Button";
 import useLocation from "../hooks/useLocation";
 import { useState } from "react";
 import postsApi from "../api/posts";
-import { Component } from "react";
 
-export default class CarouselCard extends PureComponent {
+export default class CarouselCard extends Component {
   constructor(props) {
     super(props);
   }
-  // this.state = {
-  //   loved: false,
-  //   editing: false,
-  // };
 
-  componentDidMount() {
-    this.getCurrentLocation();
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.description !== nextProps.description) {
+      console.log("description is different");
+      return true;
+    } else if (this.props.title !== nextProps.title) {
+      console.log("title is different");
+      return true;
+    } else if (this.props.url !== nextProps.url) {
+      console.log("url is different", this.props.description);
+      return true;
+    } else if (this.props.location !== nextProps.location) {
+      console.log("location is different", this.props.location);
+      return true;
+    }
+    return false;
   }
 
   state = {
@@ -44,36 +52,18 @@ export default class CarouselCard extends PureComponent {
 
   // const location = useLocation();
 
-  async getCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        let location = {
-          lat: parseFloat(position.coords.latitude),
-          lon: parseFloat(position.coords.longitude),
-        };
-        this.setState({
-          location: location,
-        });
-      },
-      (error) => console.log(error),
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
-      }
-    );
-  }
-
   handleUnlock = async () => {
     this.setState({ progress: 0, uploadVisible: true });
 
-    console.log("attempting to unlock from", this.state.location);
+    console.log("unlocking this:", this.props.id);
+    // console.log("attempting to unlock from", this.props.location);
     const result = await postsApi.unlockListing(
-      this.props.item,
-      // this.state.location,
+      this.props.id,
+      // this.props.location,
       { lat: 34.26626838473331, lon: -118.3768829221343 },
       (progress) => this.setState({ progress: progress })
     );
+    console.log(result);
 
     if (!result.ok) {
       // setUploadVisible(false);
@@ -84,15 +74,15 @@ export default class CarouselCard extends PureComponent {
     } else {
       const resultData = result.data;
       console.log(("resultData", resultData));
-      this.props.map.current.showLockerPosts(); //.current.setState({tourFilteredList: })
+      this.props.map.current?.showLockerPosts(); //.current?.setState({tourFilteredList: })
 
       const interactionPromise = InteractionManager.runAfterInteractions(() => {
-        let myIndex = this.props.map.current.state.tourFilteredList.findIndex(
+        let myIndex = this.props.map.current?.state.tourFilteredList.findIndex(
           (obj) => obj.id === resultData.PostID
         );
 
         setTimeout(() => {
-          this.props.carousel.current.scrollToIndex({
+          this.props.carousel.current?.scrollToIndex({
             animated: false,
             index: myIndex,
           });
@@ -105,15 +95,8 @@ export default class CarouselCard extends PureComponent {
   };
 
   render() {
-    const {
-      currentBook,
-      item,
-      fontSize,
-      height,
-      crossRefSize,
-      bottomSheetRef,
-      width,
-    } = this.props;
+    const { description, fontSize, height, title, url, userID, width } =
+      this.props;
 
     return (
       <View
@@ -148,8 +131,9 @@ export default class CarouselCard extends PureComponent {
                 textAlign: "left",
               }}
             >
-              {item.description + " (" + item.title + ")"}
+              {description + " (" + title + ")"}
             </AppText>
+
             {/* <AppButton
                   title={"Edit"}
                   onPress={() => {
@@ -157,7 +141,7 @@ export default class CarouselCard extends PureComponent {
                     this.setState({ editing: true });
                   }}
                 /> */}
-            {!item.url && (
+            {!url && (
               <MaterialCommunityIcons
                 name="lock"
                 color={colors.black}
@@ -166,21 +150,29 @@ export default class CarouselCard extends PureComponent {
             )}
           </View>
         </View>
-        {item.url ? (
+        <AppText
+          style={{
+            fontSize: fontSize,
+            textAlign: "center",
+          }}
+        >
+          {userID}
+        </AppText>
+        {url ? (
           <Image
             style={styles.image}
             tint="light"
-            preview={{ uri: item.url }}
-            uri={item.url} //imageUrl}
+            preview={{ uri: url }}
+            uri={url} //imageUrl}
           />
         ) : (
           <AppButton title={"Unlock"} onPress={this.handleUnlock} />
         )}
         {/* <PanelBox
               fontSize={fontSize}
-              verseContent={item.description}
-              johnsNote={item.johnsNote}
-              crossrefs={item.crossrefs}
+              verseContent={description}
+              johnsNote={johnsNote}
+              crossrefs={crossrefs}
               crossRefSize={crossRefSize}
               bottomSheetRef={bottomSheetRef}
             ></PanelBox> */}
@@ -195,122 +187,3 @@ const styles = StyleSheet.create({
     height: 200,
   },
 });
-
-// export default function CarouselCard({
-//   currentBook,
-//   item,
-//   fontSize,
-//   height,
-//   crossRefSize,
-//   bottomSheetRef,
-//   width,
-// }) {
-//   // this.state = {
-//   //   loved: false,
-//   //   editing: false,
-//   // };
-
-//   const location = useLocation();
-//   const [uploadVisible, setUploadVisible] = useState(false);
-//   const [progress, setProgress] = useState(0);
-
-//   const handleUnlock = async () => {
-//     setProgress(0);
-//     setUploadVisible(true);
-
-//     const result = await postsApi.unlockListing(item, location, (progress) =>
-//       setProgress(progress)
-//     );
-
-//     if (!result.ok) {
-//       // setUploadVisible(false);
-//       return Alert.alert(result.data.message, result.data.reason, [
-//         { text: "OK", onPress: () => console.log("") },
-//         // { text: "No", onPress: () => console.log("No") },
-//       ]);
-//     } else {
-//       const resultData = result.data;
-//     }
-
-//     // verseCard.setState({ editing: false });
-//   };
-
-//   return (
-//     <View
-//       style={{
-//         // backgroundColor: "cyan",
-//         height: height,
-//         marginVertical: 15,
-//         paddingHorizontal: 30,
-//         width: width,
-//       }}
-//     >
-//       <View
-//         style={{
-//           alignItems: "center",
-//           height: 50,
-//           flexDirection: "row",
-//           justifyContent: "flex-start",
-//         }}
-//       >
-//         <View
-//           style={{
-//             alignItems: "center",
-//             flex: 1,
-//             justifyContent: "space-between",
-//             flexDirection: "row",
-//           }}
-//         >
-//           <AppText
-//             style={{
-//               fontSize: fontSize,
-//               fontWeight: "bold",
-//               textAlign: "left",
-//             }}
-//           >
-//             {item.description + " (" + item.title + ")"}
-//           </AppText>
-//           {/* <AppButton
-//                   title={"Edit"}
-//                   onPress={() => {
-//                     console.log("Edit clicked");
-//                     this.setState({ editing: true });
-//                   }}
-//                 /> */}
-//           {!item.url && (
-//             <MaterialCommunityIcons
-//               name="lock"
-//               color={colors.black}
-//               size={28}
-//             />
-//           )}
-//         </View>
-//       </View>
-//       {item.url ? (
-//         <Image
-//           style={styles.image}
-//           tint="light"
-//           preview={{ uri: item.url }}
-//           uri={item.url} //imageUrl}
-//         />
-//       ) : (
-//         <AppButton title={"Unlock"} onPress={handleUnlock} />
-//       )}
-//       {/* <PanelBox
-//               fontSize={fontSize}
-//               verseContent={item.description}
-//               johnsNote={item.johnsNote}
-//               crossrefs={item.crossrefs}
-//               crossRefSize={crossRefSize}
-//               bottomSheetRef={bottomSheetRef}
-//             ></PanelBox> */}
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   image: {
-//     width: "100%",
-//     height: 200,
-//   },
-// });

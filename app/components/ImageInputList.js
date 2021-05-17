@@ -4,13 +4,13 @@ import ImageInput from "./ImageInput";
 
 function ImageInputList({ imageUris = [], onRemoveImage, onAddImage }) {
   const scrollView = useRef();
-  //   scrollView.current.scrollToEnd()
+  //   scrollView.current?.scrollToEnd()
 
   return (
     <ScrollView
       ref={scrollView}
       horizontal
-      onContentSizeChange={() => scrollView.current.scrollToEnd()}
+      onContentSizeChange={() => scrollView.current?.scrollToEnd()}
     >
       <View style={styles.container}>
         {imageUris.map((uri) => (

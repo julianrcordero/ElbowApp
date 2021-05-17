@@ -16,14 +16,14 @@ import Screen from "../components/Screen";
 import AppText from "../components/Text";
 
 export default function ToursScreen({ navigation }) {
-  const getToursApi = useApi(postsApi.getTours);
+  const getSubscribedToursApi = useApi(postsApi.getSubscribedTours);
 
   useEffect(() => {
     loadTours();
   }, []);
 
   const loadTours = () => {
-    getToursApi.request();
+    getSubscribedToursApi.request();
   };
 
   const renderItem = ({ item }) => (
@@ -44,16 +44,16 @@ export default function ToursScreen({ navigation }) {
 
   return (
     <Screen style={styles.screen}>
-      {/* {getToursApi.error && (
+      {/* {getSubscribedToursApi.error && (
         <>
           <AppText>Couldn't retrieve the posts.</AppText> */}
       <Button title="Retry" onPress={loadTours} />
       {/* </>
       )} */}
-      <ActivityIndicator visible={getToursApi.loading} />
-      {/* <Indicator animating={getToursApi.loading} size={"large"} /> */}
+      <ActivityIndicator visible={getSubscribedToursApi.loading} />
+      {/* <Indicator animating={getSubscribedToursApi.loading} size={"large"} /> */}
       <FlatList
-        data={getToursApi.data.tours}
+        data={getSubscribedToursApi.data.tours}
         keyExtractor={(listing) => listing.ID.toString()}
         renderItem={renderItem}
       />

@@ -46,9 +46,9 @@ export default class MapScreen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.tourFilteredList !== this.state.tourFilteredList) {
-      console.log("updated tourFilteredList");
-    }
+    // if (prevState.tourFilteredList !== this.state.tourFilteredList) {
+    //   console.log("updated tourFilteredList");
+    // }
   }
 
   async getCurrentLocation() {
@@ -75,7 +75,7 @@ export default class MapScreen extends Component {
 
   moveCamera = (latitude, longitude, zoom) => {
     if (this.props.mapView.current) {
-      this.props.mapView.current.animateCamera(
+      this.props.mapView.current?.animateCamera(
         {
           center: {
             latitude: latitude,
@@ -89,7 +89,7 @@ export default class MapScreen extends Component {
   };
 
   clickToMarker = (marker) => {
-    // this.props.bottomSheetRef.current.snapTo(1);
+    // this.props.bottomSheetRef.current?.snapTo(1);
 
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       setTimeout(() => {
@@ -102,18 +102,18 @@ export default class MapScreen extends Component {
   };
 
   openBottomSheet = (postMode) => {
-    this.props.bottomSheetRef.current.snapTo(1);
-    this.props.bottomSheetContent.current.setState({ addPostMode: postMode });
+    this.props.bottomSheetRef.current?.snapTo(1);
+    this.props.bottomSheetContent.current?.setState({ addPostMode: postMode });
   };
 
   scrollToPost = (marker) => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      let myIndex = this.props.map.current.state.tourFilteredList.findIndex(
+      let myIndex = this.props.map.current?.state.tourFilteredList.findIndex(
         (m) => m.id === marker.id
       );
 
       setTimeout(() => {
-        this.props.carousel.current.scrollToIndex({
+        this.props.carousel.current?.scrollToIndex({
           animated: false,
           index: myIndex,
         });
@@ -122,47 +122,45 @@ export default class MapScreen extends Component {
     () => interactionPromise.cancel();
   };
 
+  //GREEN BUTTON
   showLockerPosts = async () => {
     const result = await postsApi.getLocker();
 
-    if (!result.ok) {
-      // setUploadVisible(false);
-      console.log(result);
-      return Alert.alert(result.data.message, result.data.reason, [
+    if (result.data.total === 0) {
+      return Alert.alert("Sorry!", "You have not unlocked any posts yet", [
         { text: "OK", onPress: () => console.log("") },
       ]);
-    } else {
-      if (result.data.total === 0) {
-        return Alert.alert("Sorry!", "You have not unlocked any posts yet", [
-          { text: "OK", onPress: () => console.log("") },
-        ]);
-      }
-      this.setMarkers(result); //this.props.searchPostsApi);
-      this.setState({ markersColor: "limegreen" });
     }
+    this.setMarkers(result, "limegreen"); //this.props.searchPostsApi);
+    this.props.bottomSheetContent.current?.setState({
+      filter: 0,
+    });
   };
 
+  //BLUE BUTTON
   showMyPosts = async () => {
     const result = await postsApi.getPosts(); //posts from self
 
-    if (!result.ok) {
-      // setUploadVisible(false);
-      console.log(result);
-      return Alert.alert(result.data.message, result.data.reason, [
-        { text: "OK", onPress: () => console.log("") },
-      ]);
-    } else {
-      this.setMarkers(result); //this.props.searchPostsApi);
-      this.setState({ markersColor: "dodgerblue" });
-    }
+    this.setMarkers(result, "dodgerblue"); //this.props.searchPostsApi);
+    this.props.bottomSheetContent.current?.setState({
+      filter: 0,
+    });
   };
 
+  //RED BUTTON
   searchMarkers = async () => {
     const result = await postsApi.searchPosts(this.state.region, (progress) =>
       // setProgress(progress)
       this.setState({ progress: progress })
     );
 
+    this.setMarkers(result, "crimson");
+    this.props.bottomSheetContent.current?.setState({
+      filter: 0,
+    });
+  };
+
+  setMarkers = (result, color) => {
     if (!result.ok) {
       console.log(result);
       // setUploadVisible(false);
@@ -171,48 +169,39 @@ export default class MapScreen extends Component {
         // { text: "No", onPress: () => console.log("No") },
       ]);
     } else {
-      console.log(result);
-      this.setMarkers(result);
-      this.setState({ markersColor: "crimson" });
-    }
-  };
+      if (!result.error) {
+        let initialMarkers = [];
 
-  setMarkers = (myApi) => {
-    if (!myApi.error) {
-      let initialMarkers = [];
+        if (result.data.posts) {
+          result.data.posts.map(
+            (post) =>
+              (initialMarkers = [
+                ...initialMarkers,
+                {
+                  id: post.id,
+                  latitude: post.location.lat,
+                  longitude: post.location.lon,
+                  title: post.category,
+                  description: post.hint,
+                  url: post.fileURL,
+                  tourID: post.tourID,
+                  userID: post.userID,
+                },
+              ])
+          );
+        } else {
+          console.log(result.data);
+        }
+        // console.log(initialMarkers);
 
-      if (myApi.data.posts) {
-        myApi.data.posts.map(
-          (post) =>
-            (initialMarkers = [
-              ...initialMarkers,
-              {
-                id: post.id,
-                latitude: post.location.lat,
-                longitude: post.location.lon,
-                title: post.category,
-                description: post.hint,
-                url: post.fileURL,
-                tourID: post.tourID,
-              },
-            ])
-          // .filter(
-          //   (marker) =>
-          //     !this.props.bottomSheetContent.current.state.locker.some(
-          //       (lockerPost) => lockerPost.id === marker.id
-          //     )
-          // )
-        );
+        this.setState({
+          markerList: initialMarkers,
+          tourFilteredList: initialMarkers,
+          markersColor: color,
+        });
       } else {
-        console.log(myApi.data);
+        console.log("getPostsApi.error: ", result.error);
       }
-
-      this.props.map.current.setState({
-        markerList: initialMarkers,
-        tourFilteredList: initialMarkers,
-      });
-    } else {
-      console.log("getPostsApi.error: ", myApi.error);
     }
   };
 

@@ -36,7 +36,7 @@ export default class PanelBox extends PureComponent {
     const macarthurLineHeight = macarthurText * 2;
 
     const navigateBible = () => {
-      bottomSheetRef.current.snapTo(1);
+      bottomSheetRef.current?.snapTo(1);
     };
 
     function VerseHyperlink({ cr }) {

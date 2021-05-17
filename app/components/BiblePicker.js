@@ -49,14 +49,14 @@ class BiblePicker extends PureComponent {
   };
 
   _toggleSettings = () => {
-    this.props.bottomSheetRef.current.snapTo(1);
+    this.props.bottomSheetRef.current?.snapTo(1);
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       // let myIndex = .findIndex(
       //   (obj) => obj.chapter === chapter && obj.title === verse
       // );
       setTimeout(() => {
-        this.props.bottomSheetContent.current.setState({ addPostMode: true });
-        // carousel.current.scrollToIndex({ animated: false, index: myIndex });
+        this.props.bottomSheetContent.current?.setState({ addPostMode: true });
+        // carousel.current?.scrollToIndex({ animated: false, index: myIndex });
       });
     });
     () => interactionPromise.cancel();
@@ -107,7 +107,7 @@ class BiblePicker extends PureComponent {
               />
             ) : (
               <TouchableOpacity
-                onPress={() => topPanel.current.setState({ collapsed: false })}
+                onPress={() => topPanel.current?.setState({ collapsed: false })}
                 style={styles.reference}
               >
                 <Text style={{ fontSize: fontSize }}>

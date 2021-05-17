@@ -14,66 +14,73 @@ export default class Carousel extends Component {
   }
 
   componentDidMount() {
+    this.getCurrentLocation();
     this.loadTours();
   }
 
   async loadTours() {
-    const tours = await postsApi.getTours();
+    const subscribedTours = await postsApi.getSubscribedTours();
+    const createdTours = await postsApi.getCreatedTours();
     const locker = await postsApi.getLocker();
-    this.setState({ tours: tours.data.tours, locker: locker.data.posts });
-    // console.log("tours:", this.state.tours);
+    this.setState({
+      createdTours: createdTours.data.tours,
+      subscribedTours: subscribedTours.data.tours,
+      locker: locker.data.posts,
+    });
   }
 
   async loadTour(tourID) {
-    console.log(tourID);
-
-    if (tourID !== 0) {
-    } else {
-    }
-
-    const result =
-      tourID === 0
-        ? await postsApi.getLocker()
-        : await postsApi.getTourPoints(tourID, (progress) =>
-            // setProgress(progress)
-            this.setState({ progress: progress })
-          );
-
     const myMap = this.props.map.current;
 
     if (myMap) {
-      if (!result.ok) {
-      } else {
-        myMap.setMarkers(result);
-      }
-
-      // myMap.setState({
-      //   tourFilteredList: tourID
-      //     ? //tour.data.posts
-      //       myMap.state.markerList.filter(
-      //         (marker) =>
-      //           marker.tourID === tourID &&
-      //           !this.state.locker.some(
-      //             (lockerPost) => lockerPost.id === marker.id
-      //           )
-      //       )
-      //     : myMap.state.markerList,
-      // });
+      myMap.setState({
+        tourFilteredList:
+          tourID === 0
+            ? myMap.state.markerList
+            : myMap.state.markerList.filter(
+                (marker) => marker.tourID === tourID
+              ),
+      });
     }
+  }
+
+  async getCurrentLocation() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        let location = {
+          lat: parseFloat(position.coords.latitude),
+          lon: parseFloat(position.coords.longitude),
+        };
+        this.setState({
+          location: location,
+        });
+      },
+      (error) => console.log(error),
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 1000,
+      }
+    );
   }
 
   state = {
     addPostMode: true,
+    createdTours: [],
+    location: {
+      latitude: 34.2709266,
+      longitude: -118.5139665,
+    },
     locker: [],
     progress: 0,
     tour: null,
-    tours: this.props.tourList,
+    subscribedTours: [], //this.props.tourList,
     filter: 0,
   };
 
   slideToMarker = (item) => {
     if (this.props.mapView.current) {
-      this.props.mapView.current.animateCamera(
+      this.props.mapView.current?.animateCamera(
         {
           center: {
             latitude: item.latitude,
@@ -113,16 +120,20 @@ export default class Carousel extends Component {
       <CarouselCard
         carousel={this.props.carousel}
         key={index}
-        // currentBook={currentBook}
-        item={item}
         crossrefSize={this.props.crossrefSize}
+        description={item.description}
         fontSize={this.props.fontSize}
         height={
           this.props.top - this.props.bottomSheetHeaderHeight
           // - getBottomSpace()
         }
+        id={item.id}
         bottomSheetRef={this.props.bottomSheetRef}
+        location={this.state.location}
         map={this.props.map}
+        title={item.title}
+        url={item.url}
+        userID={item.userID}
         verseCardReferenceHeight={this.props.verseCardReferenceHeight}
         width={this.props.width}
       />
@@ -130,25 +141,18 @@ export default class Carousel extends Component {
   };
 
   onValueChange = (itemValue, itemPosition) => {
-    console.log("changed to", itemValue);
+    // console.log("changed to", itemValue);
     this.setState({ filter: itemValue });
     // this.setState({
-    //   tours: this.state.tours.filter((item) => item.tourID === itemValue),
+    //   subscribedTours: this.state.tours.filter((item) => item.tourID === itemValue),
     // });
 
     this.loadTour(itemValue);
   };
 
   render() {
-    const {
-      bottomSheetRef,
-      carousel,
-      map,
-      mapView,
-      top,
-      tourList,
-      width,
-    } = this.props;
+    const { bottomSheetRef, carousel, map, mapView, top, tourList, width } =
+      this.props;
 
     return this.state.addPostMode ? (
       <View style={{ backgroundColor: "white", width: width }}>
@@ -177,7 +181,7 @@ export default class Carousel extends Component {
           }}
         >
           <Picker.Item key={"key"} label={"All posts"} value={0} />
-          {this.state.tours.map((item) => (
+          {this.state.subscribedTours.map((item) => (
             <Picker.Item key={item.id} label={item.title} value={item.ID} />
           ))}
         </Picker>
@@ -185,9 +189,9 @@ export default class Carousel extends Component {
         {mapView.current ? (
           <FlatList
             bounces={false}
-            data={map.current.state.tourFilteredList}
+            data={map.current?.state.tourFilteredList}
             decelerationRate={"fast"}
-            extraData={map.current}
+            extraData={this.state.filter}
             getItemLayout={this.getItemLayout}
             horizontal={true}
             initialNumToRender={5}

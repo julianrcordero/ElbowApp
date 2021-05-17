@@ -78,7 +78,7 @@ export default function SubscribeTourScreen({
 
     resetForm();
 
-    // bottomSheetRef.current.snapTo(2);
+    // bottomSheetRef.current?.snapTo(2);
 
     // verseCard.setState({ editing: false });
   };

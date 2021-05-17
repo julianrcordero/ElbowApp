@@ -18,13 +18,13 @@ const getTourPoints = (tourID, onUploadProgress) => {
   });
 };
 
-const unlockListing = (post, location, onUploadProgress) => {
+const unlockListing = (id, location, onUploadProgress) => {
   const requestBody = {
-    postID: post.id,
-    lat: location.lat,
-    lon: location.lon,
-    // lat: 34.21104026741129,
-    // lon: -118.43643534472797,
+    postID: id,
+    // lat: location.lat,
+    // lon: location.lon,
+    lat: 34.157112274394436,
+    lon: -118.43738625822279,
     distance: 20,
   };
 
@@ -96,7 +96,9 @@ const subscribeTour = (tour, onUploadProgress) => {
   });
 };
 
-const getTours = () => client.get("/my-tours");
+const getSubscribedTours = () => client.get("/my-tours");
+
+const getCreatedTours = () => client.get("/tours");
 
 const getUser = (userID, onUploadProgress) => {
   return client.get("/user/" + userID, {
@@ -111,9 +113,10 @@ const getUser = (userID, onUploadProgress) => {
 export default {
   addPost,
   addTour,
+  getCreatedTours,
   getLocker,
   getPosts,
-  getTours,
+  getSubscribedTours,
   getUser,
   searchPosts,
   getTourPoints,

@@ -39,10 +39,11 @@ const categories = [
 
 const tours = [];
 
-function PostContentScreen({ bottomSheetRef, map, tourList }) {
+function PostContentScreen({ bottomSheetRef, map }) {
   const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [tourList, setTourList] = useState([]);
 
   const handleSubmit = async (post, { resetForm }) => {
     setProgress(0);
@@ -66,9 +67,9 @@ function PostContentScreen({ bottomSheetRef, map, tourList }) {
       const postLink = resultData.fileURL;
       uploadPhoto(postLink, post);
 
-      map.current.setState({
+      map.current?.setState({
         markerList: [
-          ...map.current.state.markerList,
+          ...map.current?.state.markerList,
           {
             id: resultData.id,
             latitude: resultData.location.lat,
@@ -80,7 +81,7 @@ function PostContentScreen({ bottomSheetRef, map, tourList }) {
           },
         ],
         tourFilteredList: [
-          ...map.current.state.markerList,
+          ...map.current?.state.markerList,
           {
             id: resultData.id,
             latitude: resultData.location.lat,
@@ -96,7 +97,7 @@ function PostContentScreen({ bottomSheetRef, map, tourList }) {
 
     resetForm();
 
-    bottomSheetRef.current.snapTo(2);
+    bottomSheetRef.current?.snapTo(2);
 
     // verseCard.setState({ editing: false });
   };
@@ -129,7 +130,13 @@ function PostContentScreen({ bottomSheetRef, map, tourList }) {
     // setProgress(0);
     // setUploadVisible(true);
 
-    const result = await postsApi.getTours();
+    const result = await postsApi.getCreatedTours();
+
+    if (!result.ok) {
+      console.log(result);
+    } else {
+      setTourList(result.data.tours);
+    }
   };
 
   return (
