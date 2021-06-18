@@ -1,6 +1,6 @@
-# thestudybible2.0
+# elbowapp
 
-The Study Bible app by Grace To You on React Native.js
+Elbow app - geocaching for digital assets
 
 ![GitHub Logo](/elbow1.gif)
 
