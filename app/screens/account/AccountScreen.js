@@ -11,22 +11,6 @@ import useAuth from "../../auth/useAuth";
 
 const menuItems = [
   {
-    title: "My Listings",
-    icon: {
-      name: "format-list-bulleted",
-      backgroundColor: colors.primary,
-      targetScreen: routes.LISTING_DETAILS,
-    },
-  },
-  {
-    title: "My Messages",
-    icon: {
-      name: "email",
-      backgroundColor: colors.secondary,
-    },
-    targetScreen: routes.MESSAGES,
-  },
-  {
     title: "Add a Tour",
     icon: {
       name: "map-marker-path",

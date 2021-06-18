@@ -33,6 +33,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import TopSheetNavigation from "./app/components/TopSheetNavigation";
 import PostContentScreen from "./app/screens/PostContentScreen";
 import Carousel from "./app/components/Carousel";
+import useLocation from "./app/hooks/useLocation";
 const Stack = createStackNavigator();
 const { height, width } = Dimensions.get("window");
 
@@ -52,8 +53,6 @@ export default function App() {
   const map = useRef(null);
   const carousel = React.useRef();
   const bottomSheetContent = useRef();
-
-  const [tourList, setTourList] = useState([]); //change to API endpoint
 
   const [] = useState(1);
   const [] = useState(1);
@@ -104,12 +103,12 @@ export default function App() {
       crossrefSize={crossrefSize}
       fontSize={fontSize}
       map={map}
+      mapView={mapView}
       ref={bottomSheetContent}
       top={top}
-      tourList={tourList}
+      user={user}
       verseCardReferenceHeight={verseCardReferenceHeight}
       width={width}
-      mapView={mapView}
     />
   );
 
@@ -139,11 +138,10 @@ export default function App() {
                 fontSize={fontSize}
                 crossrefSize={crossrefSize}
                 titleSize={titleSize}
-                setTourList={setTourList}
-                tourList={tourList}
                 topPanel={topPanel}
                 map={map}
                 mapView={mapView}
+                user={user}
               />
             ) : (
               <AuthNavigator />
@@ -158,7 +156,7 @@ export default function App() {
         initialSnap={2}
         renderHeader={postViewHeader} // : postViewHeader}
         renderContent={renderCarousel}
-        style={{ backgroundColor: colors.white }}
+        style={{ backgroundColor: colors.white, minHeight: height }}
         // onCloseEnd={() => setFocusedVerse(null)}
       />
     </>

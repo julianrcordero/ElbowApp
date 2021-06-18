@@ -39,8 +39,6 @@ export default function PostTourScreen({
   bottomSheetRef,
   description,
   map,
-  setTourList,
-  tourList,
   title,
 }) {
   const location = useLocation();
@@ -60,7 +58,7 @@ export default function PostTourScreen({
       return alert("You are not authorized to upload");
     } else {
       const resultData = result.data;
-      setTourList([...tourList, resultData]);
+      console.log(resultData);
       //   const postLink = resultData.fileURL;
       //   uploadPhoto(postLink, post);
 

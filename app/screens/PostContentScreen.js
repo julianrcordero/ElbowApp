@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InteractionManager, StyleSheet, View } from "react-native";
 import * as Yup from "yup";
 import * as FileSystem from "expo-file-system";
@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
 
 const categories = [
   {
-    label: "Photo",
+    title: "Photo",
     value: "image/jpeg",
     backgroundColor: "green",
     icon: "camera",
@@ -37,13 +37,16 @@ const categories = [
   // { label: "Camera", value: 3, backgroundColor: "blue", icon: "lock" },
 ];
 
-const tours = [];
-
 function PostContentScreen({ bottomSheetRef, map }) {
+  const getCreatedToursApi = useApi(postsApi.getCreatedTours);
+
+  useEffect(() => {
+    getCreatedToursApi.request();
+  }, []);
+
   const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [tourList, setTourList] = useState([]);
 
   const handleSubmit = async (post, { resetForm }) => {
     setProgress(0);
@@ -126,19 +129,6 @@ function PostContentScreen({ bottomSheetRef, map }) {
     }
   };
 
-  const loadTours = async () => {
-    // setProgress(0);
-    // setUploadVisible(true);
-
-    const result = await postsApi.getCreatedTours();
-
-    if (!result.ok) {
-      console.log(result);
-    } else {
-      setTourList(result.data.tours);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <UploadScreen
@@ -166,16 +156,15 @@ function PostContentScreen({ bottomSheetRef, map }) {
           items={categories}
           name="category"
           numberOfColumns={3}
-          PickerItemComponent={CategoryPickerItem}
+          // PickerItemComponent={CategoryPickerItem}
           placeholder="Category"
           width="50%"
         />
         <Picker
-          items={tourList}
+          items={getCreatedToursApi.data.tours}
           name="tour"
-          loadData={loadTours}
-          numberOfColumns={3}
-          PickerItemComponent={CategoryPickerItem}
+          loadData={getCreatedToursApi.request}
+          // PickerItemComponent={CategoryPickerItem}
           placeholder="Tour"
           width="50%"
         />
@@ -188,7 +177,7 @@ function PostContentScreen({ bottomSheetRef, map }) {
           numberOfLines={3}
           placeholder="Description"
         />
-        <FormField
+        {/* <FormField
           name="latitude"
           placeholder="Latitude"
           icon="latitude"
@@ -199,7 +188,7 @@ function PostContentScreen({ bottomSheetRef, map }) {
           placeholder="Longitude"
           icon="longitude"
           keyboardType="phone-pad"
-        />
+        /> */}
         <FormImagePicker name="images" />
 
         <SubmitButton title="Post" />

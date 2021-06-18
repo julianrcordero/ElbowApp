@@ -49,9 +49,8 @@ export default function SubscribeTourScreen({
     setProgress(0);
     setUploadVisible(true);
 
-    const result = await postsApi.subscribeTour(
-      { ...tour, location },
-      (progress) => setProgress(progress)
+    const result = await postsApi.subscribeTour(tour.id, (progress) =>
+      setProgress(progress)
     );
 
     if (!result.ok) {

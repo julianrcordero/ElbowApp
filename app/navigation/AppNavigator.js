@@ -77,6 +77,7 @@ const AppNavigator = (props) =>
               mapView={props.mapView}
               ref={props.map}
               searchPostsApi={searchPostsApi}
+              user={props.user}
             />
           )}
         />
@@ -96,7 +97,7 @@ const AppNavigator = (props) =>
           name="Tours"
           component={ToursNavigator}
           options={{
-            tabBarIcon: "newspaper-variant-multiple-outline",
+            tabBarIcon: "map-marker-path",
           }}
         />
         <Tab.Screen
@@ -105,12 +106,7 @@ const AppNavigator = (props) =>
           options={{
             tabBarIcon: "menu",
           }}
-          children={() => (
-            <AccountNavigator
-              setTourList={props.setTourList}
-              tourList={props.tourList}
-            />
-          )}
+          children={() => <AccountNavigator />}
         />
       </Tab.Navigator>
     );

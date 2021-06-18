@@ -81,12 +81,11 @@ function ListingDetailsScreen({ route }) {
         />
       )}
       <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{listing.title}</Text>
         <AppText
           style={{
-            fontSize: fontSize,
-            lineHeight: fontSize * 2,
-            // marginVertical: 10,
+            fontSize: 14,
+            // lineHeight: fontSize * 1.5,
+            marginTop: 20,
           }}
         >
           {listing.categories[0]}
@@ -123,15 +122,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginVertical: 10,
   },
-  title: {
-    // backgroundColor: "navy",
-    fontSize: 24,
-    fontWeight: "500",
-    paddingVertical: 15,
-    textAlign: "center",
-  },
+
   userContainer: {
-    marginVertical: 25,
+    marginVertical: 20,
   },
 });
 

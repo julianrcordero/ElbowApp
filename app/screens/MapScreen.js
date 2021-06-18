@@ -35,6 +35,8 @@ export default class MapScreen extends Component {
     },
     initialMarkers: [],
     tourFilteredList: [],
+    locker: [],
+    lockerLoaded: false,
     markerList: [],
     markersColor: "dodgerblue",
     progress: 0,
@@ -43,12 +45,27 @@ export default class MapScreen extends Component {
   componentDidMount() {
     this.getCurrentLocation();
     this.moveCamera(this.state.region.latitude, this.state.region.longitude);
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    // if (prevState.tourFilteredList !== this.state.tourFilteredList) {
-    //   console.log("updated tourFilteredList");
-    // }
+    this.loadLocker();
+  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevProps.user !== this.props.user) {
+  //     console.log("map updated with new user!");
+  //     this.loadLocker();
+  //   }
+  // }
+
+  async loadLocker() {
+    if (this.props.user) {
+      const locker = await postsApi.getLocker();
+
+      // console.log("MY LOCKER:", locker.data);
+      let setToThis = Array.isArray(locker.data.posts)
+        ? locker.data.posts
+        : locker.data[1].posts; //for some reason????
+      // console.log("locker array", setToThis);
+      if (setToThis) this.setState({ locker: setToThis, lockerLoaded: true });
+    }
   }
 
   async getCurrentLocation() {
@@ -107,10 +124,13 @@ export default class MapScreen extends Component {
   };
 
   scrollToPost = (marker) => {
+    // console.log(marker);
+    // console.log(this.props.map.current?.state.tourFilteredList.length);
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       let myIndex = this.props.map.current?.state.tourFilteredList.findIndex(
         (m) => m.id === marker.id
       );
+      // console.log("scroll to Index", myIndex);
 
       setTimeout(() => {
         this.props.carousel.current?.scrollToIndex({
@@ -131,7 +151,7 @@ export default class MapScreen extends Component {
         { text: "OK", onPress: () => console.log("") },
       ]);
     }
-    this.setMarkers(result, "limegreen"); //this.props.searchPostsApi);
+    this.setMarkers(result, "limegreen");
     this.props.bottomSheetContent.current?.setState({
       filter: 0,
     });
@@ -141,7 +161,7 @@ export default class MapScreen extends Component {
   showMyPosts = async () => {
     const result = await postsApi.getPosts(); //posts from self
 
-    this.setMarkers(result, "dodgerblue"); //this.props.searchPostsApi);
+    this.setMarkers(result, "dodgerblue");
     this.props.bottomSheetContent.current?.setState({
       filter: 0,
     });
@@ -162,7 +182,6 @@ export default class MapScreen extends Component {
 
   setMarkers = (result, color) => {
     if (!result.ok) {
-      console.log(result);
       // setUploadVisible(false);
       return Alert.alert(result.data.message, result.data.reason, [
         { text: "OK", onPress: () => console.log("") },
@@ -170,29 +189,72 @@ export default class MapScreen extends Component {
       ]);
     } else {
       if (!result.error) {
+        const resultData = result.data.posts;
+
         let initialMarkers = [];
 
-        if (result.data.posts) {
-          result.data.posts.map(
-            (post) =>
-              (initialMarkers = [
-                ...initialMarkers,
-                {
-                  id: post.id,
-                  latitude: post.location.lat,
-                  longitude: post.location.lon,
-                  title: post.category,
-                  description: post.hint,
-                  url: post.fileURL,
-                  tourID: post.tourID,
-                  userID: post.userID,
-                },
-              ])
-          );
+        if (resultData) {
+          if (color === "crimson") {
+            // if (!this.state.lockerLoaded) {
+            this.loadLocker();
+            // }
+            // console.log("current user:", this.props.user.sub);
+            // console.log("pre-filtered search list:", resultData.length);
+            // console.log(this.state.locker.length);
+            resultData
+              .filter(
+                (searchedPost) =>
+                  searchedPost.userID !== this.props.user.sub &&
+                  this.state.locker.find(
+                    (lockerPost) => lockerPost.id === searchedPost.id
+                  ) === undefined
+              )
+              .map(
+                (post) =>
+                  (initialMarkers = [
+                    ...initialMarkers,
+                    {
+                      id: post.id,
+                      latitude: post.location.lat,
+                      longitude: post.location.lon,
+                      title: post.category,
+                      description: post.hint,
+                      url: post.fileURL,
+                      tourID: post.tourID,
+                      userID: post.userID,
+                    },
+                  ])
+              );
+          } else {
+            resultData.map(
+              (post) =>
+                (initialMarkers = [
+                  ...initialMarkers,
+                  {
+                    id: post.id,
+                    latitude: post.location.lat,
+                    longitude: post.location.lon,
+                    title: post.category,
+                    description: post.hint,
+                    url: post.fileURL,
+                    tourID: post.tourID,
+                    userID: post.userID,
+                  },
+                ])
+            );
+          }
         } else {
           console.log(result.data);
         }
-        // console.log(initialMarkers);
+        console.log("setting markers to", initialMarkers.length);
+        if (initialMarkers.length === 0) {
+          Alert.alert("Ain't nothing 'round heeAh ta see", "okah", [
+            { text: "OK", onPress: () => console.log("") },
+            // { text: "No", onPress: () => console.log("No") },
+          ]);
+        } else {
+          console.log("search markers filtered:", initialMarkers.length);
+        }
 
         this.setState({
           markerList: initialMarkers,
@@ -209,18 +271,12 @@ export default class MapScreen extends Component {
   mapStyle = { flex: 1 };
 
   onRegionChangeComplete = (region) => {
+    // console.log(region);
     this.setState({ region: region });
   };
 
   render() {
-    const {
-      bottomSheetContent,
-      bottomSheetRef,
-      carousel,
-      getPostsApi,
-      mapView,
-      searchPostsApi,
-    } = this.props;
+    const { getPostsApi, mapView } = this.props;
 
     return (
       <View style={styles.container}>
@@ -253,9 +309,7 @@ export default class MapScreen extends Component {
             />
           ))}
         </MapView>
-        <ActivityIndicator
-          visible={getPostsApi.loading} // || searchPostsApi.loading}
-        />
+        <ActivityIndicator visible={getPostsApi.loading} />
         <View style={styles.overlay}>
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "limegreen" }]}

@@ -9,7 +9,16 @@ const Stack = createStackNavigator();
 const ToursNavigator = () => (
   <Stack.Navigator mode="modal">
     <Stack.Screen name="Tours" component={ToursScreen} />
-    <Stack.Screen name="ListingDetails" component={ListingDetailsScreen} />
+    <Stack.Screen
+      name="ListingDetails"
+      component={ListingDetailsScreen}
+      options={({ route }) => ({
+        title: route.params.title,
+        headerStyle: {
+          height: 70,
+        },
+      })}
+    />
   </Stack.Navigator>
 );
 

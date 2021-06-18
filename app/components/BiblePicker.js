@@ -56,7 +56,6 @@ class BiblePicker extends PureComponent {
       // );
       setTimeout(() => {
         this.props.bottomSheetContent.current?.setState({ addPostMode: true });
-        // carousel.current?.scrollToIndex({ animated: false, index: myIndex });
       });
     });
     () => interactionPromise.cancel();

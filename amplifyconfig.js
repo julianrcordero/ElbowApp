@@ -4,7 +4,6 @@ function refreshToken() {
   // refresh the token here and get the new token info
   // ......
   try {
-    console.log("refreshing token");
     const cognitoUser = Auth.currentAuthenticatedUser();
     const currentSession = Auth.currentSession();
 
@@ -27,6 +26,12 @@ function refreshToken() {
     console.log("Unable to refresh Token", e);
   }
 }
+
+const getAccessJwtToken = async () => {
+  // Auth.currentSession() checks if token is expired and refreshes with Cognito if needed automatically
+  const session = await Auth.currentSession();
+  return session.getAccessToken().getJwtToken();
+};
 
 Amplify.configure({
   Auth: {

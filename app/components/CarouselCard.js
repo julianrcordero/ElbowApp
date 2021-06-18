@@ -26,13 +26,13 @@ export default class CarouselCard extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.description !== nextProps.description) {
-      console.log("description is different");
+      // console.log("description is different");
       return true;
     } else if (this.props.title !== nextProps.title) {
-      console.log("title is different");
+      // console.log("title is different");
       return true;
     } else if (this.props.url !== nextProps.url) {
-      console.log("url is different", this.props.description);
+      // console.log("url is different", this.props.description);
       return true;
     } else if (this.props.location !== nextProps.location) {
       console.log("location is different", this.props.location);
@@ -50,20 +50,20 @@ export default class CarouselCard extends Component {
     uploadVisible: false,
   };
 
-  // const location = useLocation();
-
   handleUnlock = async () => {
     this.setState({ progress: 0, uploadVisible: true });
 
     console.log("unlocking this:", this.props.id);
+    this.props.getCurrentLocation();
     // console.log("attempting to unlock from", this.props.location);
+
     const result = await postsApi.unlockListing(
       this.props.id,
-      // this.props.location,
-      { lat: 34.26626838473331, lon: -118.3768829221343 },
+      this.props.location,
+      // { lat: 34.26626838473331, lon: -118.3768829221343 },
       (progress) => this.setState({ progress: progress })
     );
-    console.log(result);
+    // console.log(result);
 
     if (!result.ok) {
       // setUploadVisible(false);
@@ -73,7 +73,7 @@ export default class CarouselCard extends Component {
       ]);
     } else {
       const resultData = result.data;
-      console.log(("resultData", resultData));
+      // console.log(("resultData", resultData));
       this.props.map.current?.showLockerPosts(); //.current?.setState({tourFilteredList: })
 
       const interactionPromise = InteractionManager.runAfterInteractions(() => {
@@ -94,9 +94,70 @@ export default class CarouselCard extends Component {
     // verseCard.setState({ editing: false });
   };
 
+  handleDelete = async () => {
+    // this.setState({ progress: 0, uploadVisible: true });
+
+    console.log("deleting this:", this.props.id);
+    // console.log("attempting to unlock from", this.props.location);
+    const result = await postsApi.deleteListing(this.props.id, (progress) =>
+      this.setState({ progress: progress })
+    );
+    console.log(result);
+
+    if (!result.ok) {
+      // setUploadVisible(false);
+      return Alert.alert(result.data.message, result.data.reason, [
+        { text: "OK", onPress: () => console.log("") },
+        // { text: "No", onPress: () => console.log("No") },
+      ]);
+    } else {
+      let myMap = this.props.map.current;
+
+      myMap?.setState({
+        tourFilteredList: myMap?.state.tourFilteredList.filter(
+          (mapPoint) => mapPoint.id !== this.props.id
+        ),
+      });
+    }
+  };
+
+  handleSubscribe = async () => {
+    // this.setState({ progress: 0, uploadVisible: true });
+
+    console.log("subscribing to this:", this.props.tourID);
+    // console.log("attempting to unlock from", this.props.location);
+    const result = await postsApi.subscribeTour(this.props.tourID, (progress) =>
+      this.setState({ progress: progress })
+    );
+    this.props.loadTours();
+
+    if (!result.ok) {
+      // setUploadVisible(false);
+      return Alert.alert(result.data.message, result.data.reason, [
+        { text: "OK", onPress: () => console.log("") },
+        // { text: "No", onPress: () => console.log("No") },
+      ]);
+    } else {
+      Alert.alert("Successfully subscribed to tour!", "yeah man", [
+        { text: "OK", onPress: () => console.log("") },
+        // { text: "No", onPress: () => console.log("No") },
+      ]);
+    }
+  };
+
   render() {
-    const { description, fontSize, height, title, url, userID, width } =
-      this.props;
+    const {
+      description,
+      fontSize,
+      height,
+      subscribedTours,
+      title,
+      tourID,
+      url,
+      user,
+      userID,
+      width,
+    } = this.props;
 
     return (
       <View
@@ -168,6 +229,17 @@ export default class CarouselCard extends Component {
         ) : (
           <AppButton title={"Unlock"} onPress={this.handleUnlock} />
         )}
+        {userID === user.sub && (
+          <AppButton title={"Delete"} onPress={this.handleDelete} />
+        )}
+        {tourID.length > 0 &&
+          (subscribedTours.find(
+            (subscribedTour) => subscribedTour.ID === tourID
+          ) ? (
+            <AppText>{"You are already subscribed to this tour"}</AppText>
+          ) : (
+            <AppButton title={"Subscribe"} onPress={this.handleSubscribe} />
+          ))}
         {/* <PanelBox
               fontSize={fontSize}
               verseContent={description}

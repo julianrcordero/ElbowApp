@@ -1,4 +1,6 @@
+import useLocation from "../hooks/useLocation";
 import client from "./client";
+import * as Location from "expo-location";
 
 const getPosts = () => client.get("/posts");
 const getLocker = () => client.get("locker");
@@ -6,7 +8,8 @@ const getLocker = () => client.get("locker");
 const searchPosts = (region, onUploadProgress) => {
   let lat = region.latitude;
   let lon = region.longitude;
-  return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=50000", {
+  // console.log("searching from my location:", region);
+  return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=200000", {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
   });
@@ -18,17 +21,37 @@ const getTourPoints = (tourID, onUploadProgress) => {
   });
 };
 
-const unlockListing = (id, location, onUploadProgress) => {
+const options = {
+  accuracy: Location.Accuracy.Highest,
+};
+
+const unlockListing = async (id, location, onUploadProgress) => {
+  const { granted } = await Location.requestPermissionsAsync(options);
+  if (!granted) return;
+  const {
+    coords: { latitude, longitude },
+  } = await Location.getCurrentPositionAsync();
+
+  console.log("location:", latitude, longitude);
+  // setLocation(location);
+
   const requestBody = {
     postID: id,
-    // lat: location.lat,
-    // lon: location.lon,
-    lat: 34.157112274394436,
-    lon: -118.43738625822279,
+    lat: latitude,
+    lon: longitude,
+    // lat: 34.157112274394436,
+    // lon: -118.43738625822279,
     distance: 20,
   };
 
   return client.post("unlock", requestBody, {
+    onUploadProgress: (progress) =>
+      onUploadProgress(progress.loaded / progress.total),
+  });
+};
+
+const deleteListing = (id, onUploadProgress) => {
+  return client.delete("post/" + id, {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
   });
@@ -43,13 +66,13 @@ const addPost = (post, onUploadProgress) => {
     dataType: "photo",
     mimeType: post.category.value,
     hint: post.description,
-    category: post.category.label,
+    category: post.category.title,
     lat: post.location.latitude,
     long: post.location.longitude,
     completed: true,
     public: true,
     userIDs: [],
-    tourID: post.tour.ID,
+    tourID: post.tour?.ID,
   };
 
   //Parent > Child
@@ -83,9 +106,9 @@ const addTour = (post, onUploadProgress) => {
   });
 };
 
-const subscribeTour = (tour, onUploadProgress) => {
+const subscribeTour = (tourID, onUploadProgress) => {
   const newPost = {
-    tourID: tour.id,
+    tourID: tourID,
   };
 
   //Parent > Child
@@ -113,6 +136,7 @@ const getUser = (userID, onUploadProgress) => {
 export default {
   addPost,
   addTour,
+  deleteListing,
   getCreatedTours,
   getLocker,
   getPosts,

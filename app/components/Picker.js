@@ -17,7 +17,6 @@ function AppPicker({
   icon,
   items,
   loadData,
-  numberOfColumns = 1,
   onSelectItem,
   PickerItemComponent = PickerItem,
   placeholder,
@@ -32,6 +31,20 @@ function AppPicker({
     }
     setModalVisible(true);
   };
+
+  const renderItem = ({ item }) => (
+    // <AppText style={{ backgroundColor: "green" }}>{item.title}</AppText>
+    <PickerItemComponent
+      item={item}
+      label={item.title}
+      onPress={() => {
+        setModalVisible(false);
+        onSelectItem(item);
+      }}
+    />
+  );
+
+  const keyExtractor = (item) => item.ID;
 
   return (
     <>
@@ -63,18 +76,9 @@ function AppPicker({
           <Button title="Close" onPress={() => setModalVisible(false)} />
           <FlatList
             data={items}
-            keyExtractor={(item) => item.ID}
-            numColumns={numberOfColumns}
-            renderItem={({ item }) => (
-              <PickerItemComponent
-                item={item}
-                label={item.title}
-                onPress={() => {
-                  setModalVisible(false);
-                  onSelectItem(item);
-                }}
-              />
-            )}
+            keyExtractor={keyExtractor}
+            // numColumns={numberOfColumns}
+            renderItem={renderItem}
           />
         </Screen>
       </Modal>
