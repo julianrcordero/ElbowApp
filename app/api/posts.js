@@ -1,4 +1,3 @@
-import useLocation from "../hooks/useLocation";
 import client from "./client";
 import * as Location from "expo-location";
 
@@ -8,7 +7,6 @@ const getLocker = () => client.get("locker");
 const searchPosts = (region, onUploadProgress) => {
   let lat = region.latitude;
   let lon = region.longitude;
-  // console.log("searching from my location:", region);
   return client.get("/search?lat=" + lat + "&lon=" + lon + "&distance=200000", {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),
@@ -26,14 +24,12 @@ const options = {
 };
 
 const unlockListing = async (id, location, onUploadProgress) => {
-  const { granted } = await Location.requestPermissionsAsync(options);
-  if (!granted) return;
   const {
     coords: { latitude, longitude },
-  } = await Location.getCurrentPositionAsync();
+  } = await Location.getCurrentPositionAsync(options);
 
-  console.log("location:", latitude, longitude);
   // setLocation(location);
+  console.log("unlocking from:", latitude, longitude);
 
   const requestBody = {
     postID: id,
@@ -57,18 +53,22 @@ const deleteListing = (id, onUploadProgress) => {
   });
 };
 
-const addPost = (post, onUploadProgress) => {
-  if (!post.location) {
-    return alert("You must enable location to post");
-  }
+const addPost = async (post, onUploadProgress) => {
+  // if (!post.location) {
+  //   return alert("You must enable location to post");
+  // }
+
+  const {
+    coords: { latitude, longitude },
+  } = await Location.getCurrentPositionAsync(options);
 
   const newPost = {
     dataType: "photo",
     mimeType: post.category.value,
     hint: post.description,
     category: post.category.title,
-    lat: post.location.latitude,
-    long: post.location.longitude,
+    lat: latitude, //post.location.latitude,
+    long: longitude, //post.location.longitude,
     completed: true,
     public: true,
     userIDs: [],

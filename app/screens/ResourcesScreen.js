@@ -58,7 +58,7 @@ function ResourcesScreen(props) {
             type={item.type}
             description={item.description}
             image={item.image}
-            onPress={() => console.log("Message selected", item)}
+            onPress={() => {}}
             renderRightActions={() => (
               <ListItemDeleteAction onPress={() => handleDelete(item)} />
             )}

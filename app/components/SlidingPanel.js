@@ -15,7 +15,6 @@
           }}
           height={top}
           onBottomReached={() => {
-            console.log("reached bottom");
             setPanelLow(false);
             // setTimeout(() => setPanelLoading(true), 0);
           }}
@@ -27,7 +26,6 @@
           }}
           onMomentumDragEnd={(position) => {
             InteractionManager.runAfterInteractions(() => {
-              console.log(position);
               if (position == low) {
                 setPanelLow(true);
               }

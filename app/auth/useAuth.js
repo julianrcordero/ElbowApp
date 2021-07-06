@@ -24,9 +24,7 @@ export default useAuth = () => {
 
     try {
       await Auth.signOut();
-    } catch (error) {
-      console.log("error signing out: ", error);
-    }
+    } catch (error) {}
 
     setUser(null);
     authStorage.removeIdToken();

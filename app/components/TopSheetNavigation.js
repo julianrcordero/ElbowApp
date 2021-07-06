@@ -44,7 +44,7 @@ export default class TopSheetNavigation extends PureComponent {
         title={item.title}
         description={item.description}
         image={item.image}
-        onPress={() => console.log("Message selected", item)}
+        onPress={() => {}}
         renderRightActions={() => (
           <ListItemDeleteAction onPress={() => handleDelete(item)} />
         )}

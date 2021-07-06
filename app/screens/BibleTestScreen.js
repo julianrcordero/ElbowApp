@@ -93,7 +93,6 @@
 //   }
 
 //   handleOnPressItem() {
-//     return console.log("handleOnPressItem");
 //   }
 
 //   render() {

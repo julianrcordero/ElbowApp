@@ -12,7 +12,6 @@ import useNotifications from "../hooks/useNotifications";
 import Animated from "react-native-reanimated";
 import MenuButton from "../components/MenuButton";
 import colors from "../config/colors";
-import useLocation from "../hooks/useLocation";
 import postsApi from "../api/posts";
 import useApi from "../hooks/useApi";
 import NewListingButton from "./NewListingButton";

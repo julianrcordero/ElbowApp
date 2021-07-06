@@ -28,7 +28,6 @@ function LoginScreen({ navigation }) {
   const handleSubmit = async ({ email, password }) => {
     try {
       const user = await Auth.signIn(email, password);
-      console.log(user.signInUserSession.idToken.jwtToken);
       setLoginFailed(false);
 
       auth.logIn(
@@ -36,11 +35,9 @@ function LoginScreen({ navigation }) {
         user.signInUserSession.accessToken.jwtToken
       );
     } catch (error) {
-      console.log("error signing in:", error);
       setLoginFailed(true);
     }
     // const result = await authApi.signin(email, password);
-    // console.log(result);
 
     // if (!result.ok) {
     //   if (result.data) setLoginFailed(result.data.message);
@@ -53,7 +50,6 @@ function LoginScreen({ navigation }) {
     // } else {
     //   setLoginFailed(false);
 
-    //   console.log(result);
     //   auth.logIn(
     //     result.data.body.data.AuthenticationResult.IdToken,
     //     result.data.body.data.AuthenticationResult.AccessToken
@@ -71,8 +67,8 @@ function LoginScreen({ navigation }) {
   //     return setLoginFailed(true);
   //   } else if (result.data.statusCode !== 200) {
   //     Alert.alert("Error", result.data.body.message, [
-  //       { text: "OK", onPress: () => console.log("") },
-  //       // { text: "No", onPress: () => console.log("No") },
+  //       { text: "OK", onPress: () => {}},
+  //       // { text: "No", onPress: () => {} },
   //     ]);
   //   } else {
   //     setLoginFailed(false);
@@ -170,17 +166,13 @@ export default LoginScreen;
 //     .then((res) => res.json())
 //     .then((data) => {
 //       if (data.statusCode == 200) {
-//         console.log(data.body.message);
-//         console.log(data.body.data.AuthenticationResult.AccessToken);
 //         navigation.navigate("Account", {
 //           AccessToken: data.body.data.AuthenticationResult.AccessToken,
 //         });
 //       } else {
 //         const message = data.body.message;
-//         console.log(message);
 //       }
 //     })
 //     .catch((e) => {
-//       console.log(e);
 //     });
 // }}

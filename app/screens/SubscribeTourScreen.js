@@ -12,7 +12,6 @@ import {
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import postsApi from "../api/posts";
-import useLocation from "../hooks/useLocation";
 import UploadScreen from "./UploadScreen";
 import colors from "../config/colors";
 
@@ -41,7 +40,6 @@ export default function SubscribeTourScreen({
   map,
   title,
 }) {
-  const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -58,7 +56,6 @@ export default function SubscribeTourScreen({
       return alert(result.data);
     } else {
       const resultData = result.data;
-      console.log(resultData);
       //   const postLink = resultData.fileURL;
       //   uploadPhoto(postLink, post);
 

@@ -8,7 +8,6 @@ function refreshToken() {
     const currentSession = Auth.currentSession();
 
     cognitoUser.refreshSession(currentSession.refreshToken, (err, session) => {
-      // console.log("REFRESHING TOKEN", err, session);
       const { idToken, refreshToken, accessToken } = session;
       // do whatever you want to do now :)
       return new Promise(res, (rej) => {
@@ -22,9 +21,7 @@ function refreshToken() {
         res(data);
       });
     });
-  } catch (e) {
-    console.log("Unable to refresh Token", e);
-  }
+  } catch (e) {}
 }
 
 const getAccessJwtToken = async () => {

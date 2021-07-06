@@ -15,7 +15,6 @@ import AppText from "./Text";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import PostContentScreen from "../screens/PostContentScreen";
 import AppButton from "./Button";
-import useLocation from "../hooks/useLocation";
 import { useState } from "react";
 import postsApi from "../api/posts";
 
@@ -26,16 +25,12 @@ export default class CarouselCard extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.description !== nextProps.description) {
-      // console.log("description is different");
       return true;
     } else if (this.props.title !== nextProps.title) {
-      // console.log("title is different");
       return true;
     } else if (this.props.url !== nextProps.url) {
-      // console.log("url is different", this.props.description);
       return true;
     } else if (this.props.location !== nextProps.location) {
-      console.log("location is different", this.props.location);
       return true;
     }
     return false;
@@ -53,9 +48,7 @@ export default class CarouselCard extends Component {
   handleUnlock = async () => {
     this.setState({ progress: 0, uploadVisible: true });
 
-    console.log("unlocking this:", this.props.id);
     this.props.getCurrentLocation();
-    // console.log("attempting to unlock from", this.props.location);
 
     const result = await postsApi.unlockListing(
       this.props.id,
@@ -63,17 +56,15 @@ export default class CarouselCard extends Component {
       // { lat: 34.26626838473331, lon: -118.3768829221343 },
       (progress) => this.setState({ progress: progress })
     );
-    // console.log(result);
 
     if (!result.ok) {
       // setUploadVisible(false);
       return Alert.alert(result.data.message, result.data.reason, [
-        { text: "OK", onPress: () => console.log("") },
-        // { text: "No", onPress: () => console.log("No") },
+        { text: "OK", onPress: () => {} },
+        // { text: "No", onPress: () => {} },
       ]);
     } else {
       const resultData = result.data;
-      // console.log(("resultData", resultData));
       this.props.map.current?.showLockerPosts(); //.current?.setState({tourFilteredList: })
 
       const interactionPromise = InteractionManager.runAfterInteractions(() => {
@@ -97,18 +88,15 @@ export default class CarouselCard extends Component {
   handleDelete = async () => {
     // this.setState({ progress: 0, uploadVisible: true });
 
-    console.log("deleting this:", this.props.id);
-    // console.log("attempting to unlock from", this.props.location);
     const result = await postsApi.deleteListing(this.props.id, (progress) =>
       this.setState({ progress: progress })
     );
-    console.log(result);
 
     if (!result.ok) {
       // setUploadVisible(false);
       return Alert.alert(result.data.message, result.data.reason, [
-        { text: "OK", onPress: () => console.log("") },
-        // { text: "No", onPress: () => console.log("No") },
+        { text: "OK", onPress: () => {} },
+        // { text: "No", onPress: () => {} },
       ]);
     } else {
       let myMap = this.props.map.current;
@@ -124,8 +112,6 @@ export default class CarouselCard extends Component {
   handleSubscribe = async () => {
     // this.setState({ progress: 0, uploadVisible: true });
 
-    console.log("subscribing to this:", this.props.tourID);
-    // console.log("attempting to unlock from", this.props.location);
     const result = await postsApi.subscribeTour(this.props.tourID, (progress) =>
       this.setState({ progress: progress })
     );
@@ -134,13 +120,13 @@ export default class CarouselCard extends Component {
     if (!result.ok) {
       // setUploadVisible(false);
       return Alert.alert(result.data.message, result.data.reason, [
-        { text: "OK", onPress: () => console.log("") },
-        // { text: "No", onPress: () => console.log("No") },
+        { text: "OK", onPress: () => {} },
+        // { text: "No", onPress: () => {} },
       ]);
     } else {
       Alert.alert("Successfully subscribed to tour!", "yeah man", [
-        { text: "OK", onPress: () => console.log("") },
-        // { text: "No", onPress: () => console.log("No") },
+        { text: "OK", onPress: () => {} },
+        // { text: "No", onPress: () => {} },
       ]);
     }
   };
@@ -198,7 +184,6 @@ export default class CarouselCard extends Component {
             {/* <AppButton
                   title={"Edit"}
                   onPress={() => {
-                    console.log("Edit clicked");
                     this.setState({ editing: true });
                   }}
                 /> */}

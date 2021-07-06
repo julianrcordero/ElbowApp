@@ -58,7 +58,6 @@ export default function PostTourScreen({
       return alert("You are not authorized to upload");
     } else {
       const resultData = result.data;
-      console.log(resultData);
       //   const postLink = resultData.fileURL;
       //   uploadPhoto(postLink, post);
 

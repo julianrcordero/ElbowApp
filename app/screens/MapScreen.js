@@ -28,10 +28,10 @@ export default class MapScreen extends Component {
 
   state = {
     region: {
-      latitude: 34.2709266,
-      longitude: -118.5139665,
-      latitudeDelta: 0.2,
-      longitudeDelta: 0.0421,
+      latitude: 34.0195,
+      longitude: -118.4912,
+      latitudeDelta: 0,
+      longitudeDelta: 0,
     },
     initialMarkers: [],
     tourFilteredList: [],
@@ -44,26 +44,23 @@ export default class MapScreen extends Component {
 
   componentDidMount() {
     this.getCurrentLocation();
-    this.moveCamera(this.state.region.latitude, this.state.region.longitude);
 
     this.loadLocker();
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.user !== this.props.user) {
-  //     console.log("map updated with new user!");
-  //     this.loadLocker();
-  //   }
-  // }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.region !== this.state.region) {
+      console.log("updated region");
+    }
+  }
 
   async loadLocker() {
     if (this.props.user) {
       const locker = await postsApi.getLocker();
 
-      // console.log("MY LOCKER:", locker.data);
       let setToThis = Array.isArray(locker.data.posts)
         ? locker.data.posts
         : locker.data[1].posts; //for some reason????
-      // console.log("locker array", setToThis);
       if (setToThis) this.setState({ locker: setToThis, lockerLoaded: true });
     }
   }
@@ -77,11 +74,14 @@ export default class MapScreen extends Component {
           latitudeDelta: 0.2,
           longitudeDelta: 0.0421,
         };
-        this.setState({
-          region: region,
-        });
+        this.setState(
+          {
+            region: region,
+          },
+          this.moveCamera(region.latitude, region.longitude)
+        );
       },
-      (error) => console.log(error),
+      (error) => {},
       {
         enableHighAccuracy: true,
         timeout: 20000,
@@ -124,13 +124,10 @@ export default class MapScreen extends Component {
   };
 
   scrollToPost = (marker) => {
-    // console.log(marker);
-    // console.log(this.props.map.current?.state.tourFilteredList.length);
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       let myIndex = this.props.map.current?.state.tourFilteredList.findIndex(
         (m) => m.id === marker.id
       );
-      // console.log("scroll to Index", myIndex);
 
       setTimeout(() => {
         this.props.carousel.current?.scrollToIndex({
@@ -148,7 +145,7 @@ export default class MapScreen extends Component {
 
     if (result.data.total === 0) {
       return Alert.alert("Sorry!", "You have not unlocked any posts yet", [
-        { text: "OK", onPress: () => console.log("") },
+        { text: "OK", onPress: () => {} },
       ]);
     }
     this.setMarkers(result, "limegreen");
@@ -174,6 +171,8 @@ export default class MapScreen extends Component {
       this.setState({ progress: progress })
     );
 
+    // console.log(result);
+
     this.setMarkers(result, "crimson");
     this.props.bottomSheetContent.current?.setState({
       filter: 0,
@@ -184,8 +183,8 @@ export default class MapScreen extends Component {
     if (!result.ok) {
       // setUploadVisible(false);
       return Alert.alert(result.data.message, result.data.reason, [
-        { text: "OK", onPress: () => console.log("") },
-        // { text: "No", onPress: () => console.log("No") },
+        { text: "OK", onPress: () => {} },
+        // { text: "No", onPress: () => {} },
       ]);
     } else {
       if (!result.error) {
@@ -198,9 +197,6 @@ export default class MapScreen extends Component {
             // if (!this.state.lockerLoaded) {
             this.loadLocker();
             // }
-            // console.log("current user:", this.props.user.sub);
-            // console.log("pre-filtered search list:", resultData.length);
-            // console.log(this.state.locker.length);
             resultData
               .filter(
                 (searchedPost) =>
@@ -244,16 +240,13 @@ export default class MapScreen extends Component {
             );
           }
         } else {
-          console.log(result.data);
         }
-        console.log("setting markers to", initialMarkers.length);
         if (initialMarkers.length === 0) {
           Alert.alert("Ain't nothing 'round heeAh ta see", "okah", [
-            { text: "OK", onPress: () => console.log("") },
-            // { text: "No", onPress: () => console.log("No") },
+            { text: "OK", onPress: () => {} },
+            // { text: "No", onPress: () => {} },
           ]);
         } else {
-          console.log("search markers filtered:", initialMarkers.length);
         }
 
         this.setState({
@@ -262,7 +255,6 @@ export default class MapScreen extends Component {
           markersColor: color,
         });
       } else {
-        console.log("getPostsApi.error: ", result.error);
       }
     }
   };
@@ -271,8 +263,16 @@ export default class MapScreen extends Component {
   mapStyle = { flex: 1 };
 
   onRegionChangeComplete = (region) => {
+    if (
+      region.latitude.toFixed(6) === this.state.region.latitude.toFixed(6) &&
+      region.longitude.toFixed(6) === this.state.region.longitude.toFixed(6)
+    ) {
+      return;
+    }
+
     // console.log(region);
-    this.setState({ region: region });
+    this.setState({ region });
+    // this.setState({ region: region });
   };
 
   render() {
@@ -305,7 +305,6 @@ export default class MapScreen extends Component {
               title={marker.description}
               description={marker.title}
               onPress={() => this.clickToMarker(marker)}
-              // onDragEnd={(e) => console.log(e.nativeEvent.coordinate)}
             />
           ))}
         </MapView>

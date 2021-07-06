@@ -15,9 +15,7 @@ export default useLocation = () => {
         accuracy: LocationAccuracy.Highest,
       });
       setLocation({ latitude, longitude });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const watchPosition = async () => {
@@ -28,10 +26,7 @@ export default useLocation = () => {
         coords: { latitude, longitude },
       } = await Location.watchPositionAsync();
       setLocation({ latitude, longitude });
-      console.log("location updated");
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

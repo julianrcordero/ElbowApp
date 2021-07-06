@@ -11,11 +11,8 @@ const store = async (key, value) => {
       timestamp: Date.now(),
     };
 
-    // console.log("storing this: ", item);
     await AsyncStorage.setItem(prefix + key, JSON.stringify(item));
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 const isExpired = (item) => {
@@ -26,8 +23,6 @@ const isExpired = (item) => {
 
 const get = async (key) => {
   try {
-    console.log(key);
-
     const value = await AsyncStorage.getItem(prefix + key);
 
     const item = JSON.parse(value);
@@ -41,9 +36,7 @@ const get = async (key) => {
     }
 
     return item.value;
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export default {

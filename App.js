@@ -3,7 +3,7 @@ import Amplify, { Auth } from "aws-amplify";
 import { amplifyConfig } from "./amplifyconfig";
 Amplify.configure(amplifyConfig);
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Dimensions, FlatList, View, Switch, Text } from "react-native";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
@@ -33,7 +33,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import TopSheetNavigation from "./app/components/TopSheetNavigation";
 import PostContentScreen from "./app/screens/PostContentScreen";
 import Carousel from "./app/components/Carousel";
-import useLocation from "./app/hooks/useLocation";
+import * as Location from "expo-location";
 const Stack = createStackNavigator();
 const { height, width } = Dimensions.get("window");
 
@@ -70,6 +70,16 @@ export default function App() {
   const snapToHalf = () => {
     bottomSheetRef.current?.snapTo(2);
   };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+    })();
+  }, []);
 
   // const renderAddPostHeader = () => (
   //   <View style={[styles.header, { backgroundColor: colors.light }]}>

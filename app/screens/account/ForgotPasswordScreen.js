@@ -32,7 +32,6 @@ function ForgotPasswordScreen({ navigation }) {
       if (result.data) setError(result.data.message);
       else {
         setError("An unexpected error occurred.");
-        console.log(result);
       }
       return;
     } else if (result.data.statusCode !== 200) {
@@ -96,7 +95,6 @@ const styles = StyleSheet.create({
 export default ForgotPasswordScreen;
 
 // (values) => {
-//   // console.log(values);
 //   fetch(
 //     "https://1scvbw6i67.execute-api.us-east-1.amazonaws.com/dev/forgot-password",
 //     {
@@ -117,10 +115,8 @@ export default ForgotPasswordScreen;
 //           email: values.email,
 //         });
 //       } else {
-//         console.log(data.body.message);
 //       }
 //     })
 //     .catch((e) => {
-//       console.log(e);
 //     });
 // }

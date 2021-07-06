@@ -46,7 +46,6 @@ function RegisterScreen({ navigation }) {
       if (result.data) setError(result.data.message);
       else {
         setError("An unexpected error occurred.");
-        console.log(result);
       }
       return;
     } else if (result.data.statusCode !== 200) {
@@ -140,7 +139,6 @@ const styles = StyleSheet.create({
 export default RegisterScreen;
 
 // (values) => {
-//   // console.log(values);
 //   fetch(
 //     "https://1scvbw6i67.execute-api.us-east-1.amazonaws.com/dev/signup",
 //     {
@@ -160,16 +158,13 @@ export default RegisterScreen;
 //     .then((res) => res.json())
 //     .then((data) => {
 //       if (data.statusCode == 200) {
-//         console.log(data.body.message);
 //         navigation.navigate("ConfirmRegister", {
 //           email: values.email,
 //           password: values.password,
 //         });
 //       } else {
-//         console.log(data.body.message);
 //       }
 //     })
 //     .catch((e) => {
-//       console.log(e);
 //     });
 // }

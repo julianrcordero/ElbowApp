@@ -627,7 +627,6 @@ class BooksListScreen extends PureComponent {
               // onToggle={
               // (item, index, isExpanded) =>
               // this.setState({ leftOpen: isExpanded })
-              // console.log(item, index, isExpanded)
               // }
             />
           </View>
@@ -638,10 +637,8 @@ class BooksListScreen extends PureComponent {
               body={_renderContent}
               keyExtractor={(item) => `${item.value}`}
               showsVerticalScrollIndicator={false}
-              onToggle={
-                (item, index, isExpanded) =>
-                  this.setState({ rightOpen: isExpanded })
-                // console.log(item, index, isExpanded)
+              onToggle={(item, index, isExpanded) =>
+                this.setState({ rightOpen: isExpanded })
               }
               // contentContainerStyle={{ alignSelf: "flex-end" }}
             />

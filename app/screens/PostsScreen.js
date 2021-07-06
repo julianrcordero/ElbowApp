@@ -20,7 +20,6 @@ function PostsScreen({ navigation }) {
 
   useEffect(() => {
     getPostsApi.request();
-    console.log(getPostsApi.data.posts);
   }, []);
 
   return (

@@ -44,18 +44,12 @@ function PostContentScreen({ bottomSheetRef, map }) {
     getCreatedToursApi.request();
   }, []);
 
-  const location = useLocation();
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const handleSubmit = async (post, { resetForm }) => {
     setProgress(0);
     setUploadVisible(true);
-
-    // const location = {
-    //   latitude: Number(post.latitude),
-    //   longitude: Number(post.longitude),
-    // };
 
     const result = await postsApi.addPost({ ...post, location }, (progress) =>
       setProgress(progress)

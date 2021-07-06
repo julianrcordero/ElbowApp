@@ -30,7 +30,6 @@ function ListingDetailsScreen({ route }) {
     const response = await postsApi.getUser(listing.userID, (progress) =>
       setProgress(progress)
     );
-    console.log(response.data);
 
     if (response.ok) setUser(response.data.email);
     // ...

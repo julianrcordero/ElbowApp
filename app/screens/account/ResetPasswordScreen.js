@@ -42,7 +42,6 @@ function ResetPasswordScreen({ route, navigation }) {
       if (result.data) setError(result.data.message);
       else {
         setError("An unexpected error occurred.");
-        console.log(result);
       }
       return;
     } else if (result.data.statusCode !== 200) {
@@ -129,7 +128,6 @@ const styles = StyleSheet.create({
 export default ResetPasswordScreen;
 
 // (values) => {
-//   // console.log(values);
 //   fetch(
 //     "https://1scvbw6i67.execute-api.us-east-1.amazonaws.com/dev/confirm-forgot-password",
 //     {
@@ -148,7 +146,6 @@ export default ResetPasswordScreen;
 //     .then((res) => res.json())
 //     .then((data) => {
 //       if (data.statusCode == 200) {
-//         console.log(data.body.message);
 //         fetch(
 //           "https://1scvbw6i67.execute-api.us-east-1.amazonaws.com/dev/signin",
 //           {
@@ -166,23 +163,18 @@ export default ResetPasswordScreen;
 //           .then((res) => res.json())
 //           .then((data) => {
 //             if (data.statusCode == 200) {
-//               console.log(data.body.message);
 //               navigation.navigate("Account", {
 //                 AccessToken:
 //                   data.body.data.AuthenticationResult.AccessToken,
 //               });
 //             } else {
-//               console.log(data);
 //             }
 //           })
 //           .catch((e) => {
-//             console.log(e);
 //           });
 //       } else {
-//         console.log(data.body.message);
 //       }
 //     })
 //     .catch((e) => {
-//       console.log(e);
 //     });
 // }
