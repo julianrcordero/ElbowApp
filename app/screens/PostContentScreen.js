@@ -48,55 +48,52 @@ function PostContentScreen({ bottomSheetRef, map }) {
   const [progress, setProgress] = useState(0);
 
   const handleSubmit = async (post, { resetForm }) => {
-    setProgress(0);
-    setUploadVisible(true);
-
-    const result = await postsApi.addPost({ ...post, location }, (progress) =>
-      setProgress(progress)
-    );
-
-    if (!result.ok) {
-      // setUploadVisible(false);
-      return alert("You are not authorized to upload");
-    } else {
-      const resultData = result.data;
-
-      const postLink = resultData.fileURL;
-      uploadPhoto(postLink, post);
-
-      map.current?.setState({
-        markerList: [
-          ...map.current?.state.markerList,
-          {
-            id: resultData.id,
-            latitude: resultData.location.lat,
-            longitude: resultData.location.lon,
-            title: resultData.category,
-            description: resultData.hint,
-            url: resultData.fileURL,
-            tourID: resultData.tourID,
-          },
-        ],
-        tourFilteredList: [
-          ...map.current?.state.markerList,
-          {
-            id: resultData.id,
-            latitude: resultData.location.lat,
-            longitude: resultData.location.lon,
-            title: resultData.category,
-            description: resultData.hint,
-            url: resultData.fileURL,
-            tourID: resultData.tourID,
-          },
-        ],
-      });
-    }
-
-    resetForm();
-
     bottomSheetRef.current?.snapTo(2);
+    // setProgress(0);
+    // setUploadVisible(true);
 
-    // verseCard.setState({ editing: false });
+    // const result = await postsApi.addPost({ ...post }, (progress) =>
+    //   setProgress(progress)
+    // );
+
+    // if (!result.ok) {
+    //   // setUploadVisible(false);
+    //   return alert("You are not authorized to upload");
+    // } else {
+    //   const resultData = result.data;
+
+    //   const postLink = resultData.fileURL;
+    //   uploadPhoto(postLink, post);
+
+    //   map.current?.setState({
+    //     markerList: [
+    //       ...map.current?.state.markerList,
+    //       {
+    //         id: resultData.id,
+    //         latitude: resultData.location.lat,
+    //         longitude: resultData.location.lon,
+    //         title: resultData.category,
+    //         description: resultData.hint,
+    //         url: resultData.fileURL,
+    //         tourID: resultData.tourID,
+    //       },
+    //     ],
+    //     tourFilteredList: [
+    //       ...map.current?.state.markerList,
+    //       {
+    //         id: resultData.id,
+    //         latitude: resultData.location.lat,
+    //         longitude: resultData.location.lon,
+    //         title: resultData.category,
+    //         description: resultData.hint,
+    //         url: resultData.fileURL,
+    //         tourID: resultData.tourID,
+    //       },
+    //     ],
+    //   });
+    // }
+
+    // resetForm();
   };
 
   const uploadPhoto = async (postLink, post) => {

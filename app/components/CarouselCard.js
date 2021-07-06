@@ -30,17 +30,11 @@ export default class CarouselCard extends Component {
       return true;
     } else if (this.props.url !== nextProps.url) {
       return true;
-    } else if (this.props.location !== nextProps.location) {
-      return true;
     }
     return false;
   }
 
   state = {
-    location: {
-      latitude: 34.2709266,
-      longitude: -118.5139665,
-    },
     progress: 0,
     uploadVisible: false,
   };
@@ -48,11 +42,8 @@ export default class CarouselCard extends Component {
   handleUnlock = async () => {
     this.setState({ progress: 0, uploadVisible: true });
 
-    this.props.getCurrentLocation();
-
     const result = await postsApi.unlockListing(
       this.props.id,
-      this.props.location,
       // { lat: 34.26626838473331, lon: -118.3768829221343 },
       (progress) => this.setState({ progress: progress })
     );

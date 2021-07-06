@@ -14,7 +14,6 @@ export default class Carousel extends Component {
   }
 
   componentDidMount() {
-    this.getCurrentLocation();
     this.loadTours();
   }
 
@@ -40,33 +39,9 @@ export default class Carousel extends Component {
     });
   }
 
-  async getCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        let location = {
-          lat: parseFloat(position.coords.latitude),
-          lon: parseFloat(position.coords.longitude),
-        };
-        this.setState({
-          location: location,
-        });
-      },
-      (error) => {},
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
-      }
-    );
-  }
-
   state = {
     addPostMode: true,
     createdTours: [],
-    location: {
-      latitude: 34.2709266,
-      longitude: -118.5139665,
-    },
     locker: [],
     progress: 0,
     tour: null,
@@ -119,14 +94,12 @@ export default class Carousel extends Component {
         crossrefSize={this.props.crossrefSize}
         description={item.description}
         fontSize={this.props.fontSize}
-        getCurrentLocation={this.getCurrentLocation}
         height={
           this.props.top - this.props.bottomSheetHeaderHeight
           // - getBottomSpace()
         }
         id={item.id}
         bottomSheetRef={this.props.bottomSheetRef}
-        location={this.state.location}
         loadTours={this.loadTours}
         map={this.props.map}
         subscribedTours={this.state.subscribedTours}

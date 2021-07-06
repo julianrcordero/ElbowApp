@@ -23,7 +23,7 @@ const options = {
   accuracy: Location.Accuracy.Highest,
 };
 
-const unlockListing = async (id, location, onUploadProgress) => {
+const unlockListing = async (id, onUploadProgress) => {
   const {
     coords: { latitude, longitude },
   } = await Location.getCurrentPositionAsync(options);

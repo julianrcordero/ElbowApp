@@ -75,9 +75,7 @@ export default class MapScreen extends Component {
           longitudeDelta: 0.0421,
         };
         this.setState(
-          {
-            region: region,
-          },
+          { region },
           this.moveCamera(region.latitude, region.longitude)
         );
       },
@@ -91,18 +89,16 @@ export default class MapScreen extends Component {
   }
 
   moveCamera = (latitude, longitude, zoom) => {
-    if (this.props.mapView.current) {
-      this.props.mapView.current?.animateCamera(
-        {
-          center: {
-            latitude: latitude,
-            longitude: longitude,
-          },
-          zoom: zoom,
+    this.props.mapView.current?.animateCamera(
+      {
+        center: {
+          latitude: latitude,
+          longitude: longitude,
         },
-        2000
-      );
-    }
+        zoom: zoom,
+      },
+      2000
+    );
   };
 
   clickToMarker = (marker) => {
