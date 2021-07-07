@@ -49,6 +49,9 @@ function PostContentScreen({ bottomSheetRef, map }) {
 
   const handleSubmit = async (post, { resetForm }) => {
     bottomSheetRef.current?.snapTo(2);
+
+    console.log("handleSubmit");
+    map.current?.setState({ placeMarkerMode: true });
     // setProgress(0);
     // setUploadVisible(true);
 

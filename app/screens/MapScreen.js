@@ -19,7 +19,7 @@ import MapView, {
 } from "react-native-maps";
 import colors from "../config/colors";
 import ActivityIndicator from "../components/ActivityIndicator";
-import postsApi from "../api/posts"; //"../api/posts";
+import postsApi from "../api/posts"; //"../api/posts"
 
 export default class MapScreen extends Component {
   constructor(props) {
@@ -39,10 +39,14 @@ export default class MapScreen extends Component {
     lockerLoaded: false,
     markerList: [],
     markersColor: "dodgerblue",
+    placeMarkerMode: false,
+    placeMarkerCoordinate: { latitude: 0, longitude: 0 },
     progress: 0,
   };
 
   componentDidMount() {
+    this.setState({ placeMarkerMode: false });
+
     this.getCurrentLocation();
 
     this.loadLocker();
@@ -51,6 +55,8 @@ export default class MapScreen extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.region !== this.state.region) {
       console.log("updated region");
+    } else if (prevState.placeMarkerMode !== this.state.placeMarkerMode) {
+      console.log("placeMarkerMode:", this.state.placeMarkerMode);
     }
   }
 
@@ -289,20 +295,37 @@ export default class MapScreen extends Component {
           showsUserLocation
           zoomEnabled
         >
-          {this.state.tourFilteredList.map((marker) => (
+          {this.state.placeMarkerMode === true ? (
             <Marker
-              // draggable
-              key={marker.id}
-              pinColor={this.state.markersColor}
+              draggable
+              pinColor={"green"}
               coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
+                latitude: this.state.region.latitude,
+                longitude: this.state.region.longitude,
               }}
-              title={marker.description}
-              description={marker.title}
-              onPress={() => this.clickToMarker(marker)}
+              onDragEnd={(e) => {
+                console.log(e.nativeEvent.coordinate);
+                this.setState({
+                  placeMarkerCoordinate: e.nativeEvent.coordinate,
+                });
+              }}
             />
-          ))}
+          ) : (
+            this.state.tourFilteredList.map((marker) => (
+              <Marker
+                // draggable
+                key={marker.id}
+                pinColor={this.state.markersColor}
+                coordinate={{
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                }}
+                title={marker.description}
+                description={marker.title}
+                onPress={() => this.clickToMarker(marker)}
+              />
+            ))
+          )}
         </MapView>
         <ActivityIndicator visible={getPostsApi.loading} />
         <View style={styles.overlay}>
