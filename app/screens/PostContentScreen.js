@@ -51,7 +51,21 @@ function PostContentScreen({ bottomSheetRef, map }) {
     bottomSheetRef.current?.snapTo(2);
 
     console.log("handleSubmit");
-    map.current?.setState({ placeMarkerMode: true });
+    map.current?.setState((state) => {
+      return {
+        placeMarkerMode: true,
+        placeMarkerCoordinate: {
+          latitude: state.myLocation.latitude,
+          longitude: state.myLocation.longitude,
+        },
+        region: {
+          latitude: state.myLocation.latitude,
+          longitude: state.myLocation.longitude,
+          latitudeDelta: 0,
+          longitudeDelta: 0,
+        },
+      };
+    });
     // setProgress(0);
     // setUploadVisible(true);
 

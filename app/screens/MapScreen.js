@@ -27,18 +27,19 @@ export default class MapScreen extends Component {
   }
 
   state = {
-    region: {
-      latitude: 34.0195,
-      longitude: -118.4912,
-      latitudeDelta: 0,
-      longitudeDelta: 0,
-    },
+    region: null,
     initialMarkers: [],
     tourFilteredList: [],
     locker: [],
     lockerLoaded: false,
     markerList: [],
     markersColor: "dodgerblue",
+    myLocation: {
+      latitude: 34.0195,
+      longitude: -118.4912,
+      latitudeDelta: 0,
+      longitudeDelta: 0,
+    },
     placeMarkerMode: false,
     placeMarkerCoordinate: { latitude: 0, longitude: 0 },
     progress: 0,
@@ -47,7 +48,7 @@ export default class MapScreen extends Component {
   componentDidMount() {
     this.setState({ placeMarkerMode: false });
 
-    this.getCurrentLocation();
+    // this.getCurrentLocation();
 
     this.loadLocker();
   }
@@ -57,6 +58,26 @@ export default class MapScreen extends Component {
       console.log("updated region");
     } else if (prevState.placeMarkerMode !== this.state.placeMarkerMode) {
       console.log("placeMarkerMode:", this.state.placeMarkerMode);
+    } else if (prevState.myLocation !== this.state.myLocation) {
+      console.log(
+        "my location:",
+        this.state.myLocation.latitude,
+        this.state.myLocation.longitude
+      );
+
+      if (this.state.region === null) {
+        this.setState(
+          {
+            region: {
+              latitude: this.state.myLocation.latitude,
+              longitude: this.state.myLocation.longitude,
+              latitudeDelta: 0.2,
+              longitudeDelta: 0.0421,
+            },
+          },
+          console.log("region set to myLocation")
+        );
+      }
     }
   }
 
@@ -69,29 +90,6 @@ export default class MapScreen extends Component {
         : locker.data[1].posts; //for some reason????
       if (setToThis) this.setState({ locker: setToThis, lockerLoaded: true });
     }
-  }
-
-  async getCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        let region = {
-          latitude: parseFloat(position.coords.latitude),
-          longitude: parseFloat(position.coords.longitude),
-          latitudeDelta: 0.2,
-          longitudeDelta: 0.0421,
-        };
-        this.setState(
-          { region },
-          this.moveCamera(region.latitude, region.longitude)
-        );
-      },
-      (error) => {},
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
-      }
-    );
   }
 
   moveCamera = (latitude, longitude, zoom) => {
@@ -272,9 +270,27 @@ export default class MapScreen extends Component {
       return;
     }
 
-    // console.log(region);
     this.setState({ region });
-    // this.setState({ region: region });
+  };
+
+  onUserLocationChange = (event) => {
+    let myCoordinate = event.nativeEvent.coordinate;
+
+    if (
+      myCoordinate.latitude.toFixed(10) ===
+        this.state.myLocation.latitude.toFixed(10) &&
+      myCoordinate.longitude.toFixed(10) ===
+        this.state.myLocation.longitude.toFixed(10)
+    ) {
+      return;
+    }
+
+    this.setState(
+      {
+        myLocation: myCoordinate,
+      }
+      // this.moveCamera(myCoordinate.latitude, myCoordinate.longitude)
+    );
   };
 
   render() {
@@ -288,6 +304,7 @@ export default class MapScreen extends Component {
           ref={mapView}
           style={this.mapStyle}
           region={this.state.region}
+          onUserLocationChange={this.onUserLocationChange}
           // onMapReady={this.goToInitialLocation}
           onRegionChangeComplete={this.onRegionChangeComplete}
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
@@ -299,10 +316,7 @@ export default class MapScreen extends Component {
             <Marker
               draggable
               pinColor={"green"}
-              coordinate={{
-                latitude: this.state.region.latitude,
-                longitude: this.state.region.longitude,
-              }}
+              coordinate={this.state.placeMarkerCoordinate}
               onDragEnd={(e) => {
                 console.log(e.nativeEvent.coordinate);
                 this.setState({
