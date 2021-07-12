@@ -15,6 +15,7 @@ import postsApi from "../api/posts";
 import useLocation from "../hooks/useLocation";
 import UploadScreen from "./UploadScreen";
 import colors from "../config/colors";
+import AppButton from "../components/Button";
 
 const validationSchema = Yup.object().shape({
   // title: Yup.string().required().min(1).label("Title"),
@@ -47,10 +48,9 @@ function PostContentScreen({ bottomSheetRef, map }) {
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const handleSubmit = async (post, { resetForm }) => {
+  const setMarker = () => {
     bottomSheetRef.current?.snapTo(2);
 
-    console.log("handleSubmit");
     map.current?.setState((state) => {
       return {
         placeMarkerMode: true,
@@ -66,51 +66,53 @@ function PostContentScreen({ bottomSheetRef, map }) {
         },
       };
     });
-    // setProgress(0);
-    // setUploadVisible(true);
+  };
 
-    // const result = await postsApi.addPost({ ...post }, (progress) =>
-    //   setProgress(progress)
-    // );
+  const handleSubmit = async (post, { resetForm }) => {
+    setProgress(0);
+    setUploadVisible(true);
 
-    // if (!result.ok) {
-    //   // setUploadVisible(false);
-    //   return alert("You are not authorized to upload");
-    // } else {
-    //   const resultData = result.data;
+    let location = map.current?.state.placeMarkerCoordinate;
 
-    //   const postLink = resultData.fileURL;
-    //   uploadPhoto(postLink, post);
-
-    //   map.current?.setState({
-    //     markerList: [
-    //       ...map.current?.state.markerList,
-    //       {
-    //         id: resultData.id,
-    //         latitude: resultData.location.lat,
-    //         longitude: resultData.location.lon,
-    //         title: resultData.category,
-    //         description: resultData.hint,
-    //         url: resultData.fileURL,
-    //         tourID: resultData.tourID,
-    //       },
-    //     ],
-    //     tourFilteredList: [
-    //       ...map.current?.state.markerList,
-    //       {
-    //         id: resultData.id,
-    //         latitude: resultData.location.lat,
-    //         longitude: resultData.location.lon,
-    //         title: resultData.category,
-    //         description: resultData.hint,
-    //         url: resultData.fileURL,
-    //         tourID: resultData.tourID,
-    //       },
-    //     ],
-    //   });
-    // }
-
-    // resetForm();
+    const result = await postsApi.addPost({ ...post, location }, (progress) =>
+      setProgress(progress)
+    );
+    if (!result.ok) {
+      // setUploadVisible(false);
+      return alert("You are not authorized to upload");
+    } else {
+      const resultData = result.data;
+      const postLink = resultData.fileURL;
+      uploadPhoto(postLink, post);
+      map.current?.setState({
+        markerList: [
+          ...map.current?.state.markerList,
+          {
+            id: resultData.id,
+            latitude: resultData.location.lat,
+            longitude: resultData.location.lon,
+            title: resultData.category,
+            description: resultData.hint,
+            url: resultData.fileURL,
+            tourID: resultData.tourID,
+          },
+        ],
+        tourFilteredList: [
+          ...map.current?.state.markerList,
+          {
+            id: resultData.id,
+            latitude: resultData.location.lat,
+            longitude: resultData.location.lon,
+            title: resultData.category,
+            description: resultData.hint,
+            url: resultData.fileURL,
+            tourID: resultData.tourID,
+          },
+        ],
+        placeMarkerMode: false,
+      });
+    }
+    resetForm();
   };
 
   const uploadPhoto = async (postLink, post) => {
@@ -198,6 +200,8 @@ function PostContentScreen({ bottomSheetRef, map }) {
           keyboardType="phone-pad"
         /> */}
         <FormImagePicker name="images" />
+
+        <AppButton title="Set Marker" onPress={setMarker}></AppButton>
 
         <SubmitButton title="Post" />
       </Form>

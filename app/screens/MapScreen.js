@@ -78,6 +78,10 @@ export default class MapScreen extends Component {
           console.log("region set to myLocation")
         );
       }
+    } else if (
+      prevState.placeMarkerCoordinate !== this.state.placeMarkerCoordinate
+    ) {
+      console.log("updated marker location");
     }
   }
 
@@ -318,7 +322,7 @@ export default class MapScreen extends Component {
               pinColor={"green"}
               coordinate={this.state.placeMarkerCoordinate}
               onDragEnd={(e) => {
-                console.log(e.nativeEvent.coordinate);
+                // console.log(e.nativeEvent.coordinate);
                 this.setState({
                   placeMarkerCoordinate: e.nativeEvent.coordinate,
                 });
@@ -381,12 +385,39 @@ export default class MapScreen extends Component {
           ]}
           onPress={() => this.openBottomSheet(true)}
         >
-          <MaterialCommunityIcons
-            name="map-marker-plus"
-            color={colors.black}
-            size={28}
-          />
+          {this.state.placeMarkerMode ? (
+            <Text>{"DONE"}</Text>
+          ) : (
+            <MaterialCommunityIcons
+              name="map-marker-plus"
+              color={colors.black}
+              size={28}
+            />
+          )}
         </TouchableOpacity>
+        {/* <TouchableOpacity
+          style={[
+            // styles.button,
+            {
+              alignItems: "center",
+              backgroundColor: "limegreen",
+              bottom: 100,
+              height: 60,
+              position: "absolute",
+              right: 100,
+            },
+          ]}
+          onPress={() => console.log("Posting")}
+        >
+          <Text
+            style={{
+              backgroundColor: "blue",
+              flex: 1,
+            }}
+          >
+            {"Post to this location"}
+          </Text>
+        </TouchableOpacity> */}
       </View>
       //  34.2709266,-118.5139665,3a,90y,9.06h,70.3t
     );

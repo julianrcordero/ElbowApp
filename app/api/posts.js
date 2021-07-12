@@ -58,17 +58,17 @@ const addPost = async (post, onUploadProgress) => {
   //   return alert("You must enable location to post");
   // }
 
-  const {
-    coords: { latitude, longitude },
-  } = await Location.getCurrentPositionAsync(options);
+  // const {
+  //   coords: { latitude, longitude },
+  // } = await Location.getCurrentPositionAsync(options);
 
   const newPost = {
     dataType: "photo",
     mimeType: post.category.value,
     hint: post.description,
     category: post.category.title,
-    lat: latitude, //post.location.latitude,
-    long: longitude, //post.location.longitude,
+    lat: post.location.latitude,
+    long: post.location.longitude,
     completed: true,
     public: true,
     userIDs: [],
