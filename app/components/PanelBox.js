@@ -162,7 +162,7 @@ export default class PanelBox extends PureComponent {
           >
             <Image
               style={{ width: 40, height: 40 }}
-              source={require("../assets/gtylogo.jpg")}
+              source={require("../assets/ElbowText.png")}
             ></Image>
             <AppText style={styles.titleText}>Related Resources</AppText>
           </View>

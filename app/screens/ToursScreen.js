@@ -44,6 +44,18 @@ export default function ToursScreen({ navigation }) {
 
   return (
     <Screen style={styles.screen}>
+      <AppText
+        style={{
+          // borderWidth: 0.5,
+          fontSize: 35,
+          fontWeight: "bold",
+          marginVertical: 15,
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        {"Tours"}
+      </AppText>
       {/* {getSubscribedToursApi.error && (
         <>
           <AppText>Couldn't retrieve the posts.</AppText> */}
@@ -56,6 +68,7 @@ export default function ToursScreen({ navigation }) {
         data={getSubscribedToursApi.data.tours}
         keyExtractor={(listing) => listing.ID.toString()}
         renderItem={renderItem}
+        style={{ marginHorizontal: 30 }}
       />
     </Screen>
   );
@@ -63,7 +76,6 @@ export default function ToursScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 20,
     backgroundColor: colors.light,
   },
 });

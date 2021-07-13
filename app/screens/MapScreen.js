@@ -43,6 +43,7 @@ export default class MapScreen extends Component {
     placeMarkerMode: false,
     placeMarkerCoordinate: { latitude: 0, longitude: 0 },
     progress: 0,
+    zoom: 18,
   };
 
   componentDidMount() {
@@ -51,7 +52,8 @@ export default class MapScreen extends Component {
     // this.getCurrentLocation();
     this.moveCamera(
       this.state.myLocation.latitude,
-      this.state.myLocation.longitude
+      this.state.myLocation.longitude,
+      18
     );
 
     this.loadLocker();
@@ -59,9 +61,8 @@ export default class MapScreen extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.region !== this.state.region) {
-      console.log("updated region");
+      console.log(this.state.region.latitude, this.state.region.longitude);
     } else if (prevState.placeMarkerMode !== this.state.placeMarkerMode) {
-      console.log("placeMarkerMode:", this.state.placeMarkerMode);
     } else if (prevState.myLocation !== this.state.myLocation) {
       console.log(
         "my location:",
@@ -107,9 +108,9 @@ export default class MapScreen extends Component {
           latitude: latitude,
           longitude: longitude,
         },
-        zoom: zoom,
+        zoom: zoom ?? 18,
       },
-      2000
+      500
     );
   };
 
@@ -323,7 +324,6 @@ export default class MapScreen extends Component {
               pinColor={"green"}
               coordinate={this.state.placeMarkerCoordinate}
               onDragEnd={(e) => {
-                // console.log(e.nativeEvent.coordinate);
                 this.setState({
                   placeMarkerCoordinate: e.nativeEvent.coordinate,
                 });

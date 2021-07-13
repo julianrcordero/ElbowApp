@@ -1,20 +1,37 @@
 import React, { Component, useRef } from "react";
-import { FlatList, View } from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 import CarouselCard from "./CarouselCard";
 // import DropDownPicker from "react-native-dropdown-picker";
 import { Picker } from "@react-native-picker/picker";
 
+import AppText from "../components/Text";
 import { getBottomSpace } from "react-native-iphone-x-helper";
 import PostContentScreen from "../screens/PostContentScreen";
 import postsApi from "../api/posts";
+const { height, width } = Dimensions.get("window");
 
 export default class Carousel extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      addPostMode: false,
+      createdTours: [],
+      locker: [],
+      progress: 0,
+      tour: null,
+      subscribedTours: [],
+      filter: 0,
+    };
   }
 
   componentDidMount() {
     this.loadTours();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.subscribedTours !== this.state.subscribedTours) {
+    }
   }
 
   async loadTours() {
@@ -22,9 +39,9 @@ export default class Carousel extends Component {
     const createdTours = await postsApi.getCreatedTours();
     const locker = await postsApi.getLocker();
     this.setState({
-      createdTours: createdTours.data.tours,
-      subscribedTours: subscribedTours.data.tours,
-      locker: locker.data.posts,
+      createdTours: createdTours.data.tours ?? [],
+      subscribedTours: subscribedTours.data.tours ?? [],
+      locker: locker.data.posts ?? [],
     });
   }
 
@@ -39,29 +56,8 @@ export default class Carousel extends Component {
     });
   }
 
-  state = {
-    addPostMode: true,
-    createdTours: [],
-    locker: [],
-    progress: 0,
-    tour: null,
-    subscribedTours: [],
-    filter: 0,
-  };
-
   slideToMarker = (item) => {
-    if (this.props.mapView.current) {
-      this.props.mapView.current?.animateCamera(
-        {
-          center: {
-            latitude: item.latitude,
-            longitude: item.longitude,
-          },
-          zoom: 12,
-        },
-        { duration: 500 }
-      );
-    }
+    this.props.map.current?.moveCamera(item.latitude, item.longitude);
   };
 
   onViewRef = (viewableItems) => {
@@ -79,8 +75,8 @@ export default class Carousel extends Component {
   };
 
   getItemLayout = (data, index) => ({
-    length: this.props.width,
-    offset: this.props.width * index,
+    length: width,
+    offset: width * index,
     index,
   });
 
@@ -109,7 +105,7 @@ export default class Carousel extends Component {
         user={this.props.user}
         userID={item.userID}
         verseCardReferenceHeight={this.props.verseCardReferenceHeight}
-        width={this.props.width}
+        width={width}
       />
     );
   };
@@ -137,22 +133,46 @@ export default class Carousel extends Component {
           height: top - 50,
         }}
       >
-        <Picker
-          selectedValue={this.state.filter}
-          onValueChange={this.onValueChange}
-          style={{
-            // alignItems: "center",
-            backgroundColor: "green",
-            height: 60,
-            justifyContent: "center",
-            paddingHorizontal: 30,
-          }}
-        >
-          <Picker.Item key={"key"} label={"All posts"} value={0} />
-          {this.state.subscribedTours.map((item) => (
-            <Picker.Item key={item.ID} label={item.title} value={item.ID} />
-          ))}
-        </Picker>
+        {this.state.subscribedTours.length > 0 && (
+          <View
+            style={{
+              alignItems: "center",
+              borderWidth: 0.5,
+              flexDirection: "row",
+              height: 60,
+              justifyContent: "center",
+            }}
+          >
+            <AppText
+              style={{
+                fontSize: 35,
+                fontWeight: "bold",
+                // marginVertical: 15,
+                textAlign: "center",
+                // width: "100%",
+              }}
+            >
+              {"Tour:\t"}
+            </AppText>
+            <Picker
+              selectedValue={this.state.filter}
+              onValueChange={this.onValueChange}
+              style={{
+                // alignSelf: "center",
+                // backgroundColor: "green",
+                height: "100%",
+                justifyContent: "center",
+                // paddingHorizontal: 30,
+                width: "50%",
+              }}
+            >
+              <Picker.Item key={"key"} label={"All posts"} value={0} />
+              {this.state.subscribedTours.map((item) => (
+                <Picker.Item key={item.ID} label={item.title} value={item.ID} />
+              ))}
+            </Picker>
+          </View>
+        )}
 
         {mapView.current ? (
           <FlatList
@@ -172,7 +192,7 @@ export default class Carousel extends Component {
             showsHorizontalScrollIndicator={false}
             snapToAlignment={"start"}
             snapToInterval={width}
-            style={{ backgroundColor: "white" }}
+            // style={{ backgroundColor: "yellow" }}
             onViewableItemsChanged={this.onViewRef}
             viewabilityConfig={this.viewConfigRef}
             // viewabilityConfig={{

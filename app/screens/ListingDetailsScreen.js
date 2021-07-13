@@ -53,24 +53,18 @@ function ListingDetailsScreen({ route }) {
     // ...
   };
 
-  const renderItem = ({ item }) =>
-    lockerPoints.find((post) => post.id === item.id) ? (
-      <Card
-        thumbnailUrl={lockerPoints.find((post) => post.id === item.id).fileURL}
-        hint={item.hint}
-        title={`${item.location.lat},\t${item.location.lon}`}
-      />
-    ) : (
-      <Card
-        hint={item.hint}
-        title={`${item.location.lat},\t${item.location.lon}`}
-      />
-    );
+  const renderItem = ({ item }) => (
+    <Card
+      thumbnailUrl={lockerPoints.find((post) => post.id === item.id)?.fileURL}
+      hint={item.hint}
+      title={`${item.location.lat},\t${item.location.lon}`}
+    />
+  );
 
   const keyExtractor = (listing) => listing.id.toString();
 
   return (
-    <View>
+    <View style={styles.container}>
       {listing.images && (
         <Image
           style={styles.image}
@@ -82,7 +76,7 @@ function ListingDetailsScreen({ route }) {
       <View style={styles.detailsContainer}>
         <AppText
           style={{
-            fontSize: 14,
+            fontSize: 20,
             // lineHeight: fontSize * 1.5,
             marginTop: 20,
           }}
@@ -91,7 +85,7 @@ function ListingDetailsScreen({ route }) {
         </AppText>
         <View style={styles.userContainer}>
           <ListItem
-            image={require("../assets/gtylogo.jpg")}
+            image={require("../assets/ElbowText.png")}
             title={user}
             subTitle="5 Listings"
           />
@@ -100,7 +94,7 @@ function ListingDetailsScreen({ route }) {
           data={tourPoints}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          style={{ flexGrow: 1, height: 450 }}
+          contentContainerStyle={{ paddingBottom: 70 }}
         />
       </View>
     </View>
@@ -108,6 +102,10 @@ function ListingDetailsScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "orange",
+    paddingBottom: 270,
+  },
   detailsContainer: {
     paddingHorizontal: 30,
   },

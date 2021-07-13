@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { InteractionManager, StyleSheet, View } from "react-native";
+import {
+  InteractionManager,
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import * as Yup from "yup";
 import * as FileSystem from "expo-file-system";
 
@@ -9,6 +15,7 @@ import {
   AppFormPicker as Picker,
   SubmitButton,
 } from "../components/forms/Index";
+import AppText from "../components/Text";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import postsApi from "../api/posts";
@@ -22,8 +29,8 @@ const validationSchema = Yup.object().shape({
   description: Yup.string().required().label("Description"),
   category: Yup.object().required().nullable().label("Category"),
   images: Yup.array().min(1, "Please select at least one image."),
-  latitude: Yup.number().label("Latitude"),
-  longitude: Yup.number().label("Longitude"),
+  // latitude: Yup.number().label("Latitude"),
+  // longitude: Yup.number().label("Longitude"),
 });
 
 const categories = [
@@ -140,54 +147,67 @@ function PostContentScreen({ bottomSheetRef, map }) {
   };
 
   return (
-    <View style={styles.container}>
-      <UploadScreen
-        onDone={() => setUploadVisible(false)}
-        progress={progress}
-        visible={uploadVisible}
-      />
-      <Form
-        initialValues={{
-          title: "",
-          description: "",
-          category: null,
-          images: [],
-        }}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-      >
-        {/* <FormField
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <UploadScreen
+          onDone={() => setUploadVisible(false)}
+          progress={progress}
+          visible={uploadVisible}
+        />
+        <AppText
+          style={{
+            borderWidth: 0.5,
+            fontSize: 35,
+            fontWeight: "bold",
+            marginVertical: 15,
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
+          {"Create a post"}
+        </AppText>
+        <Form
+          initialValues={{
+            title: "",
+            description: "",
+            category: null,
+            images: [],
+          }}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          {/* <FormField
           maxLength={45}
           name="title"
           placeholder="Title"
           icon="rename-box"
         /> */}
-        <Picker
-          items={categories}
-          name="category"
-          numberOfColumns={3}
-          // PickerItemComponent={CategoryPickerItem}
-          placeholder="Category"
-          width="50%"
-        />
-        <Picker
-          items={getCreatedToursApi.data.tours}
-          name="tour"
-          loadData={getCreatedToursApi.request}
-          // PickerItemComponent={CategoryPickerItem}
-          placeholder="Tour"
-          width="50%"
-        />
-        <FormField
-          icon="newspaper-variant-outline"
-          maxLength={255}
-          multiline
-          name="description"
-          height={100}
-          numberOfLines={3}
-          placeholder="Description"
-        />
-        {/* <FormField
+          <Picker
+            items={categories}
+            name="category"
+            numberOfColumns={3}
+            // PickerItemComponent={CategoryPickerItem}
+            placeholder="Category"
+            width="75%"
+          />
+          <Picker
+            items={getCreatedToursApi.data.tours}
+            name="tour"
+            loadData={getCreatedToursApi.request}
+            // PickerItemComponent={CategoryPickerItem}
+            placeholder="Tour"
+            width="75%"
+          />
+          <FormField
+            icon="newspaper-variant-outline"
+            maxLength={255}
+            multiline
+            name="description"
+            height={75}
+            numberOfLines={2}
+            placeholder="Description"
+          />
+          {/* <FormField
           name="latitude"
           placeholder="Latitude"
           icon="latitude"
@@ -199,21 +219,28 @@ function PostContentScreen({ bottomSheetRef, map }) {
           icon="longitude"
           keyboardType="phone-pad"
         /> */}
-        <FormImagePicker name="images" />
+          <FormImagePicker name="images" />
 
-        <AppButton title="Set Marker" onPress={setMarker}></AppButton>
+          <AppButton
+            title="Set Marker"
+            onPress={setMarker}
+            color={"secondary"}
+          ></AppButton>
 
-        <SubmitButton title="Post" />
-      </Form>
-    </View>
+          <SubmitButton title="Post" />
+        </Form>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "black",
-    // flex: 1,
-    padding: 10,
+    alignItems: "center",
+    height: "100%",
+    // marginVertical: 15,
+    padding: 30,
+    // width: "75%",
   },
 });
 export default PostContentScreen;

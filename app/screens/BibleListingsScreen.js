@@ -9,13 +9,13 @@ const posts = [
     title: "Matthew Study Guide",
     description:
       "Study the gospel of Matthew in-depth with John's handy guide.",
-    image: require("../assets/gtylogo.jpg"),
+    image: require("../assets/ElbowText.png"),
   },
   {
     id: 2,
     title: "Luke Study Guide",
     description: "Study the gospel of Luke in-depth with John's handy guide.",
-    image: require("../assets/gtylogo.jpg"),
+    image: require("../assets/ElbowText.png"),
   },
 ];
 

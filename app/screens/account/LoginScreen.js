@@ -28,60 +28,25 @@ function LoginScreen({ navigation }) {
   const handleSubmit = async ({ email, password }) => {
     try {
       const user = await Auth.signIn(email, password);
+      console.log(user);
       setLoginFailed(false);
 
       auth.logIn(
         user.signInUserSession.idToken.jwtToken,
-        user.signInUserSession.accessToken.jwtToken
+        user.signInUserSession.accessToken.jwtToken,
+        user.signInUserSession.refreshToken.token
       );
     } catch (error) {
       setLoginFailed(true);
     }
-    // const result = await authApi.signin(email, password);
-
-    // if (!result.ok) {
-    //   if (result.data) setLoginFailed(result.data.message);
-    //   else {
-    //     setLoginFailed("An unexpected error occurred.");
-    //   }
-    //   return;
-    // } else if (result.data.statusCode !== 200) {
-    //   return setLoginFailed(result.data.body.message);
-    // } else {
-    //   setLoginFailed(false);
-
-    //   auth.logIn(
-    //     result.data.body.data.AuthenticationResult.IdToken,
-    //     result.data.body.data.AuthenticationResult.AccessToken
-    //   );
-    // }
   };
-
-  // const auth = useAuth();
-  // const [loginFailed, setLoginFailed] = useState(false);
-
-  // const handleSubmit = async ({ email, password }) => {
-  //   const result = await authApi.signin(email, password);
-
-  //   if (!result.ok) {
-  //     return setLoginFailed(true);
-  //   } else if (result.data.statusCode !== 200) {
-  //     Alert.alert("Error", result.data.body.message, [
-  //       { text: "OK", onPress: () => {}},
-  //       // { text: "No", onPress: () => {} },
-  //     ]);
-  //   } else {
-  //     setLoginFailed(false);
-  //     auth.logIn(
-  //       result.data.body.data.AuthenticationResult.IdToken,
-  //       result.data.body.data.AuthenticationResult.AccessToken
-  //     );
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require("../../assets/gtylogo.jpg")} />
+      <Image
+        style={styles.logo}
+        source={require("../../assets/ElbowText.png")}
+      />
       <AppForm
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
@@ -111,11 +76,11 @@ function LoginScreen({ navigation }) {
           // onPress={() => navigation.navigate("Account")}
         />
       </AppForm>
-      <Button
-        // style={{width: 3}}
+      {/* <Button
+        style={styles.button}
         title={"Forgot Password"}
         onPress={() => navigation.navigate("ForgotPassword")}
-      ></Button>
+      ></Button> */}
     </View>
   );
 
@@ -135,7 +100,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
     flex: 1,
-    padding: 10,
+    padding: 50,
   },
   logo: {
     width: 80,

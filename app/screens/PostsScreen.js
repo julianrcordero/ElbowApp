@@ -19,38 +19,59 @@ function PostsScreen({ navigation }) {
   const getPostsApi = useApi(postsApi.getPosts);
 
   useEffect(() => {
-    getPostsApi.request();
+    loadPosts();
   }, []);
+
+  const loadPosts = () => {
+    getPostsApi.request();
+  };
+
+  const renderItem = ({ item }) => (
+    <Card
+      category={item.category}
+      dataType={item.dataType}
+      thumbnailUrl={item.fileURL}
+      hint={item.hint}
+      location={item.location}
+      mimeType={item.mimeType}
+      title={`${item.location.lat},\t${item.location.lon}`}
+      // title={item.title}
+      // subTitle={item.scripture}
+      // imageUrl={item.images[0].url}
+      // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+      // thumbnailUrl={item.imageUrl}
+    />
+  );
+
+  const keyExtractor = (listing) => listing.id.toString();
 
   return (
     <Screen style={styles.screen}>
+      <AppText
+        style={{
+          // borderWidth: 0.5,
+          fontSize: 35,
+          fontWeight: "bold",
+          marginVertical: 15,
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        {"My Posts"}
+      </AppText>
       {/* {getPostsApi.error && (
         <>
           <AppText>Couldn't retrieve the posts.</AppText> */}
-      <Button title="Retry" onPress={getPostsApi.request} />
+      <Button title="Retry" onPress={loadPosts} />
       {/* </>
       )} */}
       <ActivityIndicator visible={getPostsApi.loading} />
       {/* <Indicator animating={getPostsApi.loading} size={"large"} /> */}
       <FlatList
         data={getPostsApi.data.posts}
-        keyExtractor={(listing) => listing.id.toString()}
-        renderItem={({ item }) => (
-          <Card
-            category={item.category}
-            dataType={item.dataType}
-            thumbnailUrl={item.fileURL}
-            hint={item.hint}
-            location={item.location}
-            mimeType={item.mimeType}
-            title={`${item.location.lat},\t${item.location.lon}`}
-            // title={item.title}
-            // subTitle={item.scripture}
-            // imageUrl={item.images[0].url}
-            // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-            // thumbnailUrl={item.imageUrl}
-          />
-        )}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        style={{ marginHorizontal: 30 }}
       />
     </Screen>
   );
@@ -58,7 +79,6 @@ function PostsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 20,
     backgroundColor: colors.light,
   },
 });

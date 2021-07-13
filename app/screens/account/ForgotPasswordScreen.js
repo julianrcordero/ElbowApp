@@ -49,7 +49,7 @@ function ForgotPasswordScreen({ navigation }) {
       <View style={styles.container}>
         <Image
           style={styles.logo}
-          source={require("../../assets/gtylogo.jpg")}
+          source={require("../../assets/ElbowText.png")}
         />
         <AppForm
           initialValues={{ email: "" }}

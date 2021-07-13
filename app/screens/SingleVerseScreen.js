@@ -8,7 +8,7 @@ import colors from "../config/colors";
 export default function SingleVerseScreen(props) {
   return (
     <View style={{ flex: 1 }}>
-      <Image style={styles.image} source={require("../assets/gtylogo.jpg")} />
+      <Image style={styles.image} source={require("../assets/ElbowText.png")} />
       <View style={styles.detailsContainer}>
         <AppText style={styles.title}>Matthew Study Guide</AppText>
         <AppText style={styles.description}>

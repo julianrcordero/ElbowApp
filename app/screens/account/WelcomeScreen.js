@@ -4,11 +4,13 @@ import { ImageBackground, StyleSheet, View, Image, Text } from "react-native";
 import AppButton from "../../components/Button";
 
 function WelcomeScreen({ navigation }) {
+  const navigateToLogin = () => navigation.navigate("Login");
+
   return (
     <ImageBackground
       // blurRadius={3}
       style={styles.background}
-      source={require("../../assets/studyBibleWelcomeScreen.png")}
+      source={require("../../assets/Elbow2.png")}
     >
       {/* <View style={styles.logoContainer}>
         <Image
@@ -20,15 +22,12 @@ function WelcomeScreen({ navigation }) {
         </Text>
       </View> */}
       <View style={styles.buttonsContainer}>
-        <AppButton
-          title="Login"
-          onPress={() => navigation.navigate("Login")}
-        ></AppButton>
-        <AppButton
+        <AppButton title="Login" onPress={navigateToLogin}></AppButton>
+        {/* <AppButton
           title="Register"
           color="secondary"
           onPress={() => navigation.navigate("Register")}
-        ></AppButton>
+        ></AppButton> */}
       </View>
     </ImageBackground>
   );
@@ -36,14 +35,14 @@ function WelcomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
-    // height: "100%",
+    // flex: 1,
+    height: "100%",
     justifyContent: "flex-end",
     alignItems: "center",
   },
   buttonsContainer: {
-    padding: 20,
-    width: "100%",
+    paddingBottom: 100,
+    width: "75%",
   },
   logo: {
     width: 100,

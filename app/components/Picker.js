@@ -46,6 +46,11 @@ function AppPicker({
 
   const keyExtractor = (item) => item.ID;
 
+  const none = {
+    ID: "fakeID",
+    title: "None",
+  };
+
   return (
     <>
       <TouchableWithoutFeedback onPress={openModal}>

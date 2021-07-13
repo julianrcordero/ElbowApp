@@ -15,7 +15,7 @@ function ItemsScreen(props) {
       <BibleCard
         title="John MacArthur Study Guide"
         subTitle="Study the book of Matthew in-depth with the help of John's handy guide."
-        image={require("../assets/gtylogo.jpg")}
+        image={require("../assets/ElbowText.png")}
       />
     </View>
   );
