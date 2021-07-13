@@ -12,7 +12,6 @@ import {
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import postsApi from "../api/posts";
-import useLocation from "../hooks/useLocation";
 import UploadScreen from "./UploadScreen";
 import colors from "../config/colors";
 import AppButton from "../components/Button";
@@ -29,6 +28,7 @@ const validationSchema = Yup.object().shape({
 
 const categories = [
   {
+    ID: 1,
     title: "Photo",
     value: "image/jpeg",
     backgroundColor: "green",

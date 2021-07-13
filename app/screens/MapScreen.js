@@ -175,11 +175,8 @@ export default class MapScreen extends Component {
   //RED BUTTON
   searchMarkers = async () => {
     const result = await postsApi.searchPosts(this.state.region, (progress) =>
-      // setProgress(progress)
       this.setState({ progress: progress })
     );
-
-    // console.log(result);
 
     this.setMarkers(result, "crimson");
     this.props.bottomSheetContent.current?.setState({

@@ -1,5 +1,4 @@
 import client from "./client";
-import * as Location from "expo-location";
 
 const getPosts = () => client.get("/posts");
 const getLocker = () => client.get("locker");
@@ -19,30 +18,17 @@ const getTourPoints = (tourID, onUploadProgress) => {
   });
 };
 
-const options = {
-  accuracy: Location.Accuracy.Highest,
-};
-
-const unlockListing = async (id, onUploadProgress) => {
-  const {
-    coords: { latitude, longitude },
-  } = await Location.getCurrentPositionAsync(options);
-
-  // setLocation(location);
-  console.log("unlocking from:", latitude, longitude);
-
+const unlockListing = async (post, onUploadProgress) => {
   const requestBody = {
-    postID: id,
-    lat: latitude,
-    lon: longitude,
-    // lat: 34.157112274394436,
-    // lon: -118.43738625822279,
+    postID: post.id,
+    lat: post.lat,
+    lon: post.lon,
     distance: 20,
   };
 
   return client.post("unlock", requestBody, {
     onUploadProgress: (progress) =>
-      onUploadProgress(progress.loaded / progress.total),
+      onUploadProgress("PROGRESS:", progress.loaded / progress.total),
   });
 };
 
@@ -54,14 +40,6 @@ const deleteListing = (id, onUploadProgress) => {
 };
 
 const addPost = async (post, onUploadProgress) => {
-  // if (!post.location) {
-  //   return alert("You must enable location to post");
-  // }
-
-  // const {
-  //   coords: { latitude, longitude },
-  // } = await Location.getCurrentPositionAsync(options);
-
   const newPost = {
     dataType: "photo",
     mimeType: post.category.value,
@@ -78,7 +56,8 @@ const addPost = async (post, onUploadProgress) => {
   //Parent > Child
 
   return client.post("post", newPost, {
-    onUploadProgress: (progress) => console.log(progress),
+    onUploadProgress: (progress) =>
+      console.log(progress.loaded / progress.total),
     // onUploadProgress(progress.loaded / progress.total),
   });
 };

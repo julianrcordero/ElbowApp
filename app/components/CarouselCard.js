@@ -45,18 +45,22 @@ export default class CarouselCard extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.progress !== this.state.progress) {
-      console.log("progress:", this.state.progress);
-    }
+    // if (prevState.progress !== this.state.progress) {
+    //   console.log("progress:", this.state.progress);
+    // }
   }
 
   handleUnlock = async () => {
     this.setState({ progress: 0, uploadVisible: true });
 
-    console.log("handleUnlock clicked");
+    let map = this.props.map.current;
+
     const result = await postsApi.unlockListing(
-      this.props.id,
-      // { lat: 34.26626838473331, lon: -118.3768829221343 },
+      {
+        id: this.props.id,
+        lat: map.state.myLocation.latitude,
+        lon: map.state.myLocation.longitude,
+      },
       (progress) => this.setState({ progress: progress })
     );
 
@@ -68,10 +72,10 @@ export default class CarouselCard extends Component {
       ]);
     } else {
       const resultData = result.data;
-      this.props.map.current?.showLockerPosts(); //.current?.setState({tourFilteredList: })
+      map.showLockerPosts(); //.current?.setState({tourFilteredList: })
 
       const interactionPromise = InteractionManager.runAfterInteractions(() => {
-        let myIndex = this.props.map.current?.state.tourFilteredList.findIndex(
+        let myIndex = map.state.tourFilteredList.findIndex(
           (obj) => obj.id === resultData.PostID
         );
 
@@ -149,92 +153,91 @@ export default class CarouselCard extends Component {
     } = this.props;
 
     return (
-      <>
-        <UnlockScreen
+      <View
+        style={{
+          // backgroundColor: "cyan",
+          height: height,
+          marginVertical: 15,
+          paddingHorizontal: 30,
+          width: width,
+        }}
+      >
+        {/* <UnlockScreen
           onDone={() => this.setState({ uploadVisible: false })}
           progress={this.state.progress}
           visible={this.state.uploadVisible}
-        />
+        /> */}
         <View
           style={{
-            // backgroundColor: "cyan",
-            height: height,
-            marginVertical: 15,
-            paddingHorizontal: 30,
-            width: width,
+            alignItems: "center",
+            height: 50,
+            flexDirection: "row",
+            justifyContent: "flex-start",
           }}
         >
           <View
             style={{
               alignItems: "center",
-              height: 50,
+              flex: 1,
+              justifyContent: "space-between",
               flexDirection: "row",
-              justifyContent: "flex-start",
             }}
           >
-            <View
+            <AppText
               style={{
-                alignItems: "center",
-                flex: 1,
-                justifyContent: "space-between",
-                flexDirection: "row",
+                fontSize: fontSize,
+                fontWeight: "bold",
+                textAlign: "left",
               }}
             >
-              <AppText
-                style={{
-                  fontSize: fontSize,
-                  fontWeight: "bold",
-                  textAlign: "left",
-                }}
-              >
-                {description + " (" + title + ")"}
-              </AppText>
+              {description + " (" + title + ")"}
+            </AppText>
 
-              {/* <AppButton
+            {/* <AppButton
                   title={"Edit"}
                   onPress={() => {
                     this.setState({ editing: true });
                   }}
                 /> */}
-              {!url && (
-                <MaterialCommunityIcons
-                  name="lock"
-                  color={colors.black}
-                  size={28}
-                />
-              )}
-            </View>
+            {!url && (
+              <MaterialCommunityIcons
+                name="lock"
+                color={colors.black}
+                size={28}
+              />
+            )}
           </View>
-          <AppText
-            style={{
-              fontSize: fontSize,
-              textAlign: "center",
-            }}
-          >
-            {userID}
-          </AppText>
-          {url ? (
-            <Image
-              style={styles.image}
-              tint="light"
-              preview={{ uri: url }}
-              uri={url} //imageUrl}
-            />
+        </View>
+        <AppText
+          style={{
+            fontSize: fontSize,
+            textAlign: "center",
+          }}
+        >
+          {userID}
+        </AppText>
+        {url ? (
+          <Image
+            style={styles.image}
+            tint="light"
+            preview={{ uri: url }}
+            uri={url} //imageUrl}
+          />
+        ) : (
+          <AppButton title={"Unlock"} onPress={this.handleUnlock} />
+        )}
+        {userID === user.sub && (
+          <AppButton title={"Delete"} onPress={this.handleDelete} />
+        )}
+        {tourID.length > 0 &&
+          (subscribedTours.find(
+            (subscribedTour) => subscribedTour.ID === tourID
+          ) ? (
+            <AppText>{"You are already subscribed to this tour"}</AppText>
           ) : (
-            <AppButton title={"Unlock"} onPress={this.handleUnlock} />
-          )}
-          {userID === user.sub && (
-            <AppButton title={"Delete"} onPress={this.handleDelete} />
-          )}
-          {tourID.length > 0 &&
-            (subscribedTours.find(
-              (subscribedTour) => subscribedTour.ID === tourID
-            ) ? (
-              <AppText>{"You are already subscribed to this tour"}</AppText>
-            ) : (
-              <AppButton title={"Subscribe"} onPress={this.handleSubscribe} />
-            ))}
-          {/* <PanelBox
+            <AppButton title={"Subscribe"} onPress={this.handleSubscribe} />
+          ))}
+        {/* <PanelBox
               fontSize={fontSize}
               verseContent={description}
               johnsNote={johnsNote}
@@ -242,8 +245,7 @@ export default class CarouselCard extends Component {
               crossRefSize={crossRefSize}
               bottomSheetRef={bottomSheetRef}
             ></PanelBox> */}
-        </View>
-      </>
+      </View>
     );
   }
 }
