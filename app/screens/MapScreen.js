@@ -49,6 +49,10 @@ export default class MapScreen extends Component {
     this.setState({ placeMarkerMode: false });
 
     // this.getCurrentLocation();
+    this.moveCamera(
+      this.state.myLocation.latitude,
+      this.state.myLocation.longitude
+    );
 
     this.loadLocker();
   }

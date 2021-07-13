@@ -78,8 +78,8 @@ const addPost = async (post, onUploadProgress) => {
   //Parent > Child
 
   return client.post("post", newPost, {
-    onUploadProgress: (progress) =>
-      onUploadProgress(progress.loaded / progress.total),
+    onUploadProgress: (progress) => console.log(progress),
+    // onUploadProgress(progress.loaded / progress.total),
   });
 };
 

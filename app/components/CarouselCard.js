@@ -14,6 +14,7 @@ import AppText from "./Text";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import PostContentScreen from "../screens/PostContentScreen";
+import UnlockScreen from "../screens/UnlockScreen";
 import AppButton from "./Button";
 import { useState } from "react";
 import postsApi from "../api/posts";
@@ -30,6 +31,10 @@ export default class CarouselCard extends Component {
       return true;
     } else if (this.props.url !== nextProps.url) {
       return true;
+    } else if (this.state.progress !== nextState.progress) {
+      return true;
+    } else if (this.state.uploadVisible !== nextState.uploadVisible) {
+      return true;
     }
     return false;
   }
@@ -39,9 +44,16 @@ export default class CarouselCard extends Component {
     uploadVisible: false,
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.progress !== this.state.progress) {
+      console.log("progress:", this.state.progress);
+    }
+  }
+
   handleUnlock = async () => {
     this.setState({ progress: 0, uploadVisible: true });
 
+    console.log("handleUnlock clicked");
     const result = await postsApi.unlockListing(
       this.props.id,
       // { lat: 34.26626838473331, lon: -118.3768829221343 },
@@ -49,7 +61,7 @@ export default class CarouselCard extends Component {
     );
 
     if (!result.ok) {
-      // setUploadVisible(false);
+      this.setState({ uploadVisible: false });
       return Alert.alert(result.data.message, result.data.reason, [
         { text: "OK", onPress: () => {} },
         // { text: "No", onPress: () => {} },
@@ -137,86 +149,92 @@ export default class CarouselCard extends Component {
     } = this.props;
 
     return (
-      <View
-        style={{
-          // backgroundColor: "cyan",
-          height: height,
-          marginVertical: 15,
-          paddingHorizontal: 30,
-          width: width,
-        }}
-      >
+      <>
+        <UnlockScreen
+          onDone={() => this.setState({ uploadVisible: false })}
+          progress={this.state.progress}
+          visible={this.state.uploadVisible}
+        />
         <View
           style={{
-            alignItems: "center",
-            height: 50,
-            flexDirection: "row",
-            justifyContent: "flex-start",
+            // backgroundColor: "cyan",
+            height: height,
+            marginVertical: 15,
+            paddingHorizontal: 30,
+            width: width,
           }}
         >
           <View
             style={{
               alignItems: "center",
-              flex: 1,
-              justifyContent: "space-between",
+              height: 50,
               flexDirection: "row",
+              justifyContent: "flex-start",
             }}
           >
-            <AppText
+            <View
               style={{
-                fontSize: fontSize,
-                fontWeight: "bold",
-                textAlign: "left",
+                alignItems: "center",
+                flex: 1,
+                justifyContent: "space-between",
+                flexDirection: "row",
               }}
             >
-              {description + " (" + title + ")"}
-            </AppText>
+              <AppText
+                style={{
+                  fontSize: fontSize,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                }}
+              >
+                {description + " (" + title + ")"}
+              </AppText>
 
-            {/* <AppButton
+              {/* <AppButton
                   title={"Edit"}
                   onPress={() => {
                     this.setState({ editing: true });
                   }}
                 /> */}
-            {!url && (
-              <MaterialCommunityIcons
-                name="lock"
-                color={colors.black}
-                size={28}
-              />
-            )}
+              {!url && (
+                <MaterialCommunityIcons
+                  name="lock"
+                  color={colors.black}
+                  size={28}
+                />
+              )}
+            </View>
           </View>
-        </View>
-        <AppText
-          style={{
-            fontSize: fontSize,
-            textAlign: "center",
-          }}
-        >
-          {userID}
-        </AppText>
-        {url ? (
-          <Image
-            style={styles.image}
-            tint="light"
-            preview={{ uri: url }}
-            uri={url} //imageUrl}
-          />
-        ) : (
-          <AppButton title={"Unlock"} onPress={this.handleUnlock} />
-        )}
-        {userID === user.sub && (
-          <AppButton title={"Delete"} onPress={this.handleDelete} />
-        )}
-        {tourID.length > 0 &&
-          (subscribedTours.find(
-            (subscribedTour) => subscribedTour.ID === tourID
-          ) ? (
-            <AppText>{"You are already subscribed to this tour"}</AppText>
+          <AppText
+            style={{
+              fontSize: fontSize,
+              textAlign: "center",
+            }}
+          >
+            {userID}
+          </AppText>
+          {url ? (
+            <Image
+              style={styles.image}
+              tint="light"
+              preview={{ uri: url }}
+              uri={url} //imageUrl}
+            />
           ) : (
-            <AppButton title={"Subscribe"} onPress={this.handleSubscribe} />
-          ))}
-        {/* <PanelBox
+            <AppButton title={"Unlock"} onPress={this.handleUnlock} />
+          )}
+          {userID === user.sub && (
+            <AppButton title={"Delete"} onPress={this.handleDelete} />
+          )}
+          {tourID.length > 0 &&
+            (subscribedTours.find(
+              (subscribedTour) => subscribedTour.ID === tourID
+            ) ? (
+              <AppText>{"You are already subscribed to this tour"}</AppText>
+            ) : (
+              <AppButton title={"Subscribe"} onPress={this.handleSubscribe} />
+            ))}
+          {/* <PanelBox
               fontSize={fontSize}
               verseContent={description}
               johnsNote={johnsNote}
@@ -224,7 +242,8 @@ export default class CarouselCard extends Component {
               crossRefSize={crossRefSize}
               bottomSheetRef={bottomSheetRef}
             ></PanelBox> */}
-      </View>
+        </View>
+      </>
     );
   }
 }
