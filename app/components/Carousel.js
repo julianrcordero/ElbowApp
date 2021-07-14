@@ -10,6 +10,8 @@ import PostContentScreen from "../screens/PostContentScreen";
 import postsApi from "../api/posts";
 const { height, width } = Dimensions.get("window");
 
+import { Auth } from "aws-amplify";
+
 export default class Carousel extends Component {
   constructor(props) {
     super(props);

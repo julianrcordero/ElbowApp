@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 
 import ListItem from "../../components/lists/ListItem";
@@ -7,7 +7,9 @@ import colors from "../../config/colors";
 import Icon from "../../components/Icon";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
-import useAuth from "../../auth/useAuth";
+import AuthContext from "../../auth/context";
+
+import { Auth } from "aws-amplify";
 
 const menuItems = [
   {
@@ -29,8 +31,26 @@ const menuItems = [
 ];
 
 function AccountScreen({ navigation }) {
-  //navigation}){
-  const { user, logOut } = useAuth();
+  // const [user, setUser] = useState({ name: "Name", email: "test@test.com" });
+  const { user, setUser } = useContext(AuthContext);
+
+  const getUser = async () => {
+    const userInfo = await Auth.currentUserInfo();
+    setUser(userInfo.attributes);
+    return userInfo;
+  };
+
+  const logOut = async () => {
+    try {
+      await Auth.signOut();
+    } catch (error) {}
+
+    setUser(null);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <Screen style={styles.screen}>
@@ -63,7 +83,7 @@ function AccountScreen({ navigation }) {
       <ListItem
         title="Log Out"
         IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
-        onPress={() => logOut()}
+        onPress={logOut}
       />
     </Screen>
   );

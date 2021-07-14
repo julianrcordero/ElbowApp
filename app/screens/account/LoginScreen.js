@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Alert, Button, Image, StyleSheet, View } from "react-native";
 import * as Yup from "yup";
 
@@ -9,12 +9,12 @@ import {
   ErrorMessage,
   SubmitButton,
 } from "../../components/forms/Index";
-import authApi from "../../api/auth";
 
 import colors from "../../config/colors";
 import { Formik } from "formik";
-import useAuth from "../../auth/useAuth";
 import { Auth } from "aws-amplify";
+
+import AuthContext from "../../auth/context";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -22,20 +22,14 @@ const validationSchema = Yup.object().shape({
 });
 
 function LoginScreen({ navigation }) {
-  const auth = useAuth();
   const [loginFailed, setLoginFailed] = useState(false);
+  const { user, setUser } = useContext(AuthContext);
 
   const handleSubmit = async ({ email, password }) => {
     try {
       const user = await Auth.signIn(email, password);
-      console.log(user);
+      setUser(user);
       setLoginFailed(false);
-
-      auth.logIn(
-        user.signInUserSession.idToken.jwtToken,
-        user.signInUserSession.accessToken.jwtToken,
-        user.signInUserSession.refreshToken.token
-      );
     } catch (error) {
       setLoginFailed(true);
     }

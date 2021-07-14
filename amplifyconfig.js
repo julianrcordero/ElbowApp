@@ -24,12 +24,6 @@ function refreshToken() {
   } catch (e) {}
 }
 
-// const getAccessJwtToken = async () => {
-//   // Auth.currentSession() checks if token is expired and refreshes with Cognito if needed automatically
-//   const session = await Auth.currentSession();
-//   return session.getAccessToken().getJwtToken();
-// };
-
 Amplify.configure({
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID

@@ -63,8 +63,14 @@ export default function App() {
   const [isReady, setIsReady] = useState();
 
   const restoreUser = async () => {
-    const user = await authStorage.getUser();
-    if (user) setUser(user);
+    // const user = await authStorage.getUser();
+    const user = await Auth.currentUserInfo();
+
+    // const idToken = session.getIdToken().getJwtToken(); //authStorage.getIdToken();
+    if (user) {
+      console.log("setting user to user context");
+      setUser(user);
+    }
   };
 
   const snapToHalf = () => {

@@ -21,6 +21,8 @@ import AppButton from "./Button";
 import { useState } from "react";
 import postsApi from "../api/posts";
 
+import { Auth } from "aws-amplify";
+
 export default class CarouselCard extends Component {
   constructor(props) {
     super(props);
@@ -242,7 +244,7 @@ export default class CarouselCard extends Component {
           ) : (
             <AppButton title={"Unlock"} onPress={this.handleUnlock} />
           )}
-          {userID === user.sub && (
+          {userID === user?.sub && (
             <AppButton title={"Delete"} onPress={this.handleDelete} />
           )}
           {tourID.length > 0 &&

@@ -20,6 +20,7 @@ import MapView, {
 import colors from "../config/colors";
 import ActivityIndicator from "../components/ActivityIndicator";
 import postsApi from "../api/posts"; //"../api/posts"
+import { Auth } from "aws-amplify";
 
 export default class MapScreen extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ export default class MapScreen extends Component {
     placeMarkerMode: false,
     placeMarkerCoordinate: { latitude: 0, longitude: 0 },
     progress: 0,
+    user: null,
     zoom: 18,
   };
 
@@ -61,7 +63,6 @@ export default class MapScreen extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.region !== this.state.region) {
-      console.log(this.state.region.latitude, this.state.region.longitude);
     } else if (prevState.placeMarkerMode !== this.state.placeMarkerMode) {
     } else if (prevState.myLocation !== this.state.myLocation) {
       console.log(
@@ -90,15 +91,18 @@ export default class MapScreen extends Component {
     }
   }
 
-  async loadLocker() {
-    if (this.props.user) {
-      const locker = await postsApi.getLocker();
+  getUser = async () => {
+    const userInfo = await Auth.currentUserInfo();
+    this.setState({ user: userInfo.attributes });
+  };
 
-      let setToThis = Array.isArray(locker.data.posts)
-        ? locker.data.posts
-        : locker.data[1].posts; //for some reason????
-      if (setToThis) this.setState({ locker: setToThis, lockerLoaded: true });
-    }
+  async loadLocker() {
+    const locker = await postsApi.getLocker();
+
+    let setToThis = Array.isArray(locker.data.posts)
+      ? locker.data.posts
+      : locker.data[1].posts; //for some reason????
+    if (setToThis) this.setState({ locker: setToThis, lockerLoaded: true });
   }
 
   moveCamera = (latitude, longitude, zoom) => {
@@ -206,7 +210,7 @@ export default class MapScreen extends Component {
             resultData
               .filter(
                 (searchedPost) =>
-                  searchedPost.userID !== this.props.user.sub &&
+                  searchedPost.userID !== this.state.user?.sub &&
                   this.state.locker.find(
                     (lockerPost) => lockerPost.id === searchedPost.id
                   ) === undefined
