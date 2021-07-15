@@ -159,7 +159,7 @@ function PostContentScreen({ bottomSheetRef, map }) {
             borderWidth: 0.5,
             fontSize: 35,
             fontWeight: "bold",
-            marginVertical: 15,
+            // marginVertical: 15,
             textAlign: "center",
             width: "100%",
           }}

@@ -28,7 +28,12 @@ export default class MapScreen extends Component {
   }
 
   state = {
-    region: null,
+    region: {
+      latitude: 34.27131586245659,
+      longitude: -118.5139168706895,
+      latitudeDelta: 0,
+      longitudeDelta: 0,
+    },
     initialMarkers: [],
     tourFilteredList: [],
     locker: [],
@@ -64,13 +69,11 @@ export default class MapScreen extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.region !== this.state.region) {
     } else if (prevState.placeMarkerMode !== this.state.placeMarkerMode) {
+    } else if (prevState.tourFilteredList !== this.state.tourFilteredList) {
+      this.props.bottomSheetContent.current?.setState({
+        data: this.state.tourFilteredList,
+      });
     } else if (prevState.myLocation !== this.state.myLocation) {
-      console.log(
-        "my location:",
-        this.state.myLocation.latitude,
-        this.state.myLocation.longitude
-      );
-
       if (this.state.region === null) {
         this.setState(
           {
@@ -80,14 +83,14 @@ export default class MapScreen extends Component {
               latitudeDelta: 0.2,
               longitudeDelta: 0.0421,
             },
-          },
-          console.log("region set to myLocation")
+          }
+          // console.log("region set to myLocation")
         );
       }
     } else if (
       prevState.placeMarkerCoordinate !== this.state.placeMarkerCoordinate
     ) {
-      console.log("updated marker location");
+      // console.log("updated marker location");
     }
   }
 
@@ -131,9 +134,16 @@ export default class MapScreen extends Component {
     this.scrollToPost(marker);
   };
 
-  openBottomSheet = (postMode) => {
-    this.props.bottomSheetRef.current?.snapTo(1);
-    this.props.bottomSheetContent.current?.setState({ addPostMode: postMode });
+  openBottomSheet = (postMode = true) => {
+    const interactionPromise = InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        this.props.bottomSheetRef.current?.snapTo(1);
+        this.props.bottomSheetContent.current?.setState({
+          addPostMode: postMode,
+        });
+      });
+    });
+    () => interactionPromise.cancel();
   };
 
   scrollToPost = (marker) => {
@@ -287,10 +297,10 @@ export default class MapScreen extends Component {
     let myCoordinate = event.nativeEvent.coordinate;
 
     if (
-      myCoordinate.latitude.toFixed(10) ===
-        this.state.myLocation.latitude.toFixed(10) &&
-      myCoordinate.longitude.toFixed(10) ===
-        this.state.myLocation.longitude.toFixed(10)
+      myCoordinate.latitude.toFixed(12) ===
+        this.state.myLocation.latitude.toFixed(12) &&
+      myCoordinate.longitude.toFixed(12) ===
+        this.state.myLocation.longitude.toFixed(12)
     ) {
       return;
     }
@@ -303,12 +313,81 @@ export default class MapScreen extends Component {
     );
   };
 
+  customMapStyle = [
+    {
+      featureType: "administrative.locality",
+      elementType: "geometry.fill",
+      stylers: [
+        {
+          color: "#ffeb3b",
+        },
+      ],
+    },
+    {
+      featureType: "administrative.neighborhood",
+      elementType: "geometry.fill",
+      stylers: [
+        {
+          weight: 0.5,
+        },
+      ],
+    },
+    {
+      featureType: "landscape.man_made",
+      elementType: "geometry.fill",
+      stylers: [
+        {
+          color: "#b3d0b7",
+        },
+        {
+          saturation: -75,
+        },
+      ],
+    },
+    {
+      featureType: "poi.business",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "poi.park",
+      elementType: "geometry.fill",
+      stylers: [
+        {
+          color: "#8ee199",
+        },
+      ],
+    },
+    {
+      featureType: "poi.park",
+      elementType: "labels.text",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "road.highway",
+      elementType: "geometry.fill",
+      stylers: [
+        {
+          color: "#cad719",
+        },
+      ],
+    },
+  ];
+
   render() {
     const { getPostsApi, mapView } = this.props;
 
     return (
       <View style={styles.container}>
         <MapView
+          customMapStyle={this.customMapStyle}
           followsUserLocation
           mapPadding={this.mapPadding}
           ref={mapView}
@@ -386,9 +465,15 @@ export default class MapScreen extends Component {
         <TouchableOpacity
           style={[
             styles.button,
-            { backgroundColor: "limegreen", bottom: 100, position: "absolute" },
+            {
+              backgroundColor: "limegreen",
+              borderRadius: 35,
+              bottom: 100,
+              position: "absolute",
+              width: 70,
+            },
           ]}
-          onPress={() => this.openBottomSheet(true)}
+          onPress={this.openBottomSheet}
         >
           {this.state.placeMarkerMode ? (
             <Text>{"DONE"}</Text>
@@ -400,29 +485,6 @@ export default class MapScreen extends Component {
             />
           )}
         </TouchableOpacity>
-        {/* <TouchableOpacity
-          style={[
-            // styles.button,
-            {
-              alignItems: "center",
-              backgroundColor: "limegreen",
-              bottom: 100,
-              height: 60,
-              position: "absolute",
-              right: 100,
-            },
-          ]}
-          onPress={() => console.log("Posting")}
-        >
-          <Text
-            style={{
-              backgroundColor: "blue",
-              flex: 1,
-            }}
-          >
-            {"Post to this location"}
-          </Text>
-        </TouchableOpacity> */}
       </View>
       //  34.2709266,-118.5139665,3a,90y,9.06h,70.3t
     );

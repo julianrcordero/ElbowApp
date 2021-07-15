@@ -33,6 +33,7 @@ const unlockListing = async (post, onUploadProgress) => {
 };
 
 const deleteListing = (id, onUploadProgress) => {
+  console.log("deleting:", id);
   return client.delete("post/" + id, {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),

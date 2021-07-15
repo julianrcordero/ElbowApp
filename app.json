@@ -1,8 +1,12 @@
 {
   "expo": {
-    "name": "Elbow App",
+    "name": "Elbow (Alpha Build)",
     "slug": "ElbowApp",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./app/assets/icon.png",
@@ -14,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },

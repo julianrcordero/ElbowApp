@@ -62,8 +62,8 @@ export default class CarouselCard extends Component {
       (progress) => this.setState({ progress: progress })
     );
 
+    this.setState({ uploadVisible: false });
     if (!result.ok) {
-      this.setState({ uploadVisible: false });
       return Alert.alert(result.data.message, result.data.reason, [
         { text: "OK", onPress: () => {} },
         // { text: "No", onPress: () => {} },
@@ -91,14 +91,16 @@ export default class CarouselCard extends Component {
   };
 
   handleDelete = async () => {
-    // this.setState({ progress: 0, uploadVisible: true });
+    this.setState({ progress: 0, uploadVisible: true });
+
+    console.log("delete", this.props.id);
 
     const result = await postsApi.deleteListing(this.props.id, (progress) =>
       this.setState({ progress: progress })
     );
 
+    this.setState({ uploadVisible: false });
     if (!result.ok) {
-      // setUploadVisible(false);
       return Alert.alert(result.data.message, result.data.reason, [
         { text: "OK", onPress: () => {} },
         // { text: "No", onPress: () => {} },
@@ -106,11 +108,32 @@ export default class CarouselCard extends Component {
     } else {
       let myMap = this.props.map.current;
 
-      myMap?.setState({
-        tourFilteredList: myMap?.state.tourFilteredList.filter(
-          (mapPoint) => mapPoint.id !== this.props.id
-        ),
+      myMap?.setState((prevState) => {
+        return {
+          tourFilteredList: prevState.tourFilteredList.filter(
+            (mapPoint) => mapPoint.id !== this.props.id
+          ),
+        };
       });
+
+      // this.setState(
+      //   (prevState) => {
+      //     const items = [...generateItems(10), ...this.state.items];
+      //     return {
+      //       items,
+      //       dataProvider: prevState.dataProvider.cloneWithRows(items),
+      //     };
+      //   },
+      //   () => {
+      //     if (preserveScrollPosition) {
+      //       const topRowNewIndex = _.findIndex(this.state.items, topRow);
+      //       const topRowNewOffset = this._recyclerListView._virtualRenderer
+      //         .getLayoutManager()
+      //         .getOffsetForIndex(topRowNewIndex);
+      //       this._recyclerListView.scrollToOffset(0, topRowNewOffset.y + diff);
+      //     }
+      //   }
+      // );
     }
   };
 
@@ -155,8 +178,8 @@ export default class CarouselCard extends Component {
         <ActivityIndicator visible={this.state.uploadVisible} />
         <View
           style={{
+            backgroundColor: colors.white,
             height: height,
-            marginVertical: 15,
             padding: 30,
             width: width,
           }}

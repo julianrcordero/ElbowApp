@@ -19,6 +19,7 @@ export default class Carousel extends Component {
     this.state = {
       addPostMode: false,
       createdTours: [],
+      data: props.map.current?.state.tourFilteredList,
       locker: [],
       progress: 0,
       tour: null,
@@ -32,13 +33,15 @@ export default class Carousel extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.subscribedTours !== this.state.subscribedTours) {
+    if (prevState.data !== this.state.data) {
+      console.log("data updated:", this.state.data.length);
     }
   }
 
   async loadTours() {
     const subscribedTours = await postsApi.getSubscribedTours();
     const createdTours = await postsApi.getCreatedTours();
+
     const locker = await postsApi.getLocker();
     this.setState({
       createdTours: createdTours.data.tours ?? [],
@@ -147,7 +150,7 @@ export default class Carousel extends Component {
           >
             <AppText
               style={{
-                fontSize: 35,
+                fontSize: 25,
                 fontWeight: "bold",
                 // marginVertical: 15,
                 textAlign: "center",
@@ -179,7 +182,7 @@ export default class Carousel extends Component {
         {mapView.current ? (
           <FlatList
             bounces={false}
-            data={map.current?.state.tourFilteredList}
+            data={this.state.data}
             decelerationRate={"fast"}
             extraData={this.state.filter}
             getItemLayout={this.getItemLayout}

@@ -68,7 +68,6 @@ export default function App() {
 
     // const idToken = session.getIdToken().getJwtToken(); //authStorage.getIdToken();
     if (user) {
-      console.log("setting user to user context");
       setUser(user);
     }
   };
@@ -100,7 +99,7 @@ export default function App() {
   // );
 
   const postViewHeader = () => (
-    <View style={[styles.header, { backgroundColor: colors.white }]}>
+    <View style={[styles.header, { backgroundColor: colors.primary }]}>
       {/* <BottomSheetToolBar /> */}
       <View></View>
       <Button
@@ -188,7 +187,7 @@ const styles = {
     alignItems: "center",
     backgroundColor: colors.light,
     borderColor: colors.medium,
-    borderTopWidth: 0.2,
+    borderTopWidth: 1,
     flexDirection: "row",
     height: 50,
     justifyContent: "space-between",
