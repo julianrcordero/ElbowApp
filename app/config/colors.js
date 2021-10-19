@@ -1,10 +1,13 @@
 export default {
-  primary: "#808000",
+  primary: "#ff00ff",
   secondary: "#a5a5a5",
   black: "#000",
   white: "#fff",
-  medium: "#25282A",
-  light: "#f8f4f4",
+  medium: "#dcdcdc",
+  light: "#d3d3d3",
   dark: "#0c0c0c",
   danger: "#ff5252",
+  fumika: "#82744f",
+  transparent: "transparent",
+  goldenrod: "#daa520",
 };

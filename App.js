@@ -34,6 +34,7 @@ import TopSheetNavigation from "./app/components/TopSheetNavigation";
 import PostContentScreen from "./app/screens/PostContentScreen";
 import Carousel from "./app/components/Carousel";
 import * as Location from "expo-location";
+import HomeNavigator from "./app/navigation/HomeNavigator";
 const Stack = createStackNavigator();
 const { height, width } = Dimensions.get("window");
 
@@ -145,20 +146,21 @@ export default function App() {
         <NavigationContainer ref={navigationRef}>
           <AuthContext.Provider value={{ user, setUser }}>
             {user ? (
-              <AppNavigator
-                bottomSheetRef={bottomSheetRef}
-                bottomSheetContent={bottomSheetContent}
-                carousel={carousel}
-                // currentBook={currentBook}
-                fontSize={fontSize}
-                crossrefSize={crossrefSize}
-                titleSize={titleSize}
-                topPanel={topPanel}
-                map={map}
-                mapView={mapView}
-                user={user}
-              />
+              <HomeNavigator />
             ) : (
+              // <AppNavigator
+              //   bottomSheetRef={bottomSheetRef}
+              //   bottomSheetContent={bottomSheetContent}
+              //   carousel={carousel}
+              //   // currentBook={currentBook}
+              //   fontSize={fontSize}
+              //   crossrefSize={crossrefSize}
+              //   titleSize={titleSize}
+              //   topPanel={topPanel}
+              //   map={map}
+              //   mapView={mapView}
+              //   user={user}
+              // />
               <AuthNavigator />
             )}
           </AuthContext.Provider>

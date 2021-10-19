@@ -54,7 +54,7 @@ export default function ToursScreen({ navigation }) {
           width: "100%",
         }}
       >
-        {"Tours"}
+        {"My Tours"}
       </AppText>
       {/* {getSubscribedToursApi.error && (
         <>

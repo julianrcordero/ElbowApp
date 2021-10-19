@@ -1,63 +1,58 @@
 import React from "react";
-import { ImageBackground, StyleSheet, View, Image, Text } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 
 import AppButton from "../../components/Button";
+import colors from "../../config/colors";
 
 function WelcomeScreen({ navigation }) {
   const navigateToLogin = () => navigation.navigate("Login");
 
   return (
-    <ImageBackground
-      // blurRadius={3}
-      style={styles.background}
-      source={require("../../assets/Elbow2.png")}
-    >
-      {/* <View style={styles.logoContainer}>
+    <View style={styles.container}>
+      <View style={styles.logo}>
         <Image
-          style={styles.logo}
-          source={require("../assets/studyBibleAppLogo.jpg")}
+          source={require("../../assets/Elbow2.png")}
+          resizeMode="contain"
+          style={styles.image}
         />
-        <Text style={styles.tagline}>
-          Unleash God's truth, one verse at a time
-        </Text>
-      </View> */}
-      <View style={styles.buttonsContainer}>
-        <AppButton title="Login" onPress={navigateToLogin}></AppButton>
-        {/* <AppButton
-          title="Register"
-          color="secondary"
-          onPress={() => navigation.navigate("Register")}
-        ></AppButton> */}
       </View>
-    </ImageBackground>
+      <View style={styles.buttons}>
+        <AppButton
+          title="Sign Up"
+          onPress={() => console.log("navigate to sign up")}
+          color="transparent"
+          style={styles.signUp}
+          textColor="white"
+        ></AppButton>
+        <AppButton
+          title="Login"
+          onPress={navigateToLogin}
+          color="white"
+          textColor="primary"
+        ></AppButton>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    // flex: 1,
-    height: "100%",
-    justifyContent: "flex-end",
+  buttons: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+  container: {
+    backgroundColor: colors.primary,
+    flex: 1,
     alignItems: "center",
   },
-  buttonsContainer: {
-    paddingBottom: 100,
-    width: "75%",
-  },
+  image: { height: 200, marginVertical: 40 },
   logo: {
-    width: 100,
-    height: 100,
+    justifyContent: "flex-end",
+    flex: 1,
   },
-  logoContainer: {
-    position: "absolute",
-    top: 70,
-    alignItems: "center",
-  },
-  tagline: {
-    fontSize: 20,
-    fontWeight: "600",
-    // paddingVertical: 15,
-  },
+  signUp: { borderWidth: 1, borderColor: colors.white },
 });
 
 export default WelcomeScreen;
