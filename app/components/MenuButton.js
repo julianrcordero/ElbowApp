@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   text: {
-    // backgroundColor: "green",
     color: colors.black,
     fontSize: 10,
     textTransform: "uppercase",

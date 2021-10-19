@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
   search: {
     alignItems: "center",
     aspectRatio: 0.8,
-    // backgroundColor: "green",
     // flexShrink: 1,
     justifyContent: "center",
   },

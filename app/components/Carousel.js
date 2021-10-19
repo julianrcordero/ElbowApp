@@ -164,7 +164,6 @@ export default class Carousel extends Component {
               onValueChange={this.onValueChange}
               style={{
                 // alignSelf: "center",
-                // backgroundColor: "green",
                 height: "100%",
                 justifyContent: "center",
                 // paddingHorizontal: 30,

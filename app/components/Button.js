@@ -16,16 +16,14 @@ function AppButton({ title, onPress, color = "primary", ...otherProps }) {
 
 const styles = StyleSheet.create({
   button: {
-    // flexDirection: "row",
-    backgroundColor: colors.primary,
-    borderRadius: 15,
-    // flex: 1,
+    backgroundColor: "blue",
+    borderRadius: 25,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
     paddingHorizontal: 20,
-    width: "75%",
+    width: "85%",
     marginVertical: 10,
   },
   text: {

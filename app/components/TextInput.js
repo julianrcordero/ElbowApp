@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   textInput: {
-    // backgroundColor: "green",
     flex: 1,
   },
 });

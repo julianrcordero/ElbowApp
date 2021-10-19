@@ -33,7 +33,7 @@ function AppPicker({
   };
 
   const renderItem = ({ item }) => (
-    // <AppText style={{ backgroundColor: "green" }}>{item.title}</AppText>
+    // <AppText>{item.title}</AppText>
     <PickerItemComponent
       item={item}
       label={item.title}
