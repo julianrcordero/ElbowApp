@@ -4,6 +4,7 @@ import AppText from "../Text";
 
 function ErrorMessage({ error, visible }) {
   if (!visible || !error) return null;
+  console.log(error);
 
   return <AppText style={styles.error}>{error}</AppText>;
 }

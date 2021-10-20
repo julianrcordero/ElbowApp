@@ -11,7 +11,10 @@ import colors from "../config/colors";
 const Stack = createStackNavigator();
 
 const AuthNavigator = () => (
-  <Stack.Navigator initialRouteName="Welcome">
+  <Stack.Navigator
+    initialRouteName="Welcome"
+    screenOptions={{ headerTintColor: colors.white }}
+  >
     <Stack.Screen
       name="Welcome"
       component={WelcomeScreen}

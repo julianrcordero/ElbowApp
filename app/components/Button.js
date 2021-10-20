@@ -24,7 +24,7 @@ function AppButton({
 const styles = StyleSheet.create({
   button: {
     borderRadius: 25,
-    height: 40,
+    height: 45,
     justifyContent: "center",
     alignItems: "center",
     width: "60%",

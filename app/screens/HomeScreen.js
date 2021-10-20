@@ -17,7 +17,7 @@ import colors from "../config/colors";
 
 function ButtonSection({ more, textColor, title }) {
   return (
-    <View style={{ paddingVertical: 5 }}>
+    <View style={{}}>
       <Text style={{ fontSize: 14, fontWeight: "800", color: textColor }}>
         {title}
       </Text>
@@ -72,9 +72,9 @@ export default function HomeScreen({ navigation }) {
           }}
         ></View>
       </View>
-      {/* <ScrollView style={{ flex: 1 }}> */}
       <View style={styles.sectionOne}>
         <ButtonSection title="Recent Posts" textColor={colors.white} />
+        <View style={{ height: 7.5 }}></View>
         <ButtonSection
           title="My Tours"
           textColor={colors.white}
@@ -88,10 +88,23 @@ export default function HomeScreen({ navigation }) {
           more={() => navigation.navigate("Adventures")}
         />
       </View>
-      {/* </ScrollView> */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.mapButton} onPress={logOut}>
+        <View style={{ backgroundColor: colors.white, height: 70 }}></View>
+        <TouchableOpacity
+          style={styles.mapButton}
+          onPress={() => navigation.navigate("Map")}
+        >
           <MaterialCommunityIcons name="map" color={colors.primary} size={55} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ alignSelf: "flex-end", bottom: -10 }}
+          onPress={logOut}
+        >
+          <MaterialCommunityIcons
+            name="logout"
+            color={colors.white}
+            size={50}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -101,7 +114,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: colors.primary,
-    height: 75,
+    height: 140,
   },
   mapButton: {
     alignItems: "center",
@@ -111,23 +124,24 @@ const styles = StyleSheet.create({
     borderColor: colors.goldenrod,
     borderRadius: 47.5,
     borderWidth: 5,
-    bottom: 27.5,
+    bottom: 22.5,
     height: 95,
     justifyContent: "center",
     position: "absolute",
   },
   sectionOne: {
     backgroundColor: colors.primary,
-    justifyContent: "space-evenly",
+    // flex: 1,
+    justifyContent: "flex-start",
     paddingHorizontal: 45,
-    paddingVertical: 5,
+    paddingVertical: 12.5,
   },
   sectionTwo: {
     backgroundColor: colors.white,
     flex: 1,
     justifyContent: "flex-start",
     paddingHorizontal: 45,
-    paddingVertical: 5,
+    paddingTop: 12.5,
   },
   square: {
     alignItems: "center",

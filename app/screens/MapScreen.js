@@ -385,123 +385,168 @@ export default class MapScreen extends Component {
     const { getPostsApi, mapView } = this.props;
 
     return (
-      <View style={styles.container}>
-        <MapView
-          customMapStyle={this.customMapStyle}
-          followsUserLocation
-          mapPadding={this.mapPadding}
-          ref={mapView}
-          style={this.mapStyle}
-          region={this.state.region}
-          onUserLocationChange={this.onUserLocationChange}
-          // onMapReady={this.goToInitialLocation}
-          onRegionChangeComplete={this.onRegionChangeComplete}
-          provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-          style={styles.map}
-          showsUserLocation
-          zoomEnabled
-        >
-          {this.state.placeMarkerMode === true ? (
-            <Marker
-              draggable
-              pinColor={"green"}
-              coordinate={this.state.placeMarkerCoordinate}
-              onDragEnd={(e) => {
-                this.setState({
-                  placeMarkerCoordinate: e.nativeEvent.coordinate,
-                });
-              }}
-            />
-          ) : (
-            this.state.tourFilteredList.map((marker) => (
+      <>
+        <View style={styles.container}>
+          <MapView
+            customMapStyle={this.customMapStyle}
+            followsUserLocation
+            mapPadding={this.mapPadding}
+            ref={mapView}
+            style={this.mapStyle}
+            region={this.state.region}
+            onUserLocationChange={this.onUserLocationChange}
+            // onMapReady={this.goToInitialLocation}
+            onRegionChangeComplete={this.onRegionChangeComplete}
+            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+            style={styles.map}
+            showsUserLocation
+            zoomEnabled
+          >
+            {this.state.placeMarkerMode === true ? (
               <Marker
-                // draggable
-                key={marker.id}
-                pinColor={this.state.markersColor}
-                coordinate={{
-                  latitude: marker.latitude,
-                  longitude: marker.longitude,
+                draggable
+                pinColor={"green"}
+                coordinate={this.state.placeMarkerCoordinate}
+                onDragEnd={(e) => {
+                  this.setState({
+                    placeMarkerCoordinate: e.nativeEvent.coordinate,
+                  });
                 }}
-                title={marker.description}
-                description={marker.title}
-                onPress={() => this.clickToMarker(marker)}
               />
-            ))
-          )}
-        </MapView>
-        <ActivityIndicator visible={getPostsApi.loading} />
-        <View style={styles.overlay}>
+            ) : (
+              this.state.tourFilteredList.map((marker) => (
+                <Marker
+                  // draggable
+                  key={marker.id}
+                  pinColor={this.state.markersColor}
+                  coordinate={{
+                    latitude: marker.latitude,
+                    longitude: marker.longitude,
+                  }}
+                  title={marker.description}
+                  description={marker.title}
+                  onPress={() => this.clickToMarker(marker)}
+                />
+              ))
+            )}
+          </MapView>
+          <ActivityIndicator visible={getPostsApi.loading} />
+          {/* <View style={styles.overlay}>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "limegreen" }]}
+              onPress={this.showLockerPosts}
+            >
+              <MaterialCommunityIcons
+                name="locker"
+                color={colors.black}
+                size={28}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "dodgerblue" }]}
+              onPress={this.showMyPosts}
+            >
+              <MaterialCommunityIcons
+                name="map-marker-multiple"
+                color={colors.black}
+                size={28}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "crimson" }]}
+              onPress={this.searchMarkers}
+            >
+              <MaterialCommunityIcons
+                name="map-marker-question"
+                color={colors.black}
+                size={28}
+              />
+            </TouchableOpacity>
+          </View> */}
+          {/* <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                backgroundColor: "limegreen",
+                borderRadius: 35,
+                bottom: 100,
+                position: "absolute",
+                width: 70,
+              },
+            ]}
+            onPress={this.openBottomSheet}
+          >
+            {this.state.placeMarkerMode ? (
+              <Text>{"DONE"}</Text>
+            ) : (
+              <MaterialCommunityIcons
+                name="map-marker-plus"
+                color={colors.black}
+                size={28}
+              />
+            )}
+          </TouchableOpacity> */}
+        </View>
+        <View style={styles.footer}>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "limegreen" }]}
-            onPress={this.showLockerPosts}
+            style={styles.refreshButton}
+            onPress={() => console.log("refresh posts")}
           >
             <MaterialCommunityIcons
-              name="locker"
-              color={colors.black}
-              size={28}
+              name="refresh"
+              color={colors.primary}
+              size={45}
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "dodgerblue" }]}
-            onPress={this.showMyPosts}
+            style={styles.addButton}
+            onPress={this.openBottomSheet}
           >
             <MaterialCommunityIcons
-              name="map-marker-multiple"
-              color={colors.black}
-              size={28}
+              name="map-marker-plus-outline"
+              color={colors.primary}
+              size={55}
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "crimson" }]}
+            style={styles.searchButton}
             onPress={this.searchMarkers}
           >
             <MaterialCommunityIcons
-              name="map-marker-question"
-              color={colors.black}
-              size={28}
+              name="map-marker"
+              color={colors.primary}
+              size={45}
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              backgroundColor: "limegreen",
-              borderRadius: 35,
-              bottom: 100,
-              position: "absolute",
-              width: 70,
-            },
-          ]}
-          onPress={this.openBottomSheet}
-        >
-          {this.state.placeMarkerMode ? (
-            <Text>{"DONE"}</Text>
-          ) : (
-            <MaterialCommunityIcons
-              name="map-marker-plus"
-              color={colors.black}
-              size={28}
-            />
-          )}
-        </TouchableOpacity>
-      </View>
+      </>
       //  34.2709266,-118.5139665,3a,90y,9.06h,70.3t
     );
   }
 }
 
 const styles = StyleSheet.create({
-  button: {
+  addButton: {
     alignItems: "center",
     aspectRatio: 1,
-    borderRadius: 30,
+    backgroundColor: colors.white,
+    borderColor: colors.goldenrod,
+    borderRadius: 47.5,
+    borderWidth: 5,
+    bottom: 35,
+    height: 95,
     justifyContent: "center",
-    width: 60,
   },
   container: {
     flex: 1,
+  },
+  footer: {
     alignItems: "center",
+    backgroundColor: colors.primary,
+    flexDirection: "row",
+    height: 70,
+    justifyContent: "space-between",
+    paddingHorizontal: 35,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -513,5 +558,27 @@ const styles = StyleSheet.create({
     top: 25,
     // backgroundColor: "cornflowerblue",
     width: "100%",
+  },
+  refreshButton: {
+    alignItems: "center",
+    aspectRatio: 1,
+    backgroundColor: colors.white,
+    borderColor: colors.goldenrod,
+    borderRadius: 47.5,
+    borderWidth: 5,
+    bottom: 35,
+    height: 80,
+    justifyContent: "center",
+  },
+  searchButton: {
+    alignItems: "center",
+    aspectRatio: 1,
+    backgroundColor: colors.white,
+    borderColor: colors.goldenrod,
+    borderRadius: 47.5,
+    borderWidth: 5,
+    bottom: 35,
+    height: 80,
+    justifyContent: "center",
   },
 });

@@ -118,7 +118,7 @@ export default function ToursScreen({ navigation }) {
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: colors.primary,
-    height: 85,
+    height: 70,
   },
   imageBackground: {
     alignItems: "center",

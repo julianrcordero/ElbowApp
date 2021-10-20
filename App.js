@@ -146,7 +146,19 @@ export default function App() {
         <NavigationContainer ref={navigationRef}>
           <AuthContext.Provider value={{ user, setUser }}>
             {user ? (
-              <HomeNavigator />
+              <HomeNavigator
+                bottomSheetRef={bottomSheetRef}
+                bottomSheetContent={bottomSheetContent}
+                carousel={carousel}
+                // currentBook={currentBook}
+                fontSize={fontSize}
+                crossrefSize={crossrefSize}
+                titleSize={titleSize}
+                topPanel={topPanel}
+                map={map}
+                mapView={mapView}
+                user={user}
+              />
             ) : (
               // <AppNavigator
               //   bottomSheetRef={bottomSheetRef}

@@ -37,9 +37,9 @@ function WelcomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   buttons: {
+    alignItems: "center",
     flex: 1,
     justifyContent: "flex-start",
-    alignItems: "center",
     width: "100%",
   },
   container: {
@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
-  image: { height: 200, marginVertical: 40 },
+  image: { height: 200, marginBottom: 50 },
   logo: {
     justifyContent: "flex-end",
     flex: 1,
   },
-  signUp: { borderWidth: 1, borderColor: colors.white },
+  signUp: { borderWidth: 1, borderColor: colors.white, marginTop: 25 },
 });
 
 export default WelcomeScreen;

@@ -16,7 +16,7 @@ function AppFormField({
     useFormikContext();
 
   return (
-    <View style={{}}>
+    <View style={{ marginVertical: 5 }}>
       <TextInput
         onBlur={() => setFieldTouched(name)}
         onChangeText={(text) => setFieldValue(name, text)}
@@ -26,10 +26,10 @@ function AppFormField({
         style={{
           borderBottomWidth: 1,
           borderColor: colors.light,
-          textAlign: "center",
-          width: "60%",
           color: colors.medium,
           fontWeight: "700",
+          textAlign: "center",
+          width: "60%",
         }}
         {...otherProps}
       />
