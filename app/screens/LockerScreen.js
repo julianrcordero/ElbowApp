@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator as Indicator,
+  Dimensions,
   FlatList,
+  ImageBackground,
+  ScrollView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import ActivityIndicator from "../components/ActivityIndicator";
-import Button from "../components/Button";
-import Card from "../components/Card";
 import colors from "../config/colors";
 import postsApi from "../api/posts";
 import useApi from "../hooks/useApi";
@@ -15,67 +20,120 @@ import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
 
-export default function LockerScreen({ navigation }) {
-  const getPostsApi = useApi(postsApi.getLocker);
+function Square({ fileURL, icon, title }) {
+  return (
+    <TouchableOpacity style={styles.square}>
+      <ImageBackground
+        imageStyle={{ borderRadius: 10 }}
+        source={
+          fileURL ? { uri: fileURL } : require("../assets/michaelScott.jpg")
+        }
+        style={styles.imageBackground}
+      >
+        {icon && (
+          <MaterialCommunityIcons
+            name={icon}
+            color={colors.white}
+            size={32}
+            style={{ marginTop: 25 }}
+          />
+        )}
+        {title && (
+          <Text
+            style={{ color: colors.white, fontSize: 14, fontWeight: "800" }}
+          >
+            {title}
+          </Text>
+        )}
+      </ImageBackground>
+    </TouchableOpacity>
+  );
+}
+
+export default function ToursScreen({ navigation }) {
+  const getSubscribedToursApi = useApi(postsApi.getLocker);
 
   useEffect(() => {
-    getPostsApi.request();
+    loadTours();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <Card
-      category={item.category}
-      dataType={item.dataType}
-      thumbnailUrl={item.fileURL}
-      hint={item.hint}
-      location={item.location}
-      mimeType={item.mimeType}
-      title={`${item.location.lat},\t${item.location.lon}`}
-      // title={item.title}
-      // subTitle={item.scripture}
-      // imageUrl={item.images[0].url}
-      // onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-      // thumbnailUrl={item.imageUrl}
-    />
-  );
+  const loadTours = () => {
+    getSubscribedToursApi.request();
+  };
 
-  const keyExtractor = (listing) => listing.id.toString();
+  console.log(getSubscribedToursApi.data.posts);
 
   return (
     <Screen style={styles.screen}>
-      <AppText
-        style={{
-          // borderWidth: 0.5,
-          fontSize: 35,
-          fontWeight: "bold",
-          marginVertical: 15,
-          textAlign: "center",
-          width: "100%",
-        }}
-      >
-        {"Locker"}
-      </AppText>
-      {/* {getPostsApi.error && (
+      <TouchableOpacity style={{}} onPress={loadTours}>
+        <AppText
+          style={{
+            color: colors.primary,
+            fontSize: 40,
+            fontWeight: "bold",
+            marginVertical: 25,
+            paddingHorizontal: 45,
+          }}
+        >
+          {"My Adventures"}
+        </AppText>
+      </TouchableOpacity>
+      {/* {getSubscribedToursApi.error && (
         <>
           <AppText>Couldn't retrieve the posts.</AppText> */}
-      <Button title="Retry" onPress={getPostsApi.request} />
       {/* </>
       )} */}
-      <ActivityIndicator visible={getPostsApi.loading} />
-      {/* <Indicator animating={getPostsApi.loading} size={"large"} /> */}
-      <FlatList
-        data={getPostsApi.data.posts}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        style={{ marginHorizontal: 30 }}
-      />
+      <ActivityIndicator visible={getSubscribedToursApi.loading} />
+      {/* <Indicator animating={getSubscribedToursApi.loading} size={"large"} /> */}
+      {!getSubscribedToursApi.loading && (
+        <ScrollView
+          contentContainerStyle={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            marginHorizontal: 35,
+          }}
+        >
+          <Square key={"unlock"} icon={"block-helper"} title={"UNLOCK"} />
+          <Square
+            key={"continue"}
+            icon={"microsoft-internet-explorer"}
+            title={"CONTINUE"}
+          />
+          {getSubscribedToursApi.data.posts?.map((item) => (
+            <Square
+              key={item.ID}
+              fileURL={item.fileURL}
+              // icon={"microsoft-internet-explorer"}
+              title={item.title}
+            />
+          ))}
+        </ScrollView>
+      )}
+      <View style={styles.footer}></View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  footer: {
+    backgroundColor: colors.primary,
+    height: 85,
+  },
+  imageBackground: {
+    alignItems: "center",
+    aspectRatio: 1,
+    flex: 1,
+    justifyContent: "space-between",
+    paddingVertical: 30,
+  },
   screen: {
-    // padding: 20,
-    backgroundColor: colors.light,
+    backgroundColor: colors.white,
+  },
+  square: {
+    height: Dimensions.get("window").width / 2.75,
+    marginBottom: 20,
+    marginHorizontal: 10,
+    width: Dimensions.get("window").width / 2.75,
   },
 });

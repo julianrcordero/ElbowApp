@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import {
   Button,
   Dimensions,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,7 +17,7 @@ import colors from "../config/colors";
 
 function ButtonSection({ more, textColor, title }) {
   return (
-    <>
+    <View style={{ paddingVertical: 5 }}>
       <Text style={{ fontSize: 14, fontWeight: "800", color: textColor }}>
         {title}
       </Text>
@@ -37,7 +38,7 @@ function ButtonSection({ more, textColor, title }) {
           />
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   );
 }
 
@@ -53,13 +54,25 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <View style={{ backgroundColor: "green", flex: 1 }}>
+    <View style={{ backgroundColor: colors.white, flex: 1 }}>
       <View style={styles.titleSection}>
         <AppText style={styles.title}>{"My Profile"}</AppText>
         <Text style={{ fontSize: 12, color: colors.primary }}>
           {"Level 1: Scavenger"}
         </Text>
+        <View
+          style={{
+            backgroundColor: colors.transparent,
+            borderColor: colors.primary,
+            borderRadius: 5,
+            borderWidth: 1,
+            height: 10,
+            marginVertical: 5,
+            width: "100%",
+          }}
+        ></View>
       </View>
+      {/* <ScrollView style={{ flex: 1 }}> */}
       <View style={styles.sectionOne}>
         <ButtonSection title="Recent Posts" textColor={colors.white} />
         <ButtonSection
@@ -69,8 +82,13 @@ export default function HomeScreen({ navigation }) {
         />
       </View>
       <View style={styles.sectionTwo}>
-        <ButtonSection title="My Adventures" textColor={colors.primary} />
+        <ButtonSection
+          title="My Adventures"
+          textColor={colors.primary}
+          more={() => navigation.navigate("Adventures")}
+        />
       </View>
+      {/* </ScrollView> */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.mapButton} onPress={logOut}>
           <MaterialCommunityIcons name="map" color={colors.primary} size={55} />
@@ -83,7 +101,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   footer: {
     backgroundColor: colors.primary,
-    height: 85,
+    height: 75,
   },
   mapButton: {
     alignItems: "center",
@@ -93,21 +111,23 @@ const styles = StyleSheet.create({
     borderColor: colors.goldenrod,
     borderRadius: 47.5,
     borderWidth: 5,
-    bottom: 37.5,
+    bottom: 27.5,
     height: 95,
     justifyContent: "center",
     position: "absolute",
   },
   sectionOne: {
     backgroundColor: colors.primary,
-    paddingHorizontal: 40,
-    paddingVertical: 30,
+    justifyContent: "space-evenly",
+    paddingHorizontal: 45,
+    paddingVertical: 5,
   },
   sectionTwo: {
     backgroundColor: colors.white,
     flex: 1,
-    paddingHorizontal: 40,
-    paddingVertical: 30,
+    justifyContent: "flex-start",
+    paddingHorizontal: 45,
+    paddingVertical: 5,
   },
   square: {
     alignItems: "center",
@@ -115,13 +135,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     justifyContent: "center",
-    width: Dimensions.get("window").width / 5.6,
+    width: Dimensions.get("window").width / 5.8,
   },
   squares: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 7.5,
-    paddingBottom: 20,
+    paddingVertical: 10,
   },
   title: {
     color: colors.primary,
@@ -132,7 +151,8 @@ const styles = StyleSheet.create({
   },
   titleSection: {
     backgroundColor: colors.white,
-    paddingHorizontal: 40,
-    paddingVertical: 30,
+    justifyContent: "center",
+    paddingHorizontal: 45,
+    paddingVertical: 25,
   },
 });

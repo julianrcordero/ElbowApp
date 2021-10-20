@@ -3,6 +3,7 @@ import {
   ActivityIndicator as Indicator,
   Dimensions,
   FlatList,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,19 +23,27 @@ import AppText from "../components/Text";
 function Square({ icon, title }) {
   return (
     <TouchableOpacity style={styles.square}>
-      {icon && (
-        <MaterialCommunityIcons
-          name={icon}
-          color={colors.white}
-          size={32}
-          style={{ marginTop: 25 }}
-        />
-      )}
-      {title && (
-        <Text style={{ color: colors.white, fontSize: 14, fontWeight: "800" }}>
-          {title}
-        </Text>
-      )}
+      <ImageBackground
+        imageStyle={{ borderRadius: 10 }}
+        source={require("../assets/michaelScott.jpg")}
+        style={styles.imageBackground}
+      >
+        {icon && (
+          <MaterialCommunityIcons
+            name={icon}
+            color={colors.white}
+            size={32}
+            style={{ marginTop: 25 }}
+          />
+        )}
+        {title && (
+          <Text
+            style={{ color: colors.white, fontSize: 14, fontWeight: "800" }}
+          >
+            {title}
+          </Text>
+        )}
+      </ImageBackground>
     </TouchableOpacity>
   );
 }
@@ -58,8 +67,8 @@ export default function ToursScreen({ navigation }) {
             color: colors.primary,
             fontSize: 40,
             fontWeight: "bold",
-            marginVertical: 30,
-            paddingHorizontal: 40,
+            marginVertical: 25,
+            paddingHorizontal: 45,
           }}
         >
           {"My Tours"}
@@ -78,7 +87,7 @@ export default function ToursScreen({ navigation }) {
             flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "space-between",
-            marginHorizontal: 30,
+            marginHorizontal: 35,
           }}
         >
           <Square key={"unlock"} icon={"block-helper"} title={"UNLOCK"} />
@@ -88,11 +97,7 @@ export default function ToursScreen({ navigation }) {
             title={"CONTINUE"}
           />
           {getSubscribedToursApi.data.tours?.map((item) => (
-            <Square
-              key={item.ID}
-              // icon={item.title}
-              title={item.title}
-            />
+            <Square key={item.ID} title={item.title} />
           ))}
         </ScrollView>
       )}
@@ -106,21 +111,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     height: 85,
   },
+  imageBackground: {
+    alignItems: "center",
+    aspectRatio: 1,
+    flex: 1,
+    justifyContent: "space-between",
+    paddingVertical: 30,
+  },
   screen: {
     backgroundColor: colors.white,
   },
   square: {
-    alignItems: "center",
-    backgroundColor: colors.primary,
-    borderColor: colors.white,
-    borderRadius: 10,
-    borderWidth: 1,
-    height: Dimensions.get("window").width / 2.7,
-    justifyContent: "space-between",
-    marginBottom: 30,
+    height: Dimensions.get("window").width / 2.75,
+    marginBottom: 20,
     marginHorizontal: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 25,
-    width: Dimensions.get("window").width / 2.7,
+    width: Dimensions.get("window").width / 2.75,
   },
 });
