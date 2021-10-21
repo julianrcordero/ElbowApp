@@ -49,7 +49,6 @@ function PostsScreen({ navigation }) {
     <Screen style={styles.screen}>
       <AppText
         style={{
-          // borderWidth: 0.5,
           fontSize: 35,
           fontWeight: "bold",
           marginVertical: 15,

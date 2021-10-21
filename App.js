@@ -100,9 +100,12 @@ export default function App() {
   // );
 
   const postViewHeader = () => (
-    <View style={[styles.header, { backgroundColor: colors.primary }]}>
-      {/* <BottomSheetToolBar /> */}
-      <View></View>
+    <View
+      style={[
+        styles.header,
+        { backgroundColor: colors.goldenrod, borderColor: colors.white },
+      ]}
+    >
       <Button
         title="Done"
         onPress={snapToHalf}
@@ -181,9 +184,9 @@ export default function App() {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={[top, "35%", "0%"]}
+        snapPoints={[top, "40%", "0%"]}
         initialSnap={2}
-        renderHeader={postViewHeader} // : postViewHeader}
+        // renderHeader={postViewHeader}
         renderContent={renderCarousel}
         style={{ backgroundColor: colors.white, minHeight: height }}
         // onCloseEnd={() => setFocusedVerse(null)}
@@ -203,7 +206,7 @@ const styles = {
     borderColor: colors.medium,
     borderTopWidth: 1,
     flexDirection: "row",
-    height: 50,
+    height: 60,
     justifyContent: "space-between",
     paddingHorizontal: 15,
     width: "100%",

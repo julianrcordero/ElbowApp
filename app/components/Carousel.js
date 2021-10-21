@@ -11,13 +11,17 @@ import postsApi from "../api/posts";
 const { height, width } = Dimensions.get("window");
 
 import { Auth } from "aws-amplify";
+import CreateScreen from "../screens/CreateScreen";
+import CreateNavigator from "../navigation/CreateNavigator";
+import { NavigationContainer } from "@react-navigation/native";
+import colors from "../config/colors";
 
 export default class Carousel extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      addPostMode: false,
+      addPostMode: true,
       createdTours: [],
       data: props.map.current?.state.tourFilteredList,
       locker: [],
@@ -128,9 +132,17 @@ export default class Carousel extends Component {
     const { bottomSheetRef, carousel, map, mapView, top, width } = this.props;
 
     return this.state.addPostMode ? (
-      <View style={{ backgroundColor: "white", height: "100%", width: width }}>
-        <PostContentScreen bottomSheetRef={bottomSheetRef} map={map} />
-      </View>
+      <NavigationContainer
+        theme={{
+          colors: {
+            background: colors.transparent,
+          },
+        }}
+      >
+        <View style={{ height: "100%", width: width }}>
+          <CreateNavigator />
+        </View>
+      </NavigationContainer>
     ) : (
       <View
         style={{

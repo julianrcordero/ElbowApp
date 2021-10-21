@@ -137,7 +137,7 @@ export default class MapScreen extends Component {
   openBottomSheet = (postMode = true) => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       setTimeout(() => {
-        this.props.bottomSheetRef.current?.snapTo(1);
+        this.props.bottomSheetRef.current?.snapTo(0);
         this.props.bottomSheetContent.current?.setState({
           addPostMode: postMode,
         });
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 70,
     justifyContent: "space-between",
-    paddingHorizontal: 35,
+    paddingHorizontal: 30,
   },
   map: {
     ...StyleSheet.absoluteFillObject,

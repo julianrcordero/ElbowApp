@@ -1,36 +1,27 @@
 import React, { useEffect, useState } from "react";
-import {
-  InteractionManager,
-  Keyboard,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
-import * as FileSystem from "expo-file-system";
-
 import {
   AppForm as Form,
   AppFormField as FormField,
+  AppFormInputBox as FormInputBox,
   AppFormPicker as Picker,
   SubmitButton,
 } from "../components/forms/Index";
-import AppText from "../components/Text";
-import CategoryPickerItem from "../components/CategoryPickerItem";
-import FormImagePicker from "../components/forms/FormImagePicker";
-import postsApi from "../api/posts";
-import UploadScreen from "./UploadScreen";
 import colors from "../config/colors";
+import postsApi from "../api/posts";
 import AppButton from "../components/Button";
 
+import * as FileSystem from "expo-file-system";
+
+import FormImage from "../components/forms/FormImage";
+
 const validationSchema = Yup.object().shape({
-  // title: Yup.string().required().min(1).label("Title"),
-  // price: Yup.number().required().min(1).max(10000).label("Price"),
   description: Yup.string().required().label("Description"),
   category: Yup.object().required().nullable().label("Category"),
   images: Yup.array().min(1, "Please select at least one image."),
-  // latitude: Yup.number().label("Latitude"),
-  // longitude: Yup.number().label("Longitude"),
 });
 
 const categories = [
@@ -41,13 +32,10 @@ const categories = [
     backgroundColor: "green",
     icon: "camera",
   },
-  // { label: "Clothing", value: 2, backgroundColor: "green", icon: "email" },
-  // { label: "Camera", value: 3, backgroundColor: "blue", icon: "lock" },
 ];
 
-function PostContentScreen({ bottomSheetRef, map }) {
+function CreatePostScreen({ navigation }) {
   const getCreatedToursApi = useApi(postsApi.getCreatedTours);
-
   useEffect(() => {
     getCreatedToursApi.request();
   }, []);
@@ -147,25 +135,8 @@ function PostContentScreen({ bottomSheetRef, map }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
-        <UploadScreen
-          onDone={() => setUploadVisible(false)}
-          progress={progress}
-          visible={uploadVisible}
-        />
-        <AppText
-          style={{
-            // borderWidth: 0.5,
-            fontSize: 35,
-            fontWeight: "bold",
-            // marginVertical: 15,
-            textAlign: "center",
-            width: "100%",
-          }}
-        >
-          {"Create a post"}
-        </AppText>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <View style={styles.buttons}>
         <Form
           initialValues={{
             title: "",
@@ -176,50 +147,39 @@ function PostContentScreen({ bottomSheetRef, map }) {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          {/* <FormField
-          maxLength={45}
-          name="title"
-          placeholder="Title"
-          icon="rename-box"
-        /> */}
           <Picker
             items={categories}
             name="category"
             numberOfColumns={3}
-            // PickerItemComponent={CategoryPickerItem}
             placeholder="Category"
-            width="75%"
           />
           <Picker
             items={getCreatedToursApi.data.tours}
             name="tour"
             loadData={getCreatedToursApi.request}
-            // PickerItemComponent={CategoryPickerItem}
             placeholder="Tour"
-            width="75%"
           />
-          <FormField
+          <FormImage name="image" />
+          <Text
+            style={{
+              textAlign: "left",
+              color: colors.white,
+              fontSize: 24,
+              padding: 10,
+              width: "100%",
+            }}
+          >
+            Description:{" "}
+          </Text>
+          <FormInputBox
             icon="newspaper-variant-outline"
             maxLength={255}
             multiline
             name="description"
             height={75}
             numberOfLines={2}
-            placeholder="Description"
+            placeholder="What's so cool about this place?"
           />
-          {/* <FormField
-          name="latitude"
-          placeholder="Latitude"
-          icon="latitude"
-          keyboardType="phone-pad"
-        />
-        <FormField
-          name="longitude"
-          placeholder="Longitude"
-          icon="longitude"
-          keyboardType="phone-pad"
-        /> */}
-          <FormImagePicker name="images" />
 
           <AppButton
             title="Set Marker"
@@ -229,18 +189,90 @@ function PostContentScreen({ bottomSheetRef, map }) {
 
           <SubmitButton title="Post" />
         </Form>
+        {/* <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Create a Post</Text>
+          <MaterialCommunityIcons
+            name={"plus"}
+            color={colors.white}
+            size={60}
+            style={{ marginTop: 10 }}
+          />
+        </TouchableOpacity>
+        <View style={{ height: 30 }}></View>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}> Create a Tour</Text>
+          <MaterialCommunityIcons
+            name={"plus"}
+            color={colors.white}
+            size={60}
+            style={{ marginTop: 10 }}
+          />
+        </TouchableOpacity> */}
       </View>
-    </TouchableWithoutFeedback>
+      <View style={styles.footer}>
+        <View
+          style={{ backgroundColor: "rgba(255,0,255, 0.6)", height: 70 }}
+        ></View>
+        <TouchableOpacity
+          style={styles.mapButton}
+          onPress={() => console.log("add")}
+        >
+          <MaterialCommunityIcons
+            name="map-marker-plus-outline"
+            color={colors.primary}
+            size={55}
+          />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  button: {
     alignItems: "center",
-    height: "100%",
-    // marginVertical: 15,
-    padding: 30,
-    // width: "75%",
+    aspectRatio: 1,
+    borderWidth: 1,
+    borderColor: colors.white,
+    borderRadius: 10,
+    flex: 1,
+    justifyContent: "center",
+    paddingTop: 50,
+    width: "100%",
+  },
+  buttons: {
+    alignItems: "center",
+    backgroundColor: "rgba(255,0,255, 0.6)",
+    flex: 1,
+    paddingHorizontal: 55,
+    paddingBottom: 70,
+    paddingVertical: 15,
+  },
+  buttonText: {
+    color: colors.white,
+    fontSize: 22,
+    fontWeight: "500",
+  },
+  container: {
+    flex: 1,
+  },
+  footer: {
+    backgroundColor: colors.primary,
+    height: 70,
+  },
+  mapButton: {
+    alignItems: "center",
+    alignSelf: "center",
+    aspectRatio: 1,
+    backgroundColor: colors.white,
+    borderColor: colors.goldenrod,
+    borderRadius: 47.5,
+    borderWidth: 5,
+    bottom: 22.5,
+    height: 95,
+    justifyContent: "center",
+    position: "absolute",
   },
 });
-export default PostContentScreen;
+
+export default CreatePostScreen;
