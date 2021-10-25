@@ -1,5 +1,5 @@
 export default {
-  primary: "#ff00ff",
+  primary: "#FF007A",
   secondary: "#a5a5a5",
   black: "#000",
   white: "#fff",
@@ -9,5 +9,5 @@ export default {
   danger: "#ff5252",
   fumika: "#82744f",
   transparent: "transparent",
-  goldenrod: "#daa520",
+  goldenrod: "#FFAA00",
 };

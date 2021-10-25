@@ -147,6 +147,16 @@ function CreatePostScreen({ navigation }) {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
+          <Text
+            style={{
+              color: colors.white,
+              fontSize: 24,
+              textAlign: "left",
+              width: "100%",
+            }}
+          >
+            Name Post:
+          </Text>
           <Picker
             items={categories}
             name="category"

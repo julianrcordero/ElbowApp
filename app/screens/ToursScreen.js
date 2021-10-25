@@ -3,6 +3,7 @@ import {
   ActivityIndicator as Indicator,
   Dimensions,
   FlatList,
+  Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -19,34 +20,7 @@ import useApi from "../hooks/useApi";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
-
-function Square({ icon, title }) {
-  return (
-    <TouchableOpacity style={styles.square}>
-      <ImageBackground
-        imageStyle={{ borderRadius: 10 }}
-        source={require("../assets/michaelScott.jpg")}
-        style={styles.imageBackground}
-      >
-        {icon && (
-          <MaterialCommunityIcons
-            name={icon}
-            color={colors.white}
-            size={32}
-            style={{ marginTop: 25 }}
-          />
-        )}
-        {title && (
-          <Text
-            style={{ color: colors.white, fontSize: 14, fontWeight: "800" }}
-          >
-            {title}
-          </Text>
-        )}
-      </ImageBackground>
-    </TouchableOpacity>
-  );
-}
+import Square from "../components/Square";
 
 export default function ToursScreen({ navigation }) {
   const getSubscribedToursApi = useApi(postsApi.getSubscribedTours);
@@ -115,8 +89,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     aspectRatio: 1,
     flex: 1,
-    justifyContent: "space-between",
-    paddingVertical: 30,
+    justifyContent: "center",
+    // paddingVertical: 30,
   },
   screen: {
     backgroundColor: colors.white,

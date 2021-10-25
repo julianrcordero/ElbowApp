@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, ImageBackground } from "react-native";
 
 import AppButton from "../../components/Button";
 import colors from "../../config/colors";
@@ -8,10 +8,13 @@ function WelcomeScreen({ navigation }) {
   const navigateToLogin = () => navigation.navigate("Login");
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require("../../assets/backgroundGradient.png")}
+      style={styles.container}
+    >
       <View style={styles.logo}>
         <Image
-          source={require("../../assets/Elbow2.png")}
+          source={require("../../assets/ElbowLogo.png")}
           resizeMode="contain"
           style={styles.image}
         />
@@ -31,7 +34,7 @@ function WelcomeScreen({ navigation }) {
           textColor="primary"
         ></AppButton>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -43,11 +46,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   container: {
-    backgroundColor: colors.primary,
     flex: 1,
     alignItems: "center",
   },
-  image: { height: 200, marginBottom: 50 },
+  image: { height: 120, marginBottom: 50 },
   logo: {
     justifyContent: "flex-end",
     flex: 1,
