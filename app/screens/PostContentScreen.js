@@ -56,7 +56,7 @@ function PostContentScreen({ bottomSheetRef, map }) {
   const [progress, setProgress] = useState(0);
 
   const setMarker = () => {
-    bottomSheetRef.current?.snapTo(2);
+    bottomSheetRef.current?.snapTo(1);
 
     map.current?.setState((state) => {
       return {

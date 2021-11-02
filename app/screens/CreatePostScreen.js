@@ -17,6 +17,7 @@ import AppButton from "../components/Button";
 import * as FileSystem from "expo-file-system";
 
 import FormImage from "../components/forms/FormImage";
+import ImageInput from "../components/ImageInput";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required().label("Description"),
@@ -44,7 +45,7 @@ function CreatePostScreen({ navigation }) {
   const [progress, setProgress] = useState(0);
 
   const setMarker = () => {
-    bottomSheetRef.current?.snapTo(2);
+    bottomSheetRef.current?.snapTo(1);
 
     map.current?.setState((state) => {
       return {
@@ -169,7 +170,7 @@ function CreatePostScreen({ navigation }) {
             loadData={getCreatedToursApi.request}
             placeholder="Tour"
           />
-          <FormImage name="image" />
+          <ImageInput imageUri={} />
           <Text
             style={{
               textAlign: "left",

@@ -73,8 +73,8 @@ export default function App() {
     }
   };
 
-  const snapToHalf = () => {
-    bottomSheetRef.current?.snapTo(2);
+  const snapAway = () => {
+    bottomSheetRef.current?.snapTo(1);
   };
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function App() {
 
   //     <Button
   //       title="Done"
-  //       onPress={snapToHalf}
+  //       onPress={snapAway}
   //       style={{ textAlign: "center" }}
   //     />
   //   </View>
@@ -108,7 +108,7 @@ export default function App() {
     >
       <Button
         title="Done"
-        onPress={snapToHalf}
+        onPress={snapAway}
         style={{ textAlign: "center" }}
       />
     </View>
@@ -184,8 +184,8 @@ export default function App() {
 
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={[top, "40%", "0%"]}
-        initialSnap={2}
+        snapPoints={[top, "0%"]}
+        initialSnap={1}
         // renderHeader={postViewHeader}
         renderContent={renderCarousel}
         style={{ backgroundColor: colors.white, minHeight: height }}
