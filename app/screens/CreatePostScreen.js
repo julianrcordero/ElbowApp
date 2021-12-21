@@ -43,6 +43,7 @@ function CreatePostScreen({ navigation }) {
 
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [imageUri, setImageUri] = useState();
 
   const setMarker = () => {
     bottomSheetRef.current?.snapTo(1);
@@ -170,7 +171,10 @@ function CreatePostScreen({ navigation }) {
             loadData={getCreatedToursApi.request}
             placeholder="Tour"
           />
-          <ImageInput imageUri={} />
+          <ImageInput
+            imageUri={imageUri}
+            onChangeImage={(uri) => setImageUri(uri)}
+          />
           <Text
             style={{
               textAlign: "left",
@@ -192,11 +196,11 @@ function CreatePostScreen({ navigation }) {
             placeholder="What's so cool about this place?"
           />
 
-          <AppButton
+          {/* <AppButton
             title="Set Marker"
             onPress={setMarker}
             color={"secondary"}
-          ></AppButton>
+          ></AppButton> */}
 
           <SubmitButton title="Post" />
         </Form>
