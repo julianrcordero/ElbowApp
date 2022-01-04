@@ -21,15 +21,6 @@ import ToursNavigator from "./ToursNavigator";
 
 const Tab = createBottomTabNavigator();
 
-const HEADER_HEIGHT = 70;
-const scrollY = new Animated.Value(0);
-const diffClampScrollY = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
-const headerY = Animated.interpolate(diffClampScrollY, {
-  inputRange: [0, HEADER_HEIGHT],
-  outputRange: [0, -HEADER_HEIGHT],
-});
-const navigationY = Animated.multiply(headerY, -1);
-
 const AppNavigator = (props) =>
   // { user }
   {
@@ -124,7 +115,7 @@ function MyTabBar({ state, descriptors, navigation }) {
         bottom: 0,
         height: 70,
         backgroundColor: colors.light,
-        transform: [{ translateY: navigationY }],
+        // transform: [{ translateY: navigationY }],
         // alignItems: "center",
         // justifyContent: "center",
       }}
