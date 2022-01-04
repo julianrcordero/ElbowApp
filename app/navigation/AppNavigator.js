@@ -33,7 +33,7 @@ const navigationY = Animated.multiply(headerY, -1);
 const AppNavigator = (props) =>
   // { user }
   {
-    useNotifications();
+    // useNotifications();
 
     const getPostsApi = useApi(postsApi.getPosts);
     const searchPostsApi = useApi(postsApi.searchPosts);

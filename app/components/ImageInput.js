@@ -10,8 +10,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import colors from "../config/colors";
+import { useFormikContext } from "formik";
 
-function ImageInput({ imageUri, onChangeImage }) {
+function ImageInput({ name, onChangeImage }) {
+  const { errors, setFieldValue, touched, values } = useFormikContext();
+
+  const imageUri = values[name][0];
+
   useEffect(() => {
     requestPermission();
   }, []);
@@ -38,8 +43,9 @@ function ImageInput({ imageUri, onChangeImage }) {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 0.5,
       });
-      console.log(result);
-      if (!result.cancelled) onChangeImage(result.uri);
+      if (!result.cancelled) {
+        setFieldValue(name, [result.uri]);
+      }
     } catch (error) {}
   };
 
@@ -64,10 +70,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.light,
     borderRadius: 15,
-    height: 100,
+    aspectRatio: 1,
+    height: 150,
     justifyContent: "center",
     overflow: "hidden",
-    width: 100,
   },
   image: {
     height: "100%",

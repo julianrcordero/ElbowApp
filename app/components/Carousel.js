@@ -140,7 +140,7 @@ export default class Carousel extends Component {
         }}
       >
         <View style={{ height: "100%", width: width }}>
-          <CreateNavigator />
+          <CreateNavigator bottomSheetRef={bottomSheetRef} map={map} />
         </View>
       </NavigationContainer>
     ) : (

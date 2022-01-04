@@ -18,6 +18,7 @@ import * as FileSystem from "expo-file-system";
 
 import FormImage from "../components/forms/FormImage";
 import ImageInput from "../components/ImageInput";
+import UploadScreen from "./UploadScreen";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required().label("Description"),
@@ -35,7 +36,7 @@ const categories = [
   },
 ];
 
-function CreatePostScreen({ navigation }) {
+function CreatePostScreen({ bottomSheetRef, map }) {
   const getCreatedToursApi = useApi(postsApi.getCreatedTours);
   useEffect(() => {
     getCreatedToursApi.request();
@@ -70,10 +71,12 @@ function CreatePostScreen({ navigation }) {
     setUploadVisible(true);
 
     let location = map.current?.state.placeMarkerCoordinate;
+    console.log(location);
 
     const result = await postsApi.addPost({ ...post, location }, (progress) =>
       setProgress(progress)
     );
+    console.log(result);
     if (!result.ok) {
       // setUploadVisible(false);
       return alert("You are not authorized to upload");
@@ -139,6 +142,11 @@ function CreatePostScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View style={styles.buttons}>
+        <UploadScreen
+          onDone={() => setUploadVisible(false)}
+          progress={progress}
+          visible={uploadVisible}
+        />
         <Form
           initialValues={{
             title: "",
@@ -172,8 +180,9 @@ function CreatePostScreen({ navigation }) {
             placeholder="Tour"
           />
           <ImageInput
-            imageUri={imageUri}
+            // imageUri={imageUri}
             onChangeImage={(uri) => setImageUri(uri)}
+            name="images"
           />
           <Text
             style={{
@@ -196,11 +205,12 @@ function CreatePostScreen({ navigation }) {
             placeholder="What's so cool about this place?"
           />
 
-          {/* <AppButton
+          <AppButton
             title="Set Marker"
             onPress={setMarker}
-            color={"secondary"}
-          ></AppButton> */}
+            color={"primary"}
+            textColor={"white"}
+          ></AppButton>
 
           <SubmitButton title="Post" />
         </Form>
@@ -230,7 +240,7 @@ function CreatePostScreen({ navigation }) {
         ></View>
         <TouchableOpacity
           style={styles.mapButton}
-          onPress={() => console.log("add")}
+          onPress={handleSubmit}
         >
           <MaterialCommunityIcons
             name="map-marker-plus-outline"

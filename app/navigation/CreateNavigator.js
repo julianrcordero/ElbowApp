@@ -43,7 +43,13 @@ const CreateNavigator = (props) => {
           headerLeft: false,
         }}
       />
-      <Stack.Screen name="CreatePost" component={CreatePostScreen} />
+      <Stack.Screen
+        name="CreatePost"
+        // component={CreatePostScreen}
+        children={() => (
+          <CreatePostScreen bottomSheetRef={props.bottomSheetRef} map={props.map} />
+        )}
+      />
     </Stack.Navigator>
   );
 };

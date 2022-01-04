@@ -136,12 +136,12 @@ export default class MapScreen extends Component {
 
   openBottomSheet = (postMode = true) => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        this.props.bottomSheetRef.current?.snapTo(0);
-        this.props.bottomSheetContent.current?.setState({
-          addPostMode: postMode,
-        });
+      //   setTimeout(() => {
+      this.props.bottomSheetRef.current?.snapTo(0);
+      this.props.bottomSheetContent.current?.setState({
+        addPostMode: postMode,
       });
+      //   });
     });
     () => interactionPromise.cancel();
   };
@@ -411,6 +411,7 @@ export default class MapScreen extends Component {
                   this.setState({
                     placeMarkerCoordinate: e.nativeEvent.coordinate,
                   });
+                  console.log("finished dragging to", e.nativeEvent.coordinate);
                 }}
               />
             ) : (
@@ -469,7 +470,7 @@ export default class MapScreen extends Component {
               {
                 backgroundColor: "limegreen",
                 borderRadius: 35,
-                bottom: 100,
+                bottom: 300,
                 position: "absolute",
                 width: 70,
               },
@@ -502,11 +503,15 @@ export default class MapScreen extends Component {
             style={styles.addButton}
             onPress={this.openBottomSheet}
           >
-            <MaterialCommunityIcons
-              name="map-marker-plus-outline"
-              color={colors.primary}
-              size={55}
-            />
+            {this.state.placeMarkerMode ? (
+              <Text>{"DONE"}</Text>
+            ) : (
+              <MaterialCommunityIcons
+                name="map-marker-plus-outline"
+                color={colors.primary}
+                size={55}
+              />
+            )}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.searchButton}

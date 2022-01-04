@@ -15,7 +15,7 @@ import { TouchableOpacity } from "react-native";
 const Stack = createStackNavigator();
 
 const HomeNavigator = (props) => {
-  useNotifications();
+  // useNotifications();
   const getPostsApi = useApi(postsApi.getPosts);
   const searchPostsApi = useApi(postsApi.searchPosts);
 
