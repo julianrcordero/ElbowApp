@@ -1,7 +1,6 @@
 import React, { Component, useRef } from "react";
 import { Dimensions, FlatList, View } from "react-native";
 import CarouselCard from "./CarouselCard";
-// import DropDownPicker from "react-native-dropdown-picker";
 import { Picker } from "@react-native-picker/picker";
 
 import AppText from "../components/Text";

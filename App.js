@@ -25,12 +25,11 @@ import CarouselCard from "./app/components/CarouselCard";
 import BottomSheet from "reanimated-bottom-sheet";
 import { enableScreens } from "react-native-screens";
 enableScreens();
-import Collapsible from "react-native-collapsible";
 import { getBottomSpace } from "react-native-iphone-x-helper";
 import Constants from "expo-constants";
 
 import { createStackNavigator } from "@react-navigation/stack";
-import TopSheetNavigation from "./app/components/TopSheetNavigation";
+// import TopSheetNavigation from "./app/components/TopSheetNavigation";
 import PostContentScreen from "./app/screens/PostContentScreen";
 import Carousel from "./app/components/Carousel";
 import * as Location from "expo-location";
@@ -106,11 +105,7 @@ export default function App() {
         { backgroundColor: colors.goldenrod, borderColor: colors.white },
       ]}
     >
-      <Button
-        title="Done"
-        onPress={snapAway}
-        style={{ textAlign: "center" }}
-      />
+      <Button title="Done" onPress={snapAway} style={{ textAlign: "center" }} />
     </View>
   );
 
@@ -142,9 +137,9 @@ export default function App() {
 
   return (
     <>
-      <Screen style={{ position: "absolute", width: "100%", zIndex: 200 }}>
+      {/* <Screen style={{ position: "absolute", width: "100%", zIndex: 200 }}>
         <TopSheetNavigation ref={topPanel} width={width} />
-      </Screen>
+      </Screen> */}
       <Screen>
         <NavigationContainer ref={navigationRef}>
           <AuthContext.Provider value={{ user, setUser }}>
