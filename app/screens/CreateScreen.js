@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function CreateScreen({ navigation }) {
   const navigateToCreatePost = () => navigation.navigate("CreatePost");
+  const navigateToCreateTour = () => navigation.navigate("CreateTour");
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -21,7 +22,7 @@ function CreateScreen({ navigation }) {
           />
         </TouchableOpacity>
         <View style={{ height: 30 }}></View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={navigateToCreateTour}>
           <Text style={styles.buttonText}> Create a Tour</Text>
           <MaterialCommunityIcons
             name={"plus"}

@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import HomeScreen from "../screens/HomeScreen";
 import colors from "../config/colors";
+import PostsNavigator from "./PostsNavigator";
 import ToursNavigator from "./ToursNavigator";
 import LockerNavigator from "./LockerNavigator";
 import MapScreen from "../screens/MapScreen";
@@ -51,6 +52,8 @@ const HomeNavigator = (props) => {
           headerLeft: false,
         }}
       />
+
+      <Stack.Screen name="Posts" component={PostsNavigator} />
       <Stack.Screen name="Tours" component={ToursNavigator} />
       <Stack.Screen name="Adventures" component={LockerNavigator} />
       <Stack.Screen

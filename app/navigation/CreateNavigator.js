@@ -5,6 +5,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import CreateScreen from "../screens/CreateScreen";
 import CreatePostScreen from "../screens/CreatePostScreen";
+import CreateTourScreen from "../screens/CreateTourScreen";
+
 import { TouchableOpacity } from "react-native";
 const Stack = createStackNavigator();
 
@@ -45,9 +47,20 @@ const CreateNavigator = (props) => {
       />
       <Stack.Screen
         name="CreatePost"
-        // component={CreatePostScreen}
         children={() => (
-          <CreatePostScreen bottomSheetRef={props.bottomSheetRef} map={props.map} />
+          <CreatePostScreen
+            bottomSheetRef={props.bottomSheetRef}
+            map={props.map}
+          />
+        )}
+      />
+      <Stack.Screen
+        name="CreateTour"
+        children={() => (
+          <CreateTourScreen
+            bottomSheetRef={props.bottomSheetRef}
+            map={props.map}
+          />
         )}
       />
     </Stack.Navigator>

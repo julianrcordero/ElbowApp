@@ -99,6 +99,7 @@ export default function HomeScreen({ navigation }) {
           icon={require("../assets/plusWhite.png")}
           title="Recent Posts"
           textColor={colors.white}
+          more={() => navigation.navigate("Posts")}
         />
         <View style={{ height: 7.5 }}></View>
         <ButtonSection
